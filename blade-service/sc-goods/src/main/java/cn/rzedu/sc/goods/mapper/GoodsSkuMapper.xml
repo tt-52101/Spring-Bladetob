@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sc.goods.mapper.GoodsSkuMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="goodsSkuResultMap" type="cn.rzedu.sc.goods.entity.GoodsSku">
+        <id column="id" property="id"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="name" property="name"/>
+        <result column="key_value" property="keyValue"/>
+        <result column="owner_type" property="ownerType"/>
+        <result column="owner_id" property="ownerId"/>
+        <result column="stock_count" property="stockCount"/>
+        <result column="price" property="price"/>
+        <result column="status" property="status"/>
+        <result column="sold_count" property="soldCount"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="goodsSkuVOResultMap" type="cn.rzedu.sc.goods.vo.GoodsSkuVO" extends="goodsSkuResultMap">
+        <result column="short_name" property="shortName"/>
+    </resultMap>
+
+
+    <select id="selectGoodsSkuPage" resultMap="goodsSkuResultMap">
+        select * from sc_goods_sku where is_deleted = 0
+    </select>
+
+    <select id="findByGoodsId" resultMap="goodsSkuVOResultMap">
+        select * from sc_goods_sku where is_deleted = 0 AND goods_id = #{goodsId}
+    </select>
+
+    <select id="findByIds" resultMap="goodsSkuVOResultMap">
+        select * from sc_goods_sku where is_deleted = 0
+        AND id IN
+        <foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+</mapper>

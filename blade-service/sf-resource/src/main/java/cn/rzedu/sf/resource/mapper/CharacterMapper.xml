@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.resource.mapper.CharacterMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="characterResultMap" type="cn.rzedu.sf.resource.entity.Character">
+        <id column="id" property="id"/>
+        <result column="char_s" property="charS"/>
+        <result column="char_t" property="charT"/>
+        <result column="keyword" property="keyword"/>
+        <result column="soft_er_code" property="softErCode"/>
+        <result column="soft_res_count" property="softResCount"/>
+        <result column="soft_res_visited_count" property="softResVisitedCount"/>
+        <result column="soft_code" property="softCode"/>
+        <result column="hard_er_code" property="hardErCode"/>
+        <result column="hard_res_count" property="hardResCount"/>
+        <result column="hard_res_visited_count" property="hardResVisitedCount"/>
+        <result column="hard_code" property="hardCode"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="characterVOResultMap" type="cn.rzedu.sf.resource.vo.CharacterVO" extends="characterResultMap">
+
+    </resultMap>
+
+
+    <select id="selectCharacterPage" resultMap="characterResultMap">
+        select * from sf_character where is_deleted = 0
+    </select>
+
+    <select id="findCharacterByChar" resultMap="characterResultMap">
+        select * from sf_character where is_deleted = 0
+        <if test="name != null and name != ''">
+            AND (char_s LIKE CONCAT(CONCAT('%', #{name}),'%') OR char_t LIKE CONCAT(CONCAT('%', #{name}),'%'))
+        </if>
+    </select>
+
+    <select id="findCharacterVoWithVisitedCount" resultMap="characterResultMap">
+        SELECT
+        sc.id,
+        sc.char_s, sc.char_t, sc.keyword, sc.soft_er_code, sc.hard_er_code,
+        sc.soft_res_count, sc.hard_res_count,
+        sc.soft_res_visited_count, sc.hard_res_visited_count,
+        sc.is_deleted
+        FROM sf_character sc
+        WHERE 1=1
+        AND sc.is_deleted = 0
+        <if test="param2 != null">
+            <if test="param2.keyword != null and param2.keyword != ''">
+                AND sc.keyword LIKE CONCAT(CONCAT('%', #{param2.keyword}),'%')
+            </if>
+            <choose>
+                <when test="param2.subject == 71">
+                    <choose>
+                        <when test="param2.hasResource == 1">
+                            AND sc.soft_res_count > 0
+                        </when>
+                        <when test="param2.hasResource == 0">
+                            AND sc.soft_res_count = 0
+                        </when>
+                        <otherwise></otherwise>
+                    </choose>
+                </when>
+                <when test="param2.subject == 72">
+                    <choose>
+                        <when test="param2.hasResource == 1">
+                            AND sc.hard_res_count > 0
+                        </when>
+                        <when test="param2.hasResource == 0">
+                            AND sc.hard_res_count = 0
+                        </when>
+                        <otherwise></otherwise>
+                    </choose>
+                </when>
+                <otherwise>
+                    <choose>
+                        <when test="param2.hasResource == 1">
+                            AND (sc.soft_res_count > 0
+                            OR sc.hard_res_count > 0)
+                        </when>
+                        <when test="param2.hasResource == 0">
+                            AND sc.soft_res_count = 0
+                            AND sc.hard_res_count = 0
+                        </when>
+                        <otherwise></otherwise>
+                    </choose>
+                </otherwise>
+            </choose>
+        </if>
+        GROUP BY sc.id
+    </select>
+
+    <select id="findWithVisitedCountByIds" resultMap="characterVOResultMap">
+        SELECT
+        sc.id,
+        sc.char_s, sc.char_t, sc.keyword, sc.soft_er_code, sc.hard_er_code,
+        sc.soft_res_count, sc.hard_res_count,
+        sc.soft_res_visited_count, sc.hard_res_visited_count,
+        sc.is_deleted
+        FROM sf_character sc
+        WHERE 1=1
+        AND sc.is_deleted = 0
+        <if test="param1 != null and param1 != ''">
+            AND sc.id IN
+            <foreach collection="ids.split(',')" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+        <if test="param2 != null">
+            <if test="param2.keyword != null and param2.keyword != ''">
+                AND sc.keyword LIKE CONCAT(CONCAT('%', #{param2.keyword}),'%')
+            </if>
+            <choose>
+                <when test="param2.subject == 71">
+                    <choose>
+                        <when test="param2.hasResource == 1">
+                            AND sc.soft_res_count > 0
+                        </when>
+                        <when test="param2.hasResource == 0">
+                            AND sc.soft_res_count = 0
+                        </when>
+                        <otherwise></otherwise>
+                    </choose>
+                </when>
+                <when test="param2.subject == 72">
+                    <choose>
+                        <when test="param2.hasResource == 1">
+                            AND sc.hard_res_count > 0
+                        </when>
+                        <when test="param2.hasResource == 0">
+                            AND sc.hard_res_count = 0
+                        </when>
+                        <otherwise></otherwise>
+                    </choose>
+                </when>
+                <otherwise>
+                    <choose>
+                        <when test="param2.hasResource == 1">
+                            AND (sc.soft_res_count > 0
+                            OR sc.hard_res_count > 0)
+                        </when>
+                        <when test="param2.hasResource == 0">
+                            AND sc.soft_res_count = 0
+                            AND sc.hard_res_count = 0
+                        </when>
+                        <otherwise></otherwise>
+                    </choose>
+                </otherwise>
+            </choose>
+        </if>
+        GROUP BY sc.id
+    </select>
+
+    <update id="updateResCount">
+        UPDATE sf_character
+        SET
+        soft_res_count = (
+        SELECT COUNT(*) FROM sf_character_resource WHERE is_deleted = 0 AND character_id = #{id} AND `subject` = 71
+        ),
+        hard_res_count = (
+        SELECT COUNT(*) FROM sf_character_resource WHERE is_deleted = 0 AND character_id = #{id} AND `subject` = 72
+        )
+        WHERE id = #{id}
+    </update>
+
+    <select id="findByChars" resultMap="characterResultMap">
+        select * from sf_character where is_deleted = 0
+        AND char_s IN
+        <foreach collection="list" item="char" index="index" open="(" close=")" separator=",">
+            #{char}
+        </foreach>
+    </select>
+
+    <update id="updateSoftVisitedCount">
+        UPDATE sf_character
+        SET soft_res_visited_count = (
+            SELECT t.num FROM (
+                SELECT IFNULL( soft_res_visited_count, 0 ) + 1 AS num FROM sf_character WHERE id = #{id}
+                ) t
+        )
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateHardVisitedCount">
+        UPDATE sf_character
+        SET hard_res_visited_count = (
+            SELECT t.num FROM (
+                SELECT IFNULL( hard_res_visited_count, 0 ) + 1 AS num FROM sf_character WHERE id = #{id}
+                ) t
+        )
+        WHERE id = #{id}
+    </update>
+
+    <select id="findByCodeAndType" resultMap="characterResultMap">
+        SELECT * FROM sf_character WHERE is_deleted = 0
+        <if test="param2 != null">
+            <if test="param2 == 1">
+                AND soft_code LIKE CONCAT(CONCAT('%', #{param1}),'%')
+            </if>
+            <if test="param2 == 2">
+                AND hard_code = #{param1}
+            </if>
+        </if>
+        LIMIT 1
+    </select>
+
+    <select id="findErCodeFromLesson" resultMap="characterResultMap">
+        SELECT
+        c.id,
+        IF(tlc.`subject` = 71, tl.er_code, null) soft_er_code,
+        IF(tlc.`subject` = 71, tl.`code`, null) soft_code,
+        IF(tlc.`subject` = 72, tl.er_code, null) hard_er_code,
+        IF(tlc.`subject` = 72, tl.`code`, null) hard_code
+        FROM sf_character c
+        LEFT JOIN sf_textbook_lesson_character tlc ON tlc.character_id = c.id
+        LEFT JOIN sf_textbook_lesson tl ON tlc.lesson_id = tl.id
+        LEFT JOIN sf_textbook t ON tl.textbook_id = t.id
+        WHERE 1=1
+        AND c.is_deleted = 0
+        AND tlc.is_deleted = 0
+        AND tl.is_deleted = 0
+        AND t.is_deleted = 0
+        <if test="param1 != null">
+            AND t.id = #{param1}
+        </if>
+        GROUP BY c.id
+    </select>
+
+</mapper>

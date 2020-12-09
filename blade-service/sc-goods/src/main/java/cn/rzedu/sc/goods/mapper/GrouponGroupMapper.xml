@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sc.goods.mapper.GrouponGroupMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="grouponGroupResultMap" type="cn.rzedu.sc.goods.entity.GrouponGroup">
+        <id column="id" property="id"/>
+        <result column="groupon_id" property="grouponId"/>
+        <result column="launch_user_id" property="launchUserId"/>
+        <result column="launch_time" property="launchTime"/>
+        <result column="finish_time" property="finishTime"/>
+        <result column="member_count" property="memberCount"/>
+        <result column="status" property="status"/>
+        <result column="is_robot" property="isRobot"/>
+        <result column="source" property="source"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="grouponGroupVOResultMap" type="cn.rzedu.sc.goods.vo.GrouponGroupVO"
+               extends="grouponGroupResultMap">
+        <result column="launch_user_name" property="launchUserName"/>
+        <result column="launch_user_icon" property="launchUserIcon"/>
+        <result column="goods_name" property="goodsName"/>
+        <result column="owner_type" property="ownerType"/>
+        <result column="need_member_count" property="needMemberCount"/>
+        <result column="groupUserIds" property="groupUserIds"/>
+    </resultMap>
+
+    <select id="selectGrouponGroupPage" resultMap="grouponGroupResultMap">
+        select * from sc_groupon_group where is_deleted = 0
+    </select>
+    <select id="findByGrouponId" resultMap="grouponGroupVOResultMap">
+        select * from sc_groupon_group where is_deleted = 0 AND groupon_id = #{grouponId}
+    </select>
+
+    <select id="findDeadlineGroup" resultMap="grouponGroupVOResultMap">
+        SELECT
+        t1.*, t2.`name` AS launch_user_name, t2.icon AS launch_user_icon,
+        t4.`name` AS goods_name, t4.owner_type, t3.member_count AS need_member_count
+        FROM sc_groupon_group t1
+        LEFT JOIN sf_user t2 ON t1.launch_user_id = t2.id AND t1.is_deleted = 0
+        LEFT JOIN sc_groupon_rule t3 ON t1.groupon_id = t3.id AND t3.is_deleted = 0
+        LEFT JOIN sc_goods t4 ON t3.goods_id = t4.id AND t4.is_deleted = 0
+        WHERE t1.is_deleted = 0
+        AND t1.status = 0
+        AND t1.is_robot = 0
+        AND t1.groupon_id = #{grouponId}
+        AND t1.finish_time > NOW()
+        AND UNIX_TIMESTAMP(t1.finish_time) - UNIX_TIMESTAMP(now()) &lt;= #{time} * 3600
+    </select>
+
+    <select id="findRobotGroup" resultMap="grouponGroupVOResultMap">
+        SELECT
+        t1.*, t2.`name` AS launch_user_name, t2.icon AS launch_user_icon,
+        t4.`name` AS goods_name, t4.owner_type, t3.member_count AS need_member_count
+        FROM sc_groupon_group t1
+        LEFT JOIN sf_user t2 ON t1.launch_user_id = t2.id AND t1.is_deleted = 0
+        LEFT JOIN sc_groupon_rule t3 ON t1.groupon_id = t3.id AND t3.is_deleted = 0
+        LEFT JOIN sc_goods t4 ON t3.goods_id = t4.id AND t4.is_deleted = 0
+        WHERE t1.is_deleted = 0
+        AND t1.status = 0
+        AND t1.is_robot = 1
+        AND t1.groupon_id = #{grouponId}
+        AND t1.finish_time > NOW()
+    </select>
+
+    <select id="findByGrouponGroupId" resultMap="grouponGroupVOResultMap">
+        SELECT
+        t1.*, t2.`name` AS launch_user_name, t2.icon AS launch_user_icon,
+        t4.`name` AS goods_name, t4.owner_type, t3.member_count AS need_member_count
+        FROM sc_groupon_group t1
+        LEFT JOIN sf_user t2 ON t1.launch_user_id = t2.id AND t1.is_deleted = 0
+        LEFT JOIN sc_groupon_rule t3 ON t1.groupon_id = t3.id AND t3.is_deleted = 0
+        LEFT JOIN sc_goods t4 ON t3.goods_id = t4.id AND t4.is_deleted = 0
+        WHERE t1.is_deleted = 0
+        AND t1.id = #{id}
+    </select>
+
+    <select id="getRobotUser" resultType="java.util.Map">
+        SELECT id, `name`, icon FROM sf_user
+        WHERE is_deleted = 0 AND is_robot = 1
+        ORDER BY RAND() LIMIT 20
+    </select>
+
+    <select id="findOneHourLeftGroup" resultMap="grouponGroupVOResultMap">
+        SELECT
+        t1.*, t2.member_count AS need_member_count, GROUP_CONCAT(t3.user_id) AS groupUserIds
+        FROM sc_groupon_group t1
+        LEFT JOIN sc_groupon_rule t2 ON t1.groupon_id = t2.id AND t2.is_deleted = 0
+		LEFT JOIN sc_groupon_group_user t3 ON t1.id = t3.groupon_group_id AND t3.is_deleted = 0
+        WHERE t1.is_deleted = 0
+        AND t1.status = 0
+        AND UNIX_TIMESTAMP(t1.finish_time) - UNIX_TIMESTAMP(now()) &lt;= 3600
+        GROUP BY t1.id
+    </select>
+
+    <select id="findLimitTimeGroup" resultMap="grouponGroupVOResultMap">
+        SELECT
+        t1.*, t2.member_count AS need_member_count, GROUP_CONCAT(t3.user_id) AS groupUserIds, t4.`name` AS goods_name
+        FROM sc_groupon_group t1
+        LEFT JOIN sc_groupon_rule t2 ON t1.groupon_id = t2.id AND t2.is_deleted = 0
+        LEFT JOIN sc_goods t4 ON t2.goods_id = t4.id AND t4.is_deleted = 0
+		LEFT JOIN sc_groupon_group_user t3 ON t1.id = t3.groupon_group_id AND t3.is_deleted = 0
+        WHERE t1.is_deleted = 0
+        AND t1.status = 0
+        <if test="greaterTime != null">
+            AND UNIX_TIMESTAMP(t1.finish_time) - UNIX_TIMESTAMP(now()) &lt;= #{greaterTime}
+        </if>
+        <if test="lessTime != null">
+            AND UNIX_TIMESTAMP(t1.finish_time) - UNIX_TIMESTAMP(now()) &gt;= #{lessTime}
+        </if>
+        GROUP BY t1.id
+    </select>
+
+    <select id="findNotRobotFinishGroupUser" resultType="java.lang.Integer">
+        SELECT t3.user_id
+        FROM sc_groupon_group t1
+        LEFT JOIN sc_groupon_rule t2 ON t1.groupon_id = t2.id AND t2.is_deleted = 0
+        LEFT JOIN sc_groupon_group_user t3 ON t1.id = t3.groupon_group_id AND t3.is_deleted = 0
+        LEFT JOIN sf_user t4 ON t3.user_id = t4.id
+        WHERE t1.is_deleted = 0
+        AND t1.status = 1
+        AND t1.id = #{grouponGroupId}
+        AND t4.is_deleted = 0
+        AND t4.is_robot = 0
+    </select>
+
+
+</mapper>

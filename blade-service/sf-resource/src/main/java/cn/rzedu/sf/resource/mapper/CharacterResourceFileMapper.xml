@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.resource.mapper.CharacterResourceFileMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="characterResourceFileResultMap" type="cn.rzedu.sf.resource.entity.CharacterResourceFile">
+        <id column="id" property="id"/>
+        <result column="resource_id" property="resourceId"/>
+        <result column="character_id" property="characterId"/>
+        <result column="subject" property="subject"/>
+        <result column="resource_type" property="resourceType"/>
+        <result column="object_id" property="objectId"/>
+        <result column="object_type" property="objectType"/>
+        <result column="content" property="content"/>
+        <result column="uuid" property="uuid"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <select id="selectCharacterResourceFilePage" resultMap="characterResourceFileResultMap">
+        select * from sf_character_resource_file where is_deleted = 0
+    </select>
+
+    <select id="findUnionByResourceIdAndObjectId" resultMap="characterResourceFileResultMap">
+        select * from sf_character_resource_file
+        where is_deleted = 0
+        AND resource_id = #{resourceId}
+        AND object_id = #{objectId}
+        LIMIT 1
+    </select>
+
+    <select id="findByResourceId" resultMap="characterResourceFileResultMap">
+        select * from sf_character_resource_file
+        where is_deleted = 0
+        AND resource_id = #{resourceId}
+    </select>
+
+    <select id="findByCharacterId" resultMap="characterResourceFileResultMap">
+        SELECT crf.* FROM sf_character_resource_file crf
+        LEFT JOIN sf_character_resource cr ON crf.resource_id = cr.id
+        WHERE crf.is_deleted = 0
+        AND cr.is_deleted = 0
+        AND cr.character_id = #{characterId}
+        AND cr.`subject` = #{subject}
+        AND cr.resource_type = #{resourceType}
+        AND cr.enabled = 1
+    </select>
+
+</mapper>

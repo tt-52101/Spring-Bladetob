@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.user.mapper.UserLoginLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="userLoginLogResultMap" type="cn.rzedu.sf.user.entity.UserLoginLog">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="user_uuid" property="userUuid"/>
+        <result column="login_time" property="loginTime"/>
+        <result column="login_source" property="loginSource"/>
+        <result column="login_ip" property="loginIp"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+    </resultMap>
+
+
+    <select id="selectUserLoginLogPage" resultMap="userLoginLogResultMap">
+        select * from sf_user_login_log where is_deleted = 0
+    </select>
+    <select id="findByUserId" resultMap="userLoginLogResultMap">
+        select * from sf_user_login_log where user_id = #{userId}
+    </select>
+
+    <select id="findByFormatTime" resultMap="userLoginLogResultMap">
+        select * from sf_user_login_log where user_id = #{userId}
+        AND DATE_FORMAT(login_time, "%Y-%m-%d") = DATE_FORMAT(#{loginTime}, "%Y-%m-%d")
+        LIMIT 1
+    </select>
+
+</mapper>

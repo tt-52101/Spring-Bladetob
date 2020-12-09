@@ -1,0 +1,14 @@
+#服务器端口
+server:
+  port: 8010
+
+oss:
+  enable: true
+  name: alioss
+  tenant-mode: true
+  endpoint: oss-cn-qingdao.aliyuncs.com
+  access-key: LTAIV7VpvFzcnGvT
+  secret-key: auxYY7Uj3nw2lYd1sdPwACNOcWgrau
+  bucket-name: shufa1
+  http-prefix: https://cdnsf2.rz-edu.cn
+  space-name: upload

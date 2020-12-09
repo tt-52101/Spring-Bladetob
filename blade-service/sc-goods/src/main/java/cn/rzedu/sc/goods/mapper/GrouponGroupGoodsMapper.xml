@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sc.goods.mapper.GrouponGroupGoodsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="grouponGroupGoodsResultMap" type="cn.rzedu.sc.goods.entity.GrouponGroupGoods">
+        <id column="id" property="id"/>
+        <result column="groupon_group_id" property="grouponGroupId"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="goods_sku_id" property="goodsSkuId"/>
+        <result column="count" property="count"/>
+        <result column="price" property="price"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="grouponGroupGoodsVOResultMap" type="cn.rzedu.sc.goods.vo.GrouponGroupGoodsVO"
+               extends="grouponGroupGoodsResultMap">
+        <result column="goods_name" property="goodsName"/>
+        <result column="owner_type" property="ownerType"/>
+        <result column="owner_id" property="ownerId"/>
+        <result column="goods_sku_name" property="goodsSkuName"/>
+    </resultMap>
+
+    <select id="selectGrouponGroupGoodsPage" resultMap="grouponGroupGoodsResultMap">
+        select * from sc_groupon_group_goods where is_deleted = 0
+    </select>
+
+    <select id="findByGrouponGroupId" resultMap="grouponGroupGoodsVOResultMap">
+        SELECT
+        t1.*, t2.`name` AS goods_name, t3.owner_type, t3.owner_id, t3.`name` AS goods_sku_name
+        FROM sc_groupon_group_goods t1
+        LEFT JOIN sc_goods t2 ON t1.goods_id = t1.id AND t2.is_deleted = 0
+        LEFT JOIN sc_goods_sku t3 ON t1.goods_sku_id = t3.id AND t3.is_deleted = 0
+        WHERE t1.is_deleted = 0
+        AND t1.groupon_group_id = #{grouponGroupId}
+    </select>
+
+</mapper>

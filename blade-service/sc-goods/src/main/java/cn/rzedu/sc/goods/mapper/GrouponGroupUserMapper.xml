@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sc.goods.mapper.GrouponGroupUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="grouponGroupUserResultMap" type="cn.rzedu.sc.goods.entity.GrouponGroupUser">
+        <id column="id" property="id"/>
+        <result column="groupon_group_id" property="grouponGroupId"/>
+        <result column="user_id" property="userId"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="grouponGroupUserVOResultMap" type="cn.rzedu.sc.goods.vo.GrouponGroupUserVO"
+               extends="grouponGroupUserResultMap">
+        <result column="name" property="name"/>
+        <result column="icon" property="icon"/>
+    </resultMap>
+
+
+    <select id="selectGrouponGroupUserPage" resultMap="grouponGroupUserResultMap">
+        select * from sc_groupon_group_user where is_deleted = 0
+    </select>
+
+    <select id="findByGrouponGroupId" resultMap="grouponGroupUserVOResultMap">
+        SELECT t1.*, t2.`name`, t2.icon
+        FROM sc_groupon_group_user t1
+        LEFT JOIN sf_user t2 ON t1.user_id = t2.id
+        WHERE t1.is_deleted = 0
+        AND t1.groupon_group_id = #{grouponGroupId}
+    </select>
+
+</mapper>

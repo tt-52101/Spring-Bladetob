@@ -1,0 +1,35 @@
+server:
+  port: 8088
+
+spring:
+  cloud:
+    discovery:
+      reactive:
+        enabled: false
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+    loadbalancer:
+      retry:
+        enabled: true
+
+# 聚合文档配置
+blade:
+  document:
+    resources:
+      - name: 授权模块
+        location: /blade-auth
+      - name: 工作台模块
+        location: /blade-desk
+      - name: 系统模块
+        location: /blade-system
+      - name: 书法资源
+        location: /sf-resource
+      - name: 书法用户
+        location: /sf-user
+      - name: 文件资源
+        location: /blade-resource
+      - name: 商品团购
+        location: /sc-goods
+

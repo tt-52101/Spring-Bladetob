@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.resource.mapper.CourseLessonMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="courseLessonResultMap" type="cn.rzedu.sf.resource.entity.CourseLesson">
+        <id column="id" property="id"/>
+        <result column="course_id" property="courseId"/>
+        <result column="lesson_index" property="lessonIndex"/>
+        <result column="name" property="name"/>
+        <result column="enabled" property="enabled"/>
+        <result column="resource_type" property="resourceType"/>
+        <result column="duration" property="duration"/>
+        <result column="visited_count" property="visitedCount"/>
+        <result column="finished_count" property="finishedCount"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="courseLessonVOResultMap" type="cn.rzedu.sf.resource.vo.CourseLessonVO" extends="courseLessonResultMap">
+        <result column="formatTypes" property="formatTypes"/>
+        <result column="uuids" property="uuids"/>
+    </resultMap>
+
+    <select id="selectCourseLessonPage" resultMap="courseLessonResultMap">
+        select * from sf_course_lesson where is_deleted = 0
+    </select>
+
+    <select id="findByCourseId" resultMap="courseLessonVOResultMap">
+        SELECT
+            t1.*,
+            GROUP_CONCAT( t3.format_type ) AS formatTypes,
+            GROUP_CONCAT( t3.uuid ) AS uuids
+        FROM
+            sf_course_lesson t1
+            LEFT JOIN sf_course t2 ON t1.course_id = t2.id
+            LEFT JOIN sf_course_resource t3 ON t1.id = t3.lesson_id
+            AND t3.is_deleted = 0
+        WHERE
+            1 = 1
+            AND t1.is_deleted = 0
+            AND t2.is_deleted = 0
+            AND t1.enabled = 1
+            AND t1.course_id = #{courseId}
+        GROUP BY
+            t1.id
+    </select>
+
+</mapper>

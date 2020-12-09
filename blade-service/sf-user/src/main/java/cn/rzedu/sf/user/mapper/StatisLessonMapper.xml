@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.user.mapper.StatisLessonMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="statisLessonResultMap" type="cn.rzedu.sf.user.entity.StatisLesson">
+        <id column="id" property="id"/>
+        <result column="lesson_id" property="lessonId"/>
+        <result column="lesson_name" property="lessonName"/>
+        <result column="send_count" property="sendCount"/>
+        <result column="click_count" property="clickCount"/>
+        <result column="click_people_count" property="clickPeopleCount"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <update id="updateSendCount">
+        UPDATE sf_statis_lesson
+        SET send_count = send_count + 1
+        WHERE lesson_id = #{lessonId}
+    </update>
+
+    <update id="updateClickCount">
+        UPDATE sf_statis_lesson
+        SET click_count = click_count + 1
+        WHERE lesson_id = #{lessonId}
+    </update>
+
+    <update id="updateClickPeopleCount">
+        UPDATE sf_statis_lesson
+        SET click_people_count = click_people_count + 1
+        WHERE lesson_id = #{lessonId}
+    </update>
+
+    <select id="selectStatisLessonPage" resultMap="statisLessonResultMap">
+        select * from sf_statis_lesson where is_deleted = 0
+    </select>
+
+    <select id="findByLessonId" resultMap="statisLessonResultMap">
+        select * from sf_statis_lesson where is_deleted = 0
+        AND lesson_id = #{lessonId}
+        LIMIT 1
+    </select>
+
+</mapper>

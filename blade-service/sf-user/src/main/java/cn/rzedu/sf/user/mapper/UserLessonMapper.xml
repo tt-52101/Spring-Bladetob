@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.user.mapper.UserLessonMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="userLessonResultMap" type="cn.rzedu.sf.user.entity.UserLesson">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="textbook_id" property="textbookId"/>
+        <result column="lesson_id" property="lessonId"/>
+        <result column="char_count" property="charCount"/>
+        <result column="finished_char_count" property="finishedCharCount"/>
+        <result column="locked" property="locked"/>
+        <result column="star_count" property="starCount"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="userLessonVOResultMap" type="cn.rzedu.sf.user.vo.UserLessonVO"
+               extends="userLessonResultMap">
+        <result column="lesson_name" property="lessonName"/>
+        <result column="list_order" property="listOrder"/>
+        <result column="section" property="section"/>
+        <result column="stars_n1" property="starsN1"/>
+        <result column="stars_n2" property="starsN2"/>
+        <result column="stars_n3" property="starsN3"/>
+    </resultMap>
+
+
+    <select id="selectUserLessonPage" resultMap="userLessonResultMap">
+        select * from sf_user_lesson where is_deleted = 0
+    </select>
+
+    <select id="findAllLessonWithUser" resultMap="userLessonVOResultMap">
+        SELECT
+            tl.textbook_id,
+            tl.id AS lesson_id,
+            tl.`name` AS lesson_name,
+            tl.list_order,
+            tl.section,
+            tl.char_count,
+            IFNULL( ul.finished_char_count, 0 ) AS finished_char_count,
+            IFNULL( ul.locked, 1 ) AS locked,
+            IFNULL( ul.star_count, 0 ) AS star_count
+        FROM
+            sf_textbook_lesson tl
+            LEFT JOIN sf_user_lesson ul ON ul.lesson_id = tl.id
+            AND ul.is_deleted = 0
+            AND ul.user_id = #{userId}
+        WHERE
+            1 = 1
+            AND tl.is_deleted = 0
+            AND tl.textbook_id = #{textbookId}
+            AND tl.enabled = 1
+            ORDER BY list_order
+    </select>
+
+    <select id="getLessonMessage" resultType="java.util.Map">
+        SELECT
+            tl.id AS lessonId,
+            tl.textbook_id AS textbookId,
+            tl.`name` AS lessonName,
+            tl.list_order AS listOrder,
+            tl.section,
+            t.`name` AS textbookName,
+            t.`subject`,
+            t.lesson_count AS lessonCount
+        FROM
+            sf_textbook_lesson tl
+            LEFT JOIN sf_textbook t ON tl.textbook_id = t.id
+        WHERE
+            1 = 1
+            AND tl.is_deleted = 0
+            AND t.is_deleted = 0
+            AND tl.id = #{lessonId}
+    </select>
+
+    <select id="getLessonStars" resultMap="userLessonVOResultMap">
+        SELECT
+            tl.textbook_id,
+            tl.id AS lesson_id,
+            tl.`name` AS lesson_name,
+            tl.char_count,
+            IFNULL( lsc.stars_n1, 0 ) AS stars_n1,
+            IFNULL( lsc.stars_n2, 0 ) AS stars_n2,
+            IFNULL( lsc.stars_n3, 0 ) AS stars_n3,
+            IFNULL( ul.finished_char_count, 0 ) AS finished_char_count,
+            IFNULL( ul.star_count, 0 ) AS star_count
+        FROM
+            sf_textbook_lesson tl
+            LEFT JOIN sf_user_lesson ul ON tl.id = ul.lesson_id
+            AND ul.is_deleted = 0
+            AND ul.user_id = #{userId}
+            LEFT JOIN sf_lesson_star_config lsc ON tl.id = lsc.lesson_id
+        WHERE
+            1 = 1
+            AND tl.is_deleted = 0
+            AND tl.id = #{lessonId}
+    </select>
+
+    <select id="findUnionByLessonIdAndUserId" resultMap="userLessonResultMap">
+        SELECT * FROM sf_user_lesson
+        WHERE is_deleted = 0
+        AND lesson_id = #{lessonId}
+        AND user_id = #{userId}
+    </select>
+
+    <update id="updateByLessonIdAndUserId">
+        UPDATE sf_user_lesson
+        SET
+        <if test="charCount != null">
+            char_count = #{charCount},
+        </if>
+        <if test="finishedCharCount != null">
+            finished_char_count = #{finishedCharCount},
+        </if>
+        <if test="locked != null">
+            locked = #{locked},
+        </if>
+        <if test="starCount != null">
+            starCount = #{starCount},
+        </if>
+        user_id = #{userId},
+        lesson_id = #{lessonId}
+        WHERE user_id = #{userId}
+        AND lesson_id = #{lessonId}
+    </update>
+
+    <select id="findFinishedLessonCountOfTextbook" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM sf_user_lesson ul
+        LEFT JOIN sf_user_textbook ut ON ul.textbook_id = ut.textbook_id AND ul.user_id = ut.user_id
+        LEFT JOIN sf_textbook_lesson tl ON ul.lesson_id = tl.id
+        WHERE 1=1
+        AND tl.is_deleted = 0
+        AND ut.is_deleted = 0
+        AND ul.is_deleted = 0
+        AND ul.textbook_id = #{textbookId}
+        AND ul.user_id = #{userId}
+        AND ul.char_count = ul.finished_char_count
+    </select>
+
+</mapper>

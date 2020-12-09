@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sc.goods.mapper.BrandMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="brandResultMap" type="cn.rzedu.sc.goods.entity.Brand">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="image" property="image"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <select id="selectBrandPage" resultMap="brandResultMap">
+        select * from sc_brand where is_deleted = 0
+    </select>
+
+</mapper>

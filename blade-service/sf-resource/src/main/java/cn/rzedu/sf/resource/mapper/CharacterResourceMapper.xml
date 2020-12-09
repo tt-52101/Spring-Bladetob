@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.resource.mapper.CharacterResourceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="characterResourceResultMap" type="cn.rzedu.sf.resource.entity.CharacterResource">
+        <id column="id" property="id"/>
+        <result column="character_id" property="characterId"/>
+        <result column="name_tr" property="nameTr"/>
+        <result column="keyword" property="keyword"/>
+        <result column="char_s" property="charS"/>
+        <result column="char_t" property="charT"/>
+        <result column="enabled" property="enabled"/>
+        <result column="subject" property="subject"/>
+        <result column="visited_count" property="visitedCount"/>
+        <result column="resource_type" property="resourceType"/>
+        <result column="video_id" property="videoId"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <select id="selectCharacterResourcePage" resultMap="characterResourceResultMap">
+        select * from sf_character_resource where is_deleted = 0
+        <if test="param2 != null">
+            <if test="param2.characterId != null">
+                AND character_id = #{param2.characterId}
+            </if>
+            <if test="param2.subject != null">
+                AND subject = #{param2.subject}
+            </if>
+            <if test="param2.enabled != null">
+                <choose>
+                    <when test="param2.enabled == true">
+                        AND enabled = 1
+                    </when>
+                    <otherwise>
+                        AND enabled = 0
+                    </otherwise>
+                </choose>
+            </if>
+        </if>
+    </select>
+
+    <update id="updateDisable">
+        UPDATE sf_character_resource SET enabled = 0
+        WHERE character_id = #{characterId} AND `subject` = #{subject} AND resource_type = #{resourceType}
+    </update>
+
+    <update id="updateCharST">
+        UPDATE sf_character_resource SET char_s = #{charS}, char_t = #{charT} WHERE character_id = #{characterId}
+    </update>
+
+    <update id="updateVisitedCount">
+        UPDATE sf_character_resource
+        SET visited_count = (
+            SELECT t.num FROM (
+                    SELECT IFNULL( visited_count, 0 ) + 1 AS num
+                    FROM sf_character_resource
+                    WHERE character_id = #{characterId}
+                    AND `subject` = #{subject}
+                    AND enabled = 1
+                ) t
+        )
+        WHERE character_id = #{characterId}
+        AND `subject` = #{subject}
+        AND resource_type = #{resourceType}
+        AND enabled = 1
+    </update>
+
+    <select id="findUnion" resultMap="characterResourceResultMap">
+        select * from sf_character_resource where is_deleted = 0
+        AND enabled = 1
+        AND character_id = #{characterId}
+        AND `subject` = #{subject}
+        AND resource_type = #{resourceType}
+        LIMIT 1
+    </select>
+</mapper>

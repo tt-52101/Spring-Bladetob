@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sc.goods.mapper.OrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="orderResultMap" type="cn.rzedu.sc.goods.entity.Order">
+        <id column="id" property="id"/>
+        <result column="code" property="code"/>
+        <result column="user_id" property="userId"/>
+        <result column="prime_price" property="primePrice"/>
+        <result column="deal_price" property="dealPrice"/>
+        <result column="status" property="status"/>
+        <result column="purchase_type" property="purchaseType"/>
+        <result column="groupon_group_id" property="grouponGroupId"/>
+        <result column="pay_type" property="payType"/>
+        <result column="pay_time" property="payTime"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="orderVOResultMap" type="cn.rzedu.sc.goods.vo.OrderVO" extends="orderResultMap">
+        <result column="user_name" property="userName"/>
+        <result column="goods_names" property="goodsNames"/>
+    </resultMap>
+
+    <select id="selectOrderPage" resultMap="orderResultMap">
+        select * from sc_order where is_deleted = 0
+    </select>
+
+    <select id="findByOrderVO" resultMap="orderVOResultMap">
+        SELECT t1.*, t3.`name` AS user_name, GROUP_CONCAT(t2.goods_name) AS goods_names
+        FROM sc_order t1
+        LEFT JOIN sc_order_goods t2 ON t1.id = t2.order_id AND t2.is_deleted = 0
+        LEFT JOIN sf_user t3 ON t1.user_id = t3.id AND t3.is_deleted = 0
+        WHERE t1.is_deleted = 0
+        <if test="param2 != null">
+            <if test="param2.code != null and param2.code != ''">
+                AND t1.`code` LIKE CONCAT(CONCAT('%', #{param2.code}),'%')
+            </if>
+            <if test="param2.goodsNames != null and param2.goodsNames != ''">
+                AND t2.good_name LIKE CONCAT(CONCAT('%', #{param2.goodsNames}),'%')
+            </if>
+        </if>
+        GROUP BY t1.id
+    </select>
+
+    <select id="findUserOrderSales" resultType="cn.rzedu.sc.goods.vo.UserOrderSalesVO">
+        SELECT
+        t.user_id AS userId,
+        t.`name` AS userName,
+        SUM(total_day) AS totalDay,
+        SUM(total_week) AS totalWeek,
+        SUM(total_month) AS totalMonth,
+        SUM(total_quarter) AS totalQuarter
+        FROM (
+            SELECT t1.user_id, t2.`name`, SUM(t1.deal_price) AS total_day, 0 AS total_week, 0 AS total_month, 0 AS total_quarter
+            FROM sc_order t1
+            LEFT JOIN sf_user t2 ON t1.user_id = t2.id AND t2.is_deleted = 0
+            WHERE t1.is_deleted = 0
+            AND t1.`status` > 1
+            AND TO_DAYS(t1.pay_time) = TO_DAYS(NOW())
+            GROUP BY t1.user_id
+
+            UNION ALL
+
+            SELECT t1.user_id, t2.`name`, 0 AS total_day, SUM(t1.deal_price) AS total_week, 0 AS total_month, 0 AS total_quarter
+            FROM sc_order t1
+            LEFT JOIN sf_user t2 ON t1.user_id = t2.id AND t2.is_deleted = 0
+            WHERE t1.is_deleted = 0
+            AND t1.`status` > 1
+            AND YEARWEEK(t1.pay_time) = YEARWEEK(NOW())
+            GROUP BY t1.user_id
+
+            UNION ALL
+
+            SELECT t1.user_id, t2.`name`, 0 AS total_day, 0 AS total_week, SUM(t1.deal_price) AS total_month, 0 AS total_quarter
+            FROM sc_order t1
+            LEFT JOIN sf_user t2 ON t1.user_id = t2.id AND t2.is_deleted = 0
+            WHERE t1.is_deleted = 0
+            AND t1.`status` > 1
+            AND DATE_FORMAT(t1.pay_time, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m')
+            GROUP BY t1.user_id
+
+            UNION ALL
+
+            SELECT t1.user_id, t2.`name`, 0 AS total_day, 0 AS total_week, 0 AS total_month, SUM(t1.deal_price) AS total_quarter
+            FROM sc_order t1
+            LEFT JOIN sf_user t2 ON t1.user_id = t2.id AND t2.is_deleted = 0
+            WHERE t1.is_deleted = 0
+            AND t1.`status` > 1
+            AND QUARTER(t1.pay_time) = QUARTER(NOW())
+            GROUP BY t1.user_id
+        ) t
+        GROUP BY t.user_id
+    </select>
+
+    <update id="updateStatusByCode">
+        UPDATE sc_order SET `status` = #{status}  WHERE `code` = #{code}
+    </update>
+
+    <select id="findByCode" resultMap="orderVOResultMap">
+        SELECT * FROM sc_order WHERE is_deleted = 0 AND `code` = #{code}  LIMIT 1
+    </select>
+
+</mapper>

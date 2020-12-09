@@ -1,0 +1,59 @@
+server:
+  port: 7002 #服务端口
+#数据源配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${blade.datasource.dev.url}
+    username: ${blade.datasource.dev.username}
+    password: ${blade.datasource.dev.password}
+  application:
+    name: rabbitmq-consumer #指定服务名
+  rabbitmq:
+    addresses: 124.16.4.21
+    port: 5672
+    username: admin
+    password: admin
+  cloud:
+    stream:
+#      instanceCount: 2  #消费者总数
+#      instanceIndex: 0  #当前消费者的索引
+      bindings:
+#        input: #内置的获取消息的通道 , 从topcheer-default中获取消息
+#          destination: topcheer-default
+        consumer-input:
+          destination: topcheer-custom-output
+#          group: group1
+#          consumer:
+#            partitioned: true  #开启分区支持
+      binders:
+        defaultRabbit:
+          type: rabbit
+
+      rabbit:
+        bindings:
+          consumer-input:
+            consumer:
+              delayedExchange: true
+#feign配置
+feign:
+  hystrix:
+    enabled: true
+  okhttp:
+    enabled: true
+  httpclient:
+    enabled: false
+
+#hystrix配置
+hystrix:
+  threadpool:
+    default:
+      coreSize: 300
+      maxQueueSize: 1000
+      queueSizeRejectionThreshold: 800
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000

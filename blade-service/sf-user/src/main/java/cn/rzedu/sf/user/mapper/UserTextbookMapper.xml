@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.user.mapper.UserTextbookMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="userTextbookResultMap" type="cn.rzedu.sf.user.entity.UserTextbook">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="textbook_id" property="textbookId"/>
+        <result column="owned_time" property="ownedTime"/>
+        <result column="active_time" property="activeTime"/>
+        <result column="start_time" property="startTime"/>
+        <result column="finish_time" property="finishTime"/>
+        <result column="active_lesson_id" property="activeLessonId"/>
+        <result column="finished_lesson_count" property="finishedLessonCount"/>
+        <result column="finished_char_count" property="finishedCharCount"/>
+        <result column="finished_percent" property="finishedPercent"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="userTextbookVOResultMap" type="cn.rzedu.sf.user.vo.UserTextbookVO"
+               extends="userTextbookResultMap">
+        <result column="textbook_name" property="textbookName"/>
+        <result column="subject" property="subject"/>
+        <result column="cover_image" property="coverImage"/>
+        <result column="lesson_count" property="lessonCount"/>
+        <result column="char_count" property="charCount"/>
+        <result column="bought_count" property="boughtCount"/>
+        <result column="finished_count" property="finishedCount"/>
+        <result column="star_count" property="starCount"/>
+        <result column="finished_star_count" property="finishedStarCount"/>
+    </resultMap>
+
+
+    <select id="selectUserTextbookPage" resultMap="userTextbookResultMap">
+        select * from sf_user_textbook where is_deleted = 0
+    </select>
+
+    <select id="findHotTextBookList" resultMap="userTextbookVOResultMap">
+        SELECT
+        t.id AS textbook_id, t.`name` AS textbook_name, t.`subject`, t.cover_image, t.lesson_count, t.char_count,
+        COUNT(*) AS bought_count, SUM(IF(t.char_count = ut.finished_char_count, 1, 0)) AS finished_count
+        FROM sf_textbook t
+        LEFT JOIN sf_user_textbook ut ON t.id = ut.textbook_id AND ut.is_deleted = 0
+        WHERE 1=1
+        AND t.is_deleted = 0
+        GROUP BY t.id
+        ORDER BY bought_count DESC
+    </select>
+
+    <select id="findBoughtTextBookList" resultMap="userTextbookVOResultMap">
+        SELECT
+        ut.id, ut.user_id, ut.textbook_id, ut.finished_lesson_count, ut.finished_char_count, ut.finished_percent,
+        t.textbook_name, t.`subject`, t.cover_image, t.lesson_count, t.char_count,
+        t.bought_count
+        FROM sf_user_textbook ut
+        LEFT JOIN
+        (
+            SELECT
+            t1.id, t1.`name` AS textbook_name, t1.`subject`, t1.cover_image, t1.lesson_count, t1.char_count,
+            COUNT(*) AS bought_count, t1.is_deleted
+            FROM sf_textbook t1
+            LEFT JOIN sf_user_textbook t2 ON t1.id = t2.textbook_id AND t2.is_deleted = 0
+            WHERE 1=1
+            AND t1.is_deleted = 0
+            GROUP BY t1.id
+        ) AS t
+        ON ut.textbook_id = t.id
+        WHERE 1=1
+        AND t.is_deleted = 0
+        AND ut.is_deleted = 0
+        AND ut.user_id = #{userId}
+        ORDER BY ut.modify_date DESC
+    </select>
+
+    <select id="findFinishedTextBookList" resultMap="userTextbookVOResultMap">
+        SELECT
+        ut.id, ut.user_id, ut.textbook_id, ut.finished_lesson_count, ut.finished_char_count, ut.finished_percent,
+        t.textbook_name, t.`subject`, t.cover_image, t.lesson_count, t.char_count,
+        t.bought_count
+        FROM sf_user_textbook ut
+        LEFT JOIN
+        (
+            SELECT
+            t1.id, t1.`name` AS textbook_name, t1.`subject`, t1.cover_image, t1.lesson_count, t1.char_count,
+            COUNT(*) AS bought_count, t1.is_deleted
+            FROM sf_textbook t1
+            LEFT JOIN sf_user_textbook t2 ON t1.id = t2.textbook_id AND t2.is_deleted = 0
+            WHERE 1=1
+            AND t1.is_deleted = 0
+            GROUP BY t1.id
+        ) AS t
+        ON ut.textbook_id = t.id
+        WHERE 1=1
+        AND t.is_deleted = 0
+        AND ut.is_deleted = 0
+        AND ut.user_id = #{userId}
+        AND ut.active_time IS NOT NULL
+        AND ut.finished_percent = 100
+    </select>
+
+    <select id="findFinishedStars" resultMap="userTextbookVOResultMap">
+        SELECT
+        SUM(ul.finished_char_count) AS finished_char_count,
+        SUM(ul.char_count) AS char_count,
+        SUM(IF(ul.star_count = 3, 1, 0)) AS finished_lesson_count,
+        COUNT(ul.id) AS lesson_count,
+        COUNT(ul.id) * 3 AS star_count,
+        SUM(ul.star_count) AS finished_star_count
+        FROM sf_user_textbook ut
+        LEFT JOIN sf_textbook t ON ut.textbook_id = t.id
+        LEFT JOIN sf_user_lesson ul ON ul.textbook_id = t.id AND ut.user_id = ul.user_id
+        LEFT JOIN sf_textbook_lesson tl ON ul.lesson_id = tl.id
+        WHERE 1=1
+        AND t.is_deleted = 0
+        AND ut.is_deleted = 0
+        AND ul.is_deleted = 0
+        AND tl.is_deleted = 0
+        AND ut.textbook_id = #{textbookId}
+        AND ut.user_id = #{userId}
+        AND ul.locked = 0
+        AND tl.enabled = 1
+        GROUP BY ut.textbook_id
+    </select>
+
+    <select id="findTextbookStars" resultMap="userTextbookVOResultMap">
+        SELECT
+        SUM(tl.char_count) AS char_count,
+        COUNT(tl.id) AS lesson_count,
+        COUNT(tl.id) * 3 AS star_count
+        FROM sf_textbook t
+        LEFT JOIN sf_textbook_lesson tl ON t.id = tl.textbook_id
+        WHERE 1=1
+        AND t.is_deleted = 0
+        AND tl.is_deleted = 0
+        AND t.id = #{textbookId}
+        AND tl.enabled = 1
+        GROUP BY t.id
+    </select>
+
+    <select id="findUnionByTextbookIdAndUserId" resultMap="userTextbookResultMap">
+        SELECT * FROM sf_user_textbook
+        WHERE is_deleted = 0
+        AND textbook_id = #{textbookId}
+        AND user_id = #{userId}
+    </select>
+
+    <update id="updateByTextbookIdAndUserId">
+        UPDATE sf_user_textbook
+        SET
+        <if test="ownedTime != null">
+            owned_time = #{ownedTime},
+        </if>
+        <if test="activeTime != null">
+            active_time = #{activeTime},
+        </if>
+        <if test="startTime != null">
+            start_time = #{startTime},
+        </if>
+        <if test="finishTime != null">
+            finish_time = #{finishTime},
+        </if>
+        <if test="activeLessonId != null">
+            active_lesson_id = #{activeLessonId},
+        </if>
+        <if test="finishedLessonCount != null">
+            finished_lesson_count = #{finishedLessonCount},
+        </if>
+        <if test="finishedCharCount != null">
+            finished_char_count = #{finishedCharCount},
+        </if>
+         <if test="finishedPercent != null">
+             finished_percent = #{finishedPercent},
+        </if>
+        user_id = #{userId},
+        textbook_id = #{textbookId}
+        WHERE user_id = #{userId}
+        AND textbook_id = #{textbookId}
+    </update>
+
+    <select id="findBoughtList" resultType="java.util.Map">
+        SELECT
+            ut.id,
+            ut.user_id AS userId,
+            ut.textbook_id AS textbookId,
+            t.textbook_name AS textbookName,
+            NULL AS courseId,
+            NULL AS courseName,
+            t.lesson_count AS lessonCount,
+            ut.finished_lesson_count AS finishedLessonCount,
+            t.char_count AS charCount,
+            ut.finished_char_count AS finishedCharCount,
+            ut.finished_percent AS finishedPercent,
+            t.`subject`,
+            t.cover_image AS coverImage,
+            t.bought_count AS boughtCount,
+            ut.modify_date AS modifyDate
+        FROM
+            sf_user_textbook ut
+            LEFT JOIN (
+                SELECT
+                    t1.id,
+                    t1.`name` AS textbook_name,
+                    t1.`subject`,
+                    t1.cover_image,
+                    t1.lesson_count,
+                    t1.char_count,
+                    COUNT( * ) AS bought_count,
+                    t1.is_deleted
+                FROM
+                    sf_textbook t1
+                    LEFT JOIN sf_user_textbook t2 ON t1.id = t2.textbook_id
+                    AND t2.is_deleted = 0
+                WHERE
+                    1 = 1
+                    AND t1.is_deleted = 0
+                GROUP BY
+                    t1.id
+            ) AS t ON ut.textbook_id = t.id
+        WHERE
+            1 = 1
+            AND t.is_deleted = 0
+            AND ut.is_deleted = 0
+            AND ut.user_id = #{userId}
+            <if test="isFinished != null and isFinished == 1">
+                AND ut.finished_percent = 100
+            </if>
+
+        UNION
+
+        SELECT
+            t1.id,
+            t1.user_id AS userId,
+            NULL AS textbookId,
+            NULL AS textbookName,
+            t1.course_id AS courseId,
+            t2.`name` AS courseName,
+            t2.lesson_count AS lessonCount,
+            t1.finished_lesson_count AS finishedLessonCount,
+            NULL AS charCount,
+            NULL AS finishedCharCount,
+            t1.finished_percent AS finishedPercent,
+            t2.`subject`,
+            t2.cover_image AS coverImage,
+            t.bought_count AS boughtCount,
+            t1.modify_date AS modifyDate
+        FROM
+            sf_course_user t1
+            LEFT JOIN sf_course t2 ON t1.course_id = t2.id
+            LEFT JOIN (
+                SELECT
+                    c1.id,
+                    COUNT( * ) AS bought_count
+                FROM
+                    sf_course c1
+                    LEFT JOIN sf_course_user c2 ON c1.id = c2.course_id
+                    AND c2.is_deleted = 0
+                WHERE
+                    c1.is_deleted = 0
+                GROUP BY
+                    c1.id
+            ) AS t ON t1.course_id = t.id
+        WHERE
+            1 = 1
+            AND t2.is_deleted = 0
+            AND t2.enabled = 1
+            AND t1.is_deleted = 0
+            AND t1.user_id = #{userId}
+            <if test="isFinished != null and isFinished == 1">
+                AND t1.finished_percent = 100
+            </if>
+
+        ORDER BY
+            modifyDate DESC
+    </select>
+</mapper>

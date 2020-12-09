@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.resource.mapper.TextbookMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="textbookResultMap" type="cn.rzedu.sf.resource.entity.Textbook">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="publisher" property="publisher"/>
+        <result column="stage_code" property="stageCode"/>
+        <result column="grade_code" property="gradeCode"/>
+        <result column="volume" property="volume"/>
+        <result column="subject" property="subject"/>
+        <result column="er_code" property="erCode"/>
+        <result column="cover_image" property="coverImage"/>
+        <result column="lesson_count" property="lessonCount"/>
+        <result column="char_count" property="charCount"/>
+        <result column="visited_count" property="visitedCount"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="textbookVOResultMap" type="cn.rzedu.sf.resource.vo.TextbookVO" extends="textbookResultMap">
+
+    </resultMap>
+
+    <select id="selectTextbookPage" resultMap="textbookResultMap">
+        select * from sf_textbook where is_deleted = 0
+    </select>
+
+    <update id="updateLessonAndCharCount">
+        UPDATE sf_textbook
+        SET
+        lesson_count = (
+            SELECT COUNT( * ) FROM sf_textbook_lesson WHERE is_deleted = 0 AND textbook_id = #{id}
+        ),
+        char_count = (
+            SELECT
+                COUNT( * )
+            FROM
+                sf_textbook_lesson tl
+                LEFT JOIN sf_textbook_lesson_character tlc ON tl.id = tlc.lesson_id
+                LEFT JOIN sf_character c ON tlc.character_id = c.id
+            WHERE
+                tl.is_deleted = 0
+                AND tlc.is_deleted = 0
+                AND c.is_deleted = 0
+                AND tl.textbook_id = #{id}
+        )
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateVisitedCount">
+        UPDATE sf_textbook
+        SET visited_count = (
+          SELECT t.num FROM (
+            SELECT IFNULL( visited_count, 0 ) + 1 AS num FROM sf_textbook WHERE id = #{id}
+            ) t
+        )
+        WHERE id = #{id}
+    </update>
+
+    <select id="findByIds" resultMap="textbookVOResultMap">
+        select * from sf_textbook
+        where is_deleted = 0
+        <if test="param1 != null and param1 != ''">
+            AND id IN
+            <foreach collection="ids.split(',')" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+        <if test="param2 != null">
+            <if test="param2.name != null and param2.name != ''">
+                AND `name` LIKE CONCAT(CONCAT('%', #{param2.name}),'%')
+            </if>
+            <if test="param2.publisher != null and param2.publisher != ''">
+                AND publisher LIKE CONCAT(CONCAT('%', #{param2.publisher}),'%')
+            </if>
+            <if test="param2.subject != null">
+                AND subject = #{param2.subject}
+            </if>
+        </if>
+    </select>
+</mapper>

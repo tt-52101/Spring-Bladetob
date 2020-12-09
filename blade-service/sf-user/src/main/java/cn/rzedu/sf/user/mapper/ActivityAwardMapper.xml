@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.user.mapper.ActivityAwardMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="activityAwardResultMap" type="cn.rzedu.sf.user.entity.ActivityAward">
+        <id column="id" property="id"/>
+        <result column="type" property="type"/>
+        <result column="total_number" property="totalNumber"/>
+        <result column="left_number" property="leftNumber"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <select id="selectActivityAwardPage" resultMap="activityAwardResultMap">
+        select * from sf_activity_award where is_deleted = 0
+    </select>
+
+    <select id="findByType" resultMap="activityAwardResultMap">
+        select * from sf_activity_award where is_deleted = 0 AND `type` = #{type} LIMIT 1
+    </select>
+
+    <update id="modifyLeftNumber">
+        UPDATE sf_activity_award SET left_number = left_number - 1 WHERE `type` = #{type}
+    </update>
+</mapper>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.resource.mapper.TextbookLessonMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="textbookLessonResultMap" type="cn.rzedu.sf.resource.entity.TextbookLesson">
+        <id column="id" property="id"/>
+        <result column="textbook_id" property="textbookId"/>
+        <result column="name" property="name"/>
+        <result column="list_order" property="listOrder"/>
+        <result column="enabled" property="enabled"/>
+        <result column="section" property="section"/>
+        <result column="er_code" property="erCode"/>
+        <result column="chars" property="chars"/>
+        <result column="char_count" property="charCount"/>
+        <result column="code" property="code"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="textbookLessonVoResultMap" type="cn.rzedu.sf.resource.vo.TextbookLessonVO"
+               extends="textbookLessonResultMap">
+        <result column="visited_count" property="visitedCount"/>
+        <result column="charIds" property="charIds"/>
+    </resultMap>
+
+    <select id="selectTextbookLessonPage" resultMap="textbookLessonResultMap">
+        select * from sf_textbook_lesson where is_deleted = 0
+    </select>
+
+    <select id="findLessonByTextbookId" resultMap="textbookLessonVoResultMap">
+        SELECT tl.*, SUM(tlc.visited_count) AS visited_count, GROUP_CONCAT(tlc.id) AS charIds
+        FROM sf_textbook_lesson tl
+        LEFT JOIN sf_textbook_lesson_character tlc ON tl.id = tlc.lesson_id AND tlc.is_deleted = 0
+        WHERE 1=1
+        AND tl.is_deleted = 0
+        AND tl.textbook_id = #{textbookId}
+        GROUP BY tl.id
+    </select>
+
+    <update id="updateCharCount">
+        UPDATE sf_textbook_lesson
+        SET
+        chars = (
+            SELECT
+                GROUP_CONCAT( sc.char_s SEPARATOR '、' )
+            FROM
+                sf_textbook_lesson_character tlc
+                LEFT JOIN sf_character sc ON tlc.character_id = sc.id
+            WHERE
+                tlc.is_deleted = 0
+                AND sc.is_deleted = 0
+                AND tlc.lesson_id = #{id}
+        ),
+        char_count = (
+            SELECT
+                COUNT( * )
+            FROM
+                sf_textbook_lesson_character tlc
+                LEFT JOIN sf_character sc ON tlc.character_id = sc.id
+            WHERE
+                tlc.is_deleted = 0
+                AND sc.is_deleted = 0
+                AND tlc.lesson_id = #{id}
+        )
+        WHERE id = #{id}
+    </update>
+
+    <select id="findLessonByCode" resultMap="textbookLessonResultMap">
+        SELECT * FROM sf_textbook_lesson WHERE is_deleted = 0 AND `code` = #{code} LIMIT 1
+    </select>
+
+    <select id="getLessonCharacterInfo" resultType="java.util.Map">
+        SELECT
+            t.id AS textbookId,
+            tl.id AS lessonId,
+            c.id AS characterId,
+            t.`name` AS textbookName,
+            tl.`name` AS lessonName,
+            c.char_s AS characterName
+        FROM
+            sf_textbook_lesson tl
+            LEFT JOIN sf_textbook t ON tl.textbook_id = t.id
+              AND t.is_deleted = 0
+            LEFT JOIN sf_textbook_lesson_character tlc ON tl.id = tlc.lesson_id
+              AND tlc.is_deleted = 0
+            LEFT JOIN sf_character c ON tlc.character_id = c.id
+              AND c.is_deleted = 0
+        WHERE
+            1 = 1
+            AND tl.is_deleted = 0
+            AND tl.`code` = #{code}
+            LIMIT 1
+    </select>
+
+    <update id="removeByTextbookIds">
+        UPDATE sf_textbook_lesson SET is_deleted = 1
+        WHERE textbook_id IN
+        <foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
+
+</mapper>

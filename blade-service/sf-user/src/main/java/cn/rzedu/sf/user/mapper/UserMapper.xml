@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.user.mapper.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="userResultMap" type="cn.rzedu.sf.user.entity.User">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="mobile" property="mobile"/>
+        <result column="name" property="name"/>
+        <result column="nickname" property="nickname"/>
+        <result column="sex" property="sex"/>
+        <result column="birthday" property="birthday"/>
+        <result column="school" property="school"/>
+        <result column="stage_code" property="stageCode"/>
+        <result column="grade_code" property="gradeCode"/>
+        <result column="subjects" property="subjects"/>
+        <result column="icon" property="icon"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="district" property="district"/>
+        <result column="open_id" property="openId"/>
+        <result column="study_grade" property="studyGrade"/>
+        <result column="uuid" property="uuid"/>
+        <result column="source_type" property="sourceType"/>
+        <result column="focus_status" property="focusStatus"/>
+        <result column="dimension" property="dimension"/>
+        <result column="is_robot" property="isRobot"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="userVOResultMap" type="cn.rzedu.sf.user.vo.UserVO" extends="userResultMap">
+
+    </resultMap>
+
+    <select id="selectUserPage" resultMap="userResultMap">
+        select * from sf_user where is_deleted = 0
+    </select>
+    
+     <select id="selectAllUser" resultMap="userResultMap">
+        select * from sf_user where is_deleted = 0 and focus_status = 1 and open_id is not null 
+    </select>
+
+    <select id="getRandomIcons" resultType="java.lang.String">
+        SELECT icon FROM sf_user
+        WHERE id >= (
+            SELECT FLOOR(
+                RAND() * (SELECT MAX(id) FROM sf_user)
+            )
+        )
+        AND icon IS NOT NULL
+        LIMIT 20
+    </select>
+
+    <select id="getRandomUser" resultMap="userResultMap">
+        SELECT * FROM sf_user
+        WHERE id >= (
+            SELECT FLOOR(
+                RAND() * (SELECT MAX(id) FROM sf_user)
+            )
+        )
+        AND icon IS NOT NULL
+        LIMIT #{number}
+    </select>
+
+
+    <select id="findByOpenId" resultMap="userVOResultMap">
+        SELECT * FROM sf_user WHERE is_deleted = 0 AND open_id = #{openId}  LIMIT 1
+    </select>
+
+    <select id="getUserStars" resultType="java.lang.Integer">
+        SELECT
+            SUM( num )
+        FROM
+            (
+            SELECT
+                IFNULL( SUM( ul.star_count ), 0 ) AS num
+            FROM
+                sf_user_lesson ul
+                LEFT JOIN sf_user_textbook ut ON ul.textbook_id = ut.textbook_id
+                AND ul.user_id = ut.user_id
+                LEFT JOIN sf_textbook_lesson tl ON ul.lesson_id = tl.id
+                LEFT JOIN sf_textbook t ON tl.textbook_id = t.id
+            WHERE
+                1 = 1
+                AND ul.is_deleted = 0
+                AND ut.is_deleted = 0
+                AND tl.is_deleted = 0
+                AND t.is_deleted = 0
+                AND tl.enabled = 1
+                AND ul.user_id = #{id}
+
+            UNION ALL
+
+            SELECT
+                IFNULL( SUM( t1.star_count ), 0 ) AS num
+            FROM
+                sf_course_user t1
+                LEFT JOIN sf_course t2 ON t1.course_id = t2.id
+            WHERE
+                t1.is_deleted = 0
+                AND t2.is_deleted = 0
+                AND t2.enabled = 1
+                AND t1.user_id = #{id}
+        ) AS tab
+    </select>
+
+    <select id="findByUUID" resultMap="userResultMap">
+        SELECT * FROM sf_user WHERE is_deleted = 0 AND uuid = #{uuid}  LIMIT 1
+    </select>
+
+    <select id="getMaxNumber" resultType="java.lang.Integer">
+        SELECT IFNULL(COUNT(*), 0) FROM sf_user
+    </select>
+
+    <update id="updateStudyGrade">
+        UPDATE sf_user SET study_grade = #{studyGrade} WHERE uuid = #{uuid}
+    </update>
+
+    <select id="findNewUser" resultMap="userVOResultMap">
+        SELECT
+        t1.id, t1.`name`, t1.uuid,
+        DATE(DATE_FORMAT(t2.modify_date, "%Y-%m-%d")) AS modify_date,
+        COUNT(*) AS `number`
+        FROM sf_user t1
+        LEFT JOIN sf_user_character t2 ON t1.id = t2.user_id
+        LEFT JOIN sf_textbook_lesson_character t3 ON t2.character_id = t3.character_id AND t2.lesson_id = t3.lesson_id
+        LEFT JOIN sf_textbook_lesson t4 ON t3.lesson_id = t4.id
+        LEFT JOIN sf_textbook t5 ON t4.textbook_id = t5.id
+        WHERE 1=1
+        AND t1.is_deleted = 0
+        AND t2.is_deleted = 0
+        AND t3.is_deleted = 0
+        AND t4.is_deleted = 0
+        AND t5.is_deleted = 0
+        AND t2.finished_percent = 100
+        <choose>
+            <when test="groupType == 1">
+                GROUP BY t1.id
+            </when>
+            <when test="groupType == 2">
+                GROUP BY t1.id, t2.id
+            </when>
+            <otherwise>
+                GROUP BY t1.id
+            </otherwise>
+        </choose>
+        ORDER BY t1.id, t2.modify_date
+    </select>
+
+    <select id="findOtherUser" resultMap="userVOResultMap">
+        SELECT * FROM sf_user WHERE is_deleted = 0
+        AND id NOT IN (
+            SELECT
+            t1.id
+            FROM sf_user t1
+            LEFT JOIN sf_user_character t2 ON t1.id = t2.user_id
+            LEFT JOIN sf_textbook_lesson_character t3 ON t2.character_id = t3.character_id AND t2.lesson_id = t3.lesson_id
+            LEFT JOIN sf_textbook_lesson t4 ON t3.lesson_id = t4.id
+            LEFT JOIN sf_textbook t5 ON t4.textbook_id = t5.id
+            WHERE 1=1
+            AND t1.is_deleted = 0
+            AND t2.is_deleted = 0
+            AND t3.is_deleted = 0
+            AND t4.is_deleted = 0
+            AND t5.is_deleted = 0
+            AND t2.finished_percent = 100
+            GROUP BY t1.id
+        )
+    </select>
+
+    <update id="updateDimensionByIds">
+        UPDATE sf_user SET dimension = #{dimension} WHERE id IN
+        <foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="findInitiatorByAssistNumber" resultMap="userVOResultMap">
+        SELECT t.* FROM (
+        SELECT t2.*, COUNT(*) AS assist_count FROM sf_activity_user_assist t1
+        LEFT JOIN sf_user t2 ON t1.initiator_id = t2.id
+        WHERE t1.is_deleted = 0
+        AND t2.is_deleted = 0
+        GROUP BY t1.initiator_id
+        ) t
+        WHERE 1=1
+        <if test="greaterNumber != null">
+            AND t.assist_count &lt;= #{greaterNumber}
+        </if>
+        <if test="lessNumber != null">
+            AND t.assist_count &gt;= #{lessNumber}
+        </if>
+    </select>
+
+
+</mapper>

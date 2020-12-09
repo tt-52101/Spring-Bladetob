@@ -1,0 +1,63 @@
+#服务器端口
+server:
+  port: 8100
+
+#数据源配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${blade.datasource.dev.url}
+    username: ${blade.datasource.dev.username}
+    password: ${blade.datasource.dev.password}
+
+wechat:
+  config:
+#    appId: wx90b1489cc904d1a7
+#    appSecret: e7f115070c0dd38e0b115c5565df7e5e
+
+    #测试环境
+    appId: wx9ab542932644f36c
+    appSecret: b4a61fbce1bf111043e2ffe2beba9ffd
+    accessTokenUrl:
+    userInfoUrl:
+    #任务完成提醒
+#    helpTemplate1: NVj5MYFIuE0U791OkZ9oIomMlfWE01vJiCqhPjMH87w
+     helpTemplate1: IpVYV4K84X4a3Hp7zWQZFlvOWU1JOz9VU1AyET7mpqE
+    #成员加入提醒
+#    helpTemplate2: YjrErs0vbST93KWg6F63ZU1BKWpLz37l37Xdd007iXQ
+    helpTemplate2: S4RLmGAx78gD9qMJeqJzrOH9QOSTnmQJ-acNknYKAtk
+
+#助力活动结束时间
+activity:
+  startTime: 2020-9-18 00:00:00
+  endTime: 2020-9-25 00:00:00
+  delayTime: 60000
+#海报文件生成存放路径
+poster:
+#  directory: /opt/dir
+  directory: E:\sfdemo\
+#服务器地址
+serverPath: http://saberfront.rz-edu.cn
+
+#feign配置
+feign:
+  hystrix:
+    enabled: true
+  okhttp:
+    enabled: true
+  httpclient:
+    enabled: false
+
+#hystrix配置
+hystrix:
+  threadpool:
+    default:
+      coreSize: 300
+      maxQueueSize: 1000
+      queueSizeRejectionThreshold: 800
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000

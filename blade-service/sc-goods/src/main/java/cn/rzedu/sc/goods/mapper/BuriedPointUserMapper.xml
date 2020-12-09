@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sc.goods.mapper.BuriedPointUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="buriedPointUserResultMap" type="cn.rzedu.sc.goods.entity.BuriedPointUser">
+        <id column="id" property="id"/>
+        <result column="buried_point_id" property="buriedPointId"/>
+        <result column="user_id" property="userId"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <select id="selectBuriedPointUserPage" resultMap="buriedPointUserResultMap">
+        select * from sc_buried_point_user where is_deleted = 0
+    </select>
+
+    <select id="findByUserId" resultMap="buriedPointUserResultMap">
+        SELECT * FROM sc_buried_point_user
+        WHERE is_deleted = 0
+        AND buried_point_id = #{buriedPointId}
+        AND user_id = #{userId}
+        <if test="time != null">
+            AND DATE(create_date) = DATE(#{time})
+        </if>
+        LIMIT 1
+    </select>
+
+</mapper>

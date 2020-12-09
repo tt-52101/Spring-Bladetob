@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sc.goods.mapper.GoodsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="goodsResultMap" type="cn.rzedu.sc.goods.entity.Goods">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="owner_type" property="ownerType"/>
+        <result column="owner_id" property="ownerId"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="brand_id" property="brandId"/>
+        <result column="description" property="description"/>
+        <result column="image" property="image"/>
+        <result column="status" property="status"/>
+        <result column="has_sku" property="hasSku"/>
+        <result column="total_stock" property="totalStock"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <select id="selectGoodsPage" resultMap="goodsResultMap">
+        select * from sc_goods where is_deleted = 0
+    </select>
+
+    <select id="findByCode" resultMap="goodsResultMap">
+        SELECT * FROM sc_goods WHERE is_deleted = 0 AND code = #{code}
+    </select>
+
+</mapper>

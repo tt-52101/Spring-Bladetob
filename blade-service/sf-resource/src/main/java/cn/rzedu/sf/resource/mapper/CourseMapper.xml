@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.resource.mapper.CourseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="courseResultMap" type="cn.rzedu.sf.resource.entity.Course">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="lecturer" property="lecturer"/>
+        <result column="er_code" property="erCode"/>
+        <result column="course_type" property="courseType"/>
+        <result column="subject" property="subject"/>
+        <result column="cover_image" property="coverImage"/>
+        <result column="lesson_count" property="lessonCount"/>
+        <result column="visited_count" property="visitedCount"/>
+        <result column="enabled" property="enabled"/>
+        <result column="description" property="description"/>
+        <result column="total_users" property="totalUsers"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <select id="selectCoursePage" resultMap="courseResultMap">
+        select * from sf_course where is_deleted = 0
+    </select>
+
+    <select id="findByName" resultMap="courseResultMap">
+        select * from sf_course where is_deleted = 0
+        AND `name` = #{name}
+        <if test="subject != null and subject != ''">
+            AND `subject` = #{subject}
+        </if>
+        <if test="courseType != null and courseType != ''">
+            AND course_type = #{courseType}
+        </if>
+    </select>
+
+</mapper>

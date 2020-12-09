@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.user.mapper.CourseUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="courseUserResultMap" type="cn.rzedu.sf.user.entity.CourseUser">
+        <id column="id" property="id"/>
+        <result column="course_id" property="courseId"/>
+        <result column="user_id" property="userId"/>
+        <result column="owned_time" property="ownedTime"/>
+        <result column="owned_type" property="ownedType"/>
+        <result column="owned_deadline" property="ownedDeadline"/>
+        <result column="started_time" property="startedTime"/>
+        <result column="finished_time" property="finishedTime"/>
+        <result column="active_lesson_id" property="activeLessonId"/>
+        <result column="finished_lesson_count" property="finishedLessonCount"/>
+        <result column="finished_percent" property="finishedPercent"/>
+        <result column="star_count" property="starCount"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="courseUserVOResultMap" type="cn.rzedu.sf.user.vo.CourseUserVO"
+               extends="courseUserResultMap">
+        <result column="course_name" property="courseName"/>
+        <result column="course_type" property="courseType"/>
+        <result column="subject" property="subject"/>
+        <result column="lesson_count" property="lessonCount"/>
+        <result column="cover_image" property="coverImage"/>
+        <result column="bought_count" property="boughtCount"/>
+    </resultMap>
+
+    <select id="selectCourseUserPage" resultMap="courseUserResultMap">
+        select * from sf_course_user where is_deleted = 0
+    </select>
+    <select id="findUnion" resultMap="courseUserResultMap">
+        select * from sf_course_user where is_deleted = 0
+        AND user_id = #{userId}
+        AND course_id = #{courseId}
+        LIMIT 1
+    </select>
+
+    <select id="findByUserId" resultMap="courseUserVOResultMap">
+        SELECT
+            t1.*,
+            t2.`name` AS course_name,
+            t2.course_type,
+            t2.`subject`,
+            t2.lesson_count,
+            t2.cover_image
+        FROM
+            sf_course_user t1
+            LEFT JOIN sf_course t2 ON t1.course_id = t2.id
+        WHERE
+            1 = 1
+            AND t2.is_deleted = 0
+            AND t2.enabled = 1
+            AND t1.is_deleted = 0
+            AND t1.user_id = #{userId}
+    </select>
+
+    <select id="getCourseStars" resultType="java.util.Map">
+        SELECT
+            t1.id,
+            t1.`name`,
+            t1.lesson_count AS lessonCount,
+            IFNULL( t2.finished_lesson_count, 0 ) AS finishedLessonCount,
+            IFNULL( t2.star_count, 0 ) AS starCount,
+            IFNULL( t3.stars_n1, 0 ) AS starsN1,
+            IFNULL( t3.stars_n2, 0 ) AS starsN2,
+            IFNULL( t3.stars_n3, 0 ) AS starsN3,
+            IFNULL( t3.stars_n4, 0 ) AS starsN4,
+            IFNULL( t3.stars_n5, 0 ) AS starsN5,
+            IFNULL( t3.stars_n6, 0 ) AS starsN6
+        FROM
+            sf_course t1
+            LEFT JOIN sf_course_user t2 ON t1.id = t2.course_id
+            AND t2.is_deleted = 0
+            AND t2.user_id = #{userId}
+            LEFT JOIN sf_course_star_config t3 ON t1.id = t3.course_id
+        WHERE
+            t1.is_deleted = 0
+            AND t1.id = #{courseId}
+    </select>
+
+    <select id="findBoughtCourseList" resultMap="courseUserVOResultMap">
+       SELECT
+            t1.*,
+            t2.`name` AS course_name,
+            t2.course_type,
+            t2.`subject`,
+            t2.lesson_count,
+            t2.cover_image,
+            t.bought_count
+        FROM
+            sf_course_user t1
+            LEFT JOIN sf_course t2 ON t1.course_id = t2.id
+            LEFT JOIN (
+                SELECT
+                    c1.id,
+                    COUNT( * ) AS bought_count
+                FROM
+                    sf_course c1
+                    LEFT JOIN sf_course_user c2 ON c1.id = c2.course_id
+                    AND c2.is_deleted = 0
+                WHERE
+                    c1.is_deleted = 0
+                GROUP BY
+                    c1.id
+            ) AS t ON t1.course_id = t.id
+        WHERE
+            1 = 1
+            AND t2.is_deleted = 0
+            AND t2.enabled = 1
+            AND t1.is_deleted = 0
+            AND t1.user_id = #{userId}
+        ORDER BY t1.modify_date DESC
+    </select>
+
+    <select id="findFinishedCourseList" resultMap="courseUserVOResultMap">
+       SELECT
+            t1.*,
+            t2.`name` AS course_name,
+            t2.course_type,
+            t2.`subject`,
+            t2.lesson_count,
+            t2.cover_image,
+            t.bought_count
+        FROM
+            sf_course_user t1
+            LEFT JOIN sf_course t2 ON t1.course_id = t2.id
+            LEFT JOIN (
+                SELECT
+                    c1.id,
+                    COUNT( * ) AS bought_count
+                FROM
+                    sf_course c1
+                    LEFT JOIN sf_course_user c2 ON c1.id = c2.course_id
+                    AND c2.is_deleted = 0
+                WHERE
+                    c1.is_deleted = 0
+                GROUP BY
+                    c1.id
+            ) AS t ON t1.course_id = t.id
+        WHERE
+            1 = 1
+            AND t2.is_deleted = 0
+            AND t2.enabled = 1
+            AND t1.is_deleted = 0
+            AND t1.user_id = #{userId}
+            AND t1.finished_percent = 100
+    </select>
+</mapper>

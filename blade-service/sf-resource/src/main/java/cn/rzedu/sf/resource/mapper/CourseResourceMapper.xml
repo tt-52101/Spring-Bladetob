@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.resource.mapper.CourseResourceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="courseResourceResultMap" type="cn.rzedu.sf.resource.entity.CourseResource">
+        <id column="id" property="id"/>
+        <result column="course_id" property="courseId"/>
+        <result column="lesson_id" property="lessonId"/>
+        <result column="resource_type" property="resourceType"/>
+        <result column="format_type" property="formatType"/>
+        <result column="duration" property="duration"/>
+        <result column="uuid" property="uuid"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <select id="selectCourseResourcePage" resultMap="courseResourceResultMap">
+        select * from sf_course_resource where is_deleted = 0
+    </select>
+
+</mapper>

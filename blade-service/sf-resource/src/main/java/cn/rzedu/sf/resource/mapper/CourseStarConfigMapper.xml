@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.resource.mapper.CourseStarConfigMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="courseStarConfigResultMap" type="cn.rzedu.sf.resource.entity.CourseStarConfig">
+        <id column="id" property="id"/>
+        <result column="course_id" property="courseId"/>
+        <result column="percent_f1" property="percentF1"/>
+        <result column="percent_f2" property="percentF2"/>
+        <result column="percent_f3" property="percentF3"/>
+        <result column="percent_f4" property="percentF4"/>
+        <result column="percent_f5" property="percentF5"/>
+        <result column="percent_f6" property="percentF6"/>
+        <result column="stars_n1" property="starsN1"/>
+        <result column="stars_n2" property="starsN2"/>
+        <result column="stars_n3" property="starsN3"/>
+        <result column="stars_n4" property="starsN4"/>
+        <result column="stars_n5" property="starsN5"/>
+        <result column="stars_n6" property="starsN6"/>
+    </resultMap>
+
+
+    <select id="selectCourseStarConfigPage" resultMap="courseStarConfigResultMap">
+        select * from sf_course_star_config where is_deleted = 0
+    </select>
+
+    <select id="findByCourseId" resultMap="courseStarConfigResultMap">
+        select * from sf_course_star_config WHERE course_id = #{courseId}
+    </select>
+
+</mapper>

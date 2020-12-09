@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.resource.mapper.TextbookLessonCharacterMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="textbookLessonCharacterResultMap" type="cn.rzedu.sf.resource.entity.TextbookLessonCharacter">
+        <id column="id" property="id"/>
+        <result column="lesson_id" property="lessonId"/>
+        <result column="character_id" property="characterId"/>
+        <result column="subject" property="subject"/>
+        <result column="visited_count" property="visitedCount"/>
+        <result column="finished_count" property="finishedCount"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <select id="selectTextbookLessonCharacterPage" resultMap="textbookLessonCharacterResultMap">
+        select * from sf_textbook_lesson_character where is_deleted = 0
+    </select>
+
+    <update id="removeByLessonIds">
+        UPDATE sf_textbook_lesson_character SET is_deleted = 1 WHERE lesson_id IN
+        <foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="findByLessonId" resultMap="textbookLessonCharacterResultMap">
+        select * from sf_textbook_lesson_character where is_deleted = 0 AND lesson_id = #{lessonId}
+    </select>
+
+    <select id="findByLessonIdAndCharacterId" resultMap="textbookLessonCharacterResultMap">
+        select * from sf_textbook_lesson_character where is_deleted = 0
+        AND lesson_id = #{lessonId}
+        AND character_id = #{characterId}
+    </select>
+
+    <update id="updateVisitedCount">
+        UPDATE sf_textbook_lesson_character
+        SET visited_count = (
+            SELECT t.num FROM (
+                SELECT IFNULL( visited_count, 0 ) + 1 AS num
+                FROM sf_textbook_lesson_character
+                WHERE lesson_id = #{lessonId}
+                AND character_id = #{characterId}
+            ) t
+        )
+        WHERE lesson_id = #{lessonId}
+        AND character_id = #{characterId}
+    </update>
+
+    <update id="removeByTextbookIds">
+        UPDATE sf_textbook_lesson_character SET is_deleted = 1
+        WHERE id IN (
+            SELECT id FROM (
+                SELECT
+                t1.id
+                FROM sf_textbook_lesson_character t1
+                LEFT JOIN sf_textbook_lesson t2 ON t1.lesson_id = t2.id
+                LEFT JOIN sf_textbook t3 ON t2.textbook_id = t3.id
+                WHERE t1.is_deleted = 0
+                AND t3.id IN
+                <foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            ) t
+        )
+    </update>
+</mapper>

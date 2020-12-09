@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.user.mapper.CourseUserLessonMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="courseUserLessonResultMap" type="cn.rzedu.sf.user.entity.CourseUserLesson">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="course_user_id" property="courseUserId"/>
+        <result column="lesson_id" property="lessonId"/>
+        <result column="has_finished" property="hasFinished"/>
+        <result column="unlocked" property="unlocked"/>
+        <result column="finished_duration" property="finishedDuration"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="courseUserLessonVOResultMap" type="cn.rzedu.sf.user.vo.CourseUserLessonVO"
+               extends="courseUserLessonResultMap">
+        <result column="lesson_name" property="lessonName"/>
+        <result column="lesson_index" property="lessonIndex"/>
+        <result column="resource_type" property="resourceType"/>
+        <result column="format_type" property="formatType"/>
+        <result column="uuid" property="uuid"/>
+        <result column="learn_count" property="learnCount"/>
+        <result column="formatTypes" property="formatTypes"/>
+        <result column="uuids" property="uuids"/>
+    </resultMap>
+
+
+    <select id="selectCourseUserLessonPage" resultMap="courseUserLessonResultMap">
+        select * from sf_course_user_lesson where is_deleted = 0
+    </select>
+
+    <select id="findUnion" resultMap="courseUserLessonResultMap">
+        select * from sf_course_user_lesson where is_deleted = 0
+        AND user_id = #{userId}
+        AND lesson_id = #{lessonId}
+        LIMIT 1
+    </select>
+
+    <select id="findByUserIdAndCourseId" resultMap="courseUserLessonVOResultMap">
+        SELECT
+            t1.id AS lesson_id,
+            t1.`name` AS lesson_name,
+            t1.lesson_index,
+            t1.resource_type,
+            t3.format_type,
+            t3.uuid,
+            GROUP_CONCAT( t3.format_type ) AS formatTypes,
+            GROUP_CONCAT( t3.uuid ) AS uuids,
+            t4.id,
+            t4.user_id,
+            t4.course_user_id,
+            t4.finished_duration,
+            IFNULL( t4.has_finished, 0 ) AS has_finished,
+            IFNULL( t4.unlocked, 1 ) AS unlocked,
+            tab.learn_count
+        FROM
+            sf_course_lesson t1
+            LEFT JOIN sf_course t2 ON t1.course_id = t2.id
+            LEFT JOIN sf_course_resource t3 ON t1.id = t3.lesson_id
+            AND t3.is_deleted = 0
+            LEFT JOIN sf_course_user_lesson t4 ON t1.id = t4.lesson_id
+            AND t4.is_deleted = 0
+            AND t4.user_id = #{userId}
+            LEFT JOIN (
+                SELECT
+                    c1.id,
+                    COUNT( c2.id ) AS learn_count
+                FROM
+                    sf_course_lesson c1
+                    LEFT JOIN sf_course_user_lesson c2 ON c1.id = c2.lesson_id
+                    AND c2.is_deleted = 0
+                    AND c2.has_finished = 1
+                WHERE
+                    1 = 1
+                    AND c1.is_deleted = 0
+                    AND c1.course_id = #{courseId}
+                GROUP BY
+                    c1.id
+                    ) tab ON t1.id = tab.id
+        WHERE
+            1 = 1
+            AND t1.is_deleted = 0
+            AND t2.is_deleted = 0
+            AND t1.enabled = 1
+            AND t1.course_id = #{courseId}
+        GROUP BY
+            t1.id
+    </select>
+
+    <select id="getFinishedLessonCount" resultType="java.lang.Integer">
+        SELECT
+            COUNT(*)
+        FROM
+            sf_course_user_lesson t1
+            LEFT JOIN sf_course_lesson t2 ON t1.lesson_id = t2.id
+            LEFT JOIN sf_course t3 ON t2.course_id = t3.id
+        WHERE
+            t1.is_deleted = 0
+            AND t2.is_deleted = 0
+            AND t3.is_deleted = 0
+            AND t1.user_id = #{userId}
+            AND t3.id = #{courseId}
+            AND t1.has_finished = 1
+    </select>
+
+    <select id="findByUserAndCourse" resultMap="courseUserLessonResultMap">
+        SELECT
+            t1.*
+        FROM
+            sf_course_user_lesson t1
+            LEFT JOIN sf_course_user t2 ON t1.course_user_id = t2.id
+        WHERE
+            1 = 1
+            AND t1.is_deleted = 0
+            AND t2.is_deleted = 0
+            AND t1.user_id = #{userId}
+            AND t2.id = #{courseId}
+    </select>
+
+</mapper>

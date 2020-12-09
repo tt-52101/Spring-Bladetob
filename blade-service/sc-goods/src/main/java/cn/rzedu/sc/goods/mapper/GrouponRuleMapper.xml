@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sc.goods.mapper.GrouponRuleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="grouponRuleResultMap" type="cn.rzedu.sc.goods.entity.GrouponRule">
+        <id column="id" property="id"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="name" property="name"/>
+        <result column="description" property="description"/>
+        <result column="prime_price" property="primePrice"/>
+        <result column="group_price" property="groupPrice"/>
+        <result column="member_count" property="memberCount"/>
+        <result column="duration" property="duration"/>
+        <result column="attributes" property="attributes"/>
+        <result column="files" property="files"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="grouponRuleVOResultMap" type="cn.rzedu.sc.goods.vo.GrouponRuleVO" extends="grouponRuleResultMap">
+        <result column="goods_name" property="goodsName"/>
+        <result column="goods_image" property="goodsImage"/>
+        <result column="owner_type" property="ownerType"/>
+        <result column="owner_id" property="ownerId"/>
+        <result column="bought_count" property="boughtCount"/>
+        <result column="has_sku" property="hasSku"/>
+    </resultMap>
+
+    <select id="selectGrouponRulePage" resultMap="grouponRuleResultMap">
+        select * from sc_groupon_rule where is_deleted = 0
+    </select>
+
+    <select id="findByGrouponRuleVO" resultMap="grouponRuleVOResultMap">
+        SELECT
+        t1.*, t2.`name` AS goods_name, t2.owner_id, t2.owner_type, t2.has_sku, t2.image AS goods_image,
+        IFNULL(COUNT(t3.id), 0) AS bought_count
+        FROM sc_groupon_rule t1
+        LEFT JOIN sc_goods t2 ON t1.goods_id = t2.id AND t2.is_deleted = 0
+        LEFT JOIN sc_order_goods t3 ON t1.goods_id = t3.goods_id AND t3.is_deleted = 0
+        LEFT JOIN sc_order t4 ON t3.order_id = t4.id AND t4.is_deleted = 0
+        WHERE t1.is_deleted = 0
+        <if test="param2 != null">
+            <if test="param2.primePrice != null">
+                AND t1.prime_price = #{param2.primePrice}
+            </if>
+            <if test="param2.groupPrice != null">
+                AND t1.group_price = #{param2.groupPrice}
+            </if>
+            <if test="param2.goodsName != null and param2.goodsName != ''">
+                AND (
+                t2.`name` LIKE CONCAT(CONCAT('%', #{param2.goodsName}),'%')
+                OR t2.owner_id LIKE CONCAT(CONCAT('%', #{param2.goodsName}),'%')
+                )
+            </if>
+        </if>
+        GROUP BY t1.id
+    </select>
+
+    <select id="findDetailById" resultMap="grouponRuleVOResultMap">
+        SELECT
+        t1.*, t2.`name` AS goods_name, t2.owner_id, t2.owner_type, t2.has_sku, t2.image AS goods_image,
+        IFNULL(COUNT(t3.id), 0) AS bought_count
+        FROM sc_groupon_rule t1
+        LEFT JOIN sc_goods t2 ON t1.goods_id = t2.id AND t2.is_deleted = 0
+        LEFT JOIN sc_order_goods t3 ON t1.goods_id = t3.goods_id AND t3.is_deleted = 0
+        LEFT JOIN sc_order t4 ON t3.order_id = t4.id AND t4.is_deleted = 0
+        WHERE t1.is_deleted = 0
+        AND t1.id = #{id}
+        GROUP BY t1.id
+    </select>
+
+</mapper>
