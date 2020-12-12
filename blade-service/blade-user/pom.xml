@@ -51,6 +51,50 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>2.7.0</version>
+                <configuration>
+                    <!--from节点用来设置镜像的基础镜像，相当于Docerkfile中的FROM关键字-->
+			<!--<allowInsecureRegistries>true</allowInsecureRegistries>-->
+                    <from>
+                        <!--使用openjdk官方镜像，tag是8-jdk-stretch，表示镜像的操作系统是debian9,装好了jdk8-->
+                        <image>${SOURCE_IMAGE}</image>
+                    </from>
+                    <to>
+                        <!--镜像名称和tag，使用了mvn内置变量${project.version}，表示当前工程的version-->
+                        <image>${DEST_REGISTRY_URL}/tob-${project.artifactId}:latest</image>
+                    </to>
+                    <!--容器相关的属性-->
+		    <extraDirectories>
+                       <paths>
+                          <path>
+			<!--<allowInsecureRegistries>true</allowInsecureRegistries>-->
+                            <from>target/</from>
+                            <into>/</into>
+                          </path>
+                        </paths>
+                    </extraDirectories>
+                    <!--容器相关的属性-->
+                    <container>
+			<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+                        <entrypoint>
+                           <arg>java</arg>
+                           <arg>-Djava.security.egd=file:/dev/./urandom</arg>
+                           <arg>-jar</arg>
+                           <arg>/${project.artifactId}.jar</arg>
+                        </entrypoint>
+                        <args>
+                            <arg>--spring.profiles.active=test</arg>
+                        </args>
+                        <!--要暴露的端口-->
+                        <ports>
+                            <port>8102</port>
+                        </ports>
+                    </container>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
