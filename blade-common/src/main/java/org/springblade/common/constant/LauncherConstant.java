@@ -22,12 +22,12 @@ public interface LauncherConstant {
 	/**
 	 * nacos prod 地址
 	 */
-	String NACOS_PROD_ADDR = "nacos:8848";
+	String NACOS_PROD_ADDR = "nacostob:8848";
 
 	/**
 	 * nacos test 地址
 	 */
-	String NACOS_TEST_ADDR = "nacos:8848";
+	String NACOS_TEST_ADDR = "nacostob:8848";
 
 	/**
 	 * sentinel dev 地址
@@ -37,12 +37,12 @@ public interface LauncherConstant {
 	/**
 	 * sentinel prod 地址
 	 */
-	String SENTINEL_PROD_ADDR = "sentinel:8858";
+	String SENTINEL_PROD_ADDR = "sentineltob:8858";
 
 	/**
 	 * sentinel test 地址
 	 */
-	String SENTINEL_TEST_ADDR = "sentinel:8858";
+	String SENTINEL_TEST_ADDR = "sentineltob:8858";
 
 	/**
 	 * zipkin dev 地址
