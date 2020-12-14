@@ -60,30 +60,53 @@ public class TextbookController extends BladeController {
 
     private ICharacterService characterService;
 
+
+    /**
+     * 出版社列表
+     * @param subject
+     * @return
+     */
+    @GetMapping("/publisher/{subject}")
+    @ApiOperationSupport(order = 1)
+    @ApiOperation(value = "出版社列表", notes = "根据科目显示出版社")
+    public R<List<String>> getPublisherList(@ApiParam(value = "资源学科 71=软笔书法 72=硬笔书法", required = true)
+                                                @PathVariable(value = "subject") Integer subject
+    ) {
+        List<String> publisherList = textbookService.findPublisherList(subject);
+        return R.data(publisherList);
+    }
+
+
+
     /**
      * 教材列表
      */
     @GetMapping("/list")
     @ApiOperationSupport(order = 1)
     @ApiOperation(value = "教材列表", notes = "传入textbook")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "name", value = "教材名称", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "publisher", value = "出版社", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "subject", value = "教材的学科 71=软笔书法 72=硬笔书法", paramType = "query", dataType = "integer")
-    })
-    public R<IPage<TextbookVO>> list(@ApiIgnore @RequestParam Map<String, Object> textbook, Query query) {
-        IPage<Textbook> pages = textbookService.page(Condition.getPage(query),
-                Condition.getQueryWrapper(textbook, Textbook.class));
+    public R<IPage<TextbookVO>> list(
+            Query query,
+            @ApiParam(value = "教材名称") @RequestParam(value = "name", required = false) String name,
+            @ApiParam(value = "出版社") @RequestParam(value = "publisher", required = false) String publisher,
+            @ApiParam(value = "教材的学科 71=软笔书法 72=硬笔书法") @RequestParam(value = "subject", required = false) Integer subject,
+            @ApiParam(value = "是否含课程") @RequestParam(value = "includeLessons", defaultValue = "true") Boolean includeLessons) {
+        Map<String, Object> textbook = new HashMap<>();
+        textbook.put("name", name);
+        textbook.put("publisher", publisher);
+        textbook.put("subject", subject);
+        IPage<Textbook> pages = textbookService.page(Condition.getPage(query), Condition.getQueryWrapper(textbook, Textbook.class));
         IPage<TextbookVO> result = TextbookWrapper.build().pageVO(pages);
         //传入课程数据
-        List<TextbookVO> textbookList = result.getRecords();
-        if (textbookList != null && !textbookList.isEmpty()) {
-            List<TextbookLessonVO> lessonList = null;
-            for (TextbookVO vo : textbookList) {
-                lessonList = textbookLessonService.findLessonByTextbookId(vo.getId());
-                vo.setTextbookLessonVOList(lessonList);
+        if (includeLessons) {
+            List<TextbookVO> textbookList = result.getRecords();
+            if (textbookList != null && !textbookList.isEmpty()) {
+                List<TextbookLessonVO> lessonList = null;
+                for (TextbookVO vo : textbookList) {
+                    lessonList = textbookLessonService.findLessonByTextbookId(vo.getId());
+                    vo.setTextbookLessonVOList(lessonList);
+                }
+                result.setRecords(textbookList);
             }
-            result.setRecords(textbookList);
         }
         return R.data(result);
     }
@@ -365,114 +388,5 @@ public class TextbookController extends BladeController {
         return R.status(status);
     }
 
-
-    /**
-     * 根据课程编号获取教材id，课程id，汉字id
-     * @param code
-     * @param type
-     * @return
-     */
-    @GetMapping("/char/info")
-    @ApiOperationSupport(order = 10)
-    @ApiOperation(value = "根据课程编号获取教材id，课程id，汉字id", notes = "根据课程编号和类型，获取教材id，课程id，汉字id")
-    public R getCharacterId(
-            @ApiParam(value = "汉字|课程编号", required = true) @RequestParam String code,
-            @ApiParam(value = "书法类型 1=软笔 2=硬笔", required = true) @RequestParam Integer type
-    ) {
-        Integer textbookId = null;
-        Integer lessonId = null;
-        Integer characterId = null;
-        String textbookName = "";
-        String lessonName = "";
-        String characterName = "";
-
-        TextbookLesson textbookLesson = textbookLessonService.findLessonByCode(code);
-        if (textbookLesson != null) {
-            textbookId = textbookLesson.getTextbookId();
-            lessonId = textbookLesson.getId();
-            //硬笔：一课多字，默认拿第一个字；软笔：一课一字
-            List<TextbookLessonCharacter> characterList = textbookLessonCharacterService.findByLessonId(lessonId);
-            if (characterList != null && !characterList.isEmpty()) {
-                characterId = characterList.get(0).getCharacterId();
-            }
-            lessonName = textbookLesson.getName();
-        }
-        if (textbookId != null) {
-            Textbook textbook = textbookService.getById(textbookId);
-            if (textbook != null) {
-                textbookName = textbook.getName();
-            }
-        }
-        if (characterId != null) {
-            Character character = characterService.getById(characterId);
-            if (character != null) {
-                characterName = character.getCharS();
-            }
-        }
-
-        Map<String, Object> map = new HashMap<>(3);
-        map.put("textbookId", textbookId);
-        map.put("lessonId", lessonId);
-        map.put("characterId", characterId);
-        map.put("textbookName", textbookName);
-        map.put("lessonName", lessonName);
-        map.put("characterName", characterName);
-        return R.data(map);
-    }
-
-
-
-    /**
-     * 批量导出二维码 软/硬笔课程
-     * @return
-     */
-    @GetMapping("/export/{subject}")
-    @ApiOperationSupport(order = 11)
-    @ApiOperation(value = "批量导出课程", notes = "批量导出软/硬笔课程的二维码，有多选就只导出已选的，没有就导出全部（筛选条件下的全部）")
-    public void export(
-            @ApiParam(value = "资源学科 71=软笔书法 72=硬笔书法", required = true) @PathVariable(value = "subject") Integer subject,
-            @ApiParam(value = "教材名称") @RequestParam(value = "name", required = false) String name,
-            @ApiParam(value = "出版社") @RequestParam(value = "publisher", required = false) String publisher,
-            @ApiParam(value = "教材主键id，多个用逗号隔开，如：1,2,3") @RequestParam(value = "ids", required = false) String ids,
-            HttpServletResponse response, HttpServletRequest request
-    ) {
-        TextbookVO textbookVO = new TextbookVO();
-        textbookVO.setSubject(subject);
-        textbookVO.setName(name);
-        textbookVO.setPublisher(publisher);
-        List<TextbookVO> list = textbookService.findByIds(ids, textbookVO);
-
-        int size = 0;
-        if (list != null && !list.isEmpty()) {
-            size = list.size();
-        }
-        String ryb = "";
-        if (subject == 71) {
-            ryb = "软笔";
-        } else if (subject == 72) {
-            ryb = "硬笔";
-        }
-
-        String fileName = ryb + "教材二维码.xls";
-        String sheetName = ryb + "教材二维码";
-        String[] title = {"名称", "年级", "册次", "出版社", "课程数量", "访问量", "二维码"};
-        String[][] content = new String[size][title.length];
-
-        if (list != null) {
-            TextbookVO vo = null;
-            for (int i = 0; i < list.size(); i++) {
-                vo = list.get(i);
-                content[i][0] = vo.getName();
-                content[i][1] = JcDataUtil.getGradeName(vo.getGradeCode());
-                content[i][2] = JcDataUtil.getVolumeName(vo.getVolume());
-                content[i][3] = vo.getPublisher();
-                content[i][4] = String.valueOf(vo.getLessonCount());
-                content[i][5] = String.valueOf(vo.getVisitedCount());
-                content[i][6] = vo.getErCode();
-            }
-        }
-        ExcelUtil.exportExcel(fileName, sheetName, title, content, response, request);
-
-    }
 
 }

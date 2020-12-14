@@ -26,13 +26,18 @@ public class CharacterResourceFileServiceImpl extends ServiceImpl<CharacterResou
     }
 
     @Override
-    public CharacterResourceFile findUnionByResourceIdAndObjectId(Integer resourceId, String objectId) {
-        return baseMapper.findUnionByResourceIdAndObjectId(resourceId, objectId);
+    public CharacterResourceFile findUnionByResourceIdAndObjectId(Integer resourceId, String objectId, String font) {
+        return baseMapper.findUnionByResourceIdAndObjectId(resourceId, objectId, font);
     }
 
     @Override
     public List<CharacterResourceFile> findByResourceId(Integer resourceId) {
-        return baseMapper.findByResourceId(resourceId);
+        return baseMapper.findByResourceId(resourceId, null);
+    }
+
+    @Override
+    public List<CharacterResourceFile> findByResourceAndFont(Integer resourceId, String font) {
+        return baseMapper.findByResourceId(resourceId, font);
     }
 
     @Override

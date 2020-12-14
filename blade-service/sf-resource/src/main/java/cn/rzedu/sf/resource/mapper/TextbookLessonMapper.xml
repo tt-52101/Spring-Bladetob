@@ -10,6 +10,7 @@
         <result column="list_order" property="listOrder"/>
         <result column="enabled" property="enabled"/>
         <result column="section" property="section"/>
+        <result column="section_name" property="sectionName"/>
         <result column="er_code" property="erCode"/>
         <result column="chars" property="chars"/>
         <result column="char_count" property="charCount"/>

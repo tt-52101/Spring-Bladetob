@@ -49,6 +49,11 @@ public class CharacterResourceFile implements Serializable {
     @ApiModelProperty(value = "资源类型  1=视频模板（软/硬笔）  2=观察模板（软笔）  3=分析模板（软笔）  4=笔法模板（软笔）  5=识字动画模板（硬笔）  6=知识扩展模板（硬笔）")
     private Integer resourceType;
     /**
+     * 字体
+     */
+    @ApiModelProperty(value = "字体")
+    private String font;
+    /**
      * 对应模板中的对象
      */
     @ApiModelProperty(value = "对应模板中的对象")

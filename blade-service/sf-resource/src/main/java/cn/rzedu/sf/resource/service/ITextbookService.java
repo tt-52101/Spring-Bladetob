@@ -92,4 +92,11 @@ public interface ITextbookService extends IService<Textbook> {
 	 * @return  硬笔只有1条，软笔可能有多条：textbookId, lessonId, characterId, textbookName, lessonName, characterName
 	 */
 	List<CharLinkVO> findLessonByCodeAndType(String type, String code);
+
+	/**
+	 * 出版社列表
+	 * @param subject
+	 * @return
+	 */
+	List<String> findPublisherList(Integer subject);
 }

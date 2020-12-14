@@ -9,6 +9,7 @@
         <result column="character_id" property="characterId"/>
         <result column="subject" property="subject"/>
         <result column="resource_type" property="resourceType"/>
+        <result column="font" property="font"/>
         <result column="object_id" property="objectId"/>
         <result column="object_type" property="objectType"/>
         <result column="content" property="content"/>
@@ -28,6 +29,9 @@
         where is_deleted = 0
         AND resource_id = #{resourceId}
         AND object_id = #{objectId}
+        <if test="font != null and font != ''">
+            AND font = #{font}
+        </if>
         LIMIT 1
     </select>
 
@@ -35,6 +39,9 @@
         select * from sf_character_resource_file
         where is_deleted = 0
         AND resource_id = #{resourceId}
+        <if test="font != null and font != ''">
+            AND font = #{font}
+        </if>
     </select>
 
     <select id="findByCharacterId" resultMap="characterResourceFileResultMap">

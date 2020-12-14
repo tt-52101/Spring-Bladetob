@@ -45,14 +45,15 @@ public interface CharacterResourceFileMapper extends BaseMapper<CharacterResourc
 	 * @param objectId
 	 * @return
 	 */
-	CharacterResourceFile findUnionByResourceIdAndObjectId(Integer resourceId, String objectId);
+	CharacterResourceFile findUnionByResourceIdAndObjectId(Integer resourceId, String objectId, String font);
 
 	/**
 	 * 获取某汉字资源模板下 的所有object对象
 	 * @param resourceId
+	 * @param font
 	 * @return
 	 */
-	List<CharacterResourceFile> findByResourceId(Integer resourceId);
+	List<CharacterResourceFile> findByResourceId(Integer resourceId, String font);
 
 	/**
 	 * 获取某汉字资源模板(唯一启用)下的所有object对象

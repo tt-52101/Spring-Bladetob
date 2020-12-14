@@ -60,4 +60,11 @@ public interface TextbookMapper extends BaseMapper<Textbook> {
 	 * @return
 	 */
 	List<TextbookVO> findByIds(String ids, TextbookVO textbook);
+
+	/**
+	 * 出版社列表
+	 * @param subject
+	 * @return
+	 */
+	List<String> findPublisherList(Integer subject);
 }

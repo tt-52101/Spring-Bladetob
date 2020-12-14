@@ -67,6 +67,11 @@ public class TextbookLesson implements Serializable {
     @ApiModelProperty(value = "第几单元")
     private Integer section;
     /**
+     * 单元名称
+     */
+    @ApiModelProperty(value = "单元名称")
+    private String sectionName;
+    /**
      * 课程二维码
      */
     @ApiModelProperty(value = "课程二维码")

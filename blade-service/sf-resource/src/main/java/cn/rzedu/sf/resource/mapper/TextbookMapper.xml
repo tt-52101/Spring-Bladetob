@@ -82,4 +82,8 @@
             </if>
         </if>
     </select>
+
+    <select id="findPublisherList" resultType="java.lang.String">
+        SELECT publisher FROM `sf_textbook` WHERE is_deleted = 0 AND `subject` = #{subject} GROUP BY publisher
+    </select>
 </mapper>

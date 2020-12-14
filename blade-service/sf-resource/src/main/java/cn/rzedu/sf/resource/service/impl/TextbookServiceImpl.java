@@ -211,4 +211,9 @@ public class TextbookServiceImpl extends ServiceImpl<TextbookMapper, Textbook> i
         }
         return vo;
     }
+
+    @Override
+    public List<String> findPublisherList(Integer subject) {
+        return baseMapper.findPublisherList(subject);
+    }
 }

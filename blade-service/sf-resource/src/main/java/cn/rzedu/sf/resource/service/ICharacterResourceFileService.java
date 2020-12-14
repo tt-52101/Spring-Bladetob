@@ -31,7 +31,7 @@ public interface ICharacterResourceFileService extends IService<CharacterResourc
      * @param objectId
      * @return
      */
-    CharacterResourceFile findUnionByResourceIdAndObjectId(Integer resourceId, String objectId);
+    CharacterResourceFile findUnionByResourceIdAndObjectId(Integer resourceId, String objectId, String font);
 
     /**
      * 获取某汉字资源模板下 的所有object对象
@@ -39,6 +39,14 @@ public interface ICharacterResourceFileService extends IService<CharacterResourc
      * @return
      */
     List<CharacterResourceFile> findByResourceId(Integer resourceId);
+
+    /**
+     * 获取某汉字资源模板下 的所有object对象
+     * @param resourceId
+     * @param font
+     * @return
+     */
+    List<CharacterResourceFile> findByResourceAndFont(Integer resourceId, String font);
 
     /**
      * 获取某汉字资源模板(唯一启用)下的所有object对象

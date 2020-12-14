@@ -15,9 +15,11 @@
  */
 package cn.rzedu.sf.resource.service.impl;
 
+import cn.rzedu.sf.resource.entity.Character;
 import cn.rzedu.sf.resource.entity.CharacterResource;
 import cn.rzedu.sf.resource.entity.CharacterResourceFile;
 import cn.rzedu.sf.resource.service.ICharacterResourceFileService;
+import cn.rzedu.sf.resource.service.ICharacterService;
 import cn.rzedu.sf.resource.vo.CharResFileVO;
 import cn.rzedu.sf.resource.vo.CharacterResourceVO;
 import cn.rzedu.sf.resource.mapper.CharacterResourceMapper;
@@ -49,6 +51,8 @@ import java.util.Map;
 public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceMapper, CharacterResource> implements ICharacterResourceService {
 
 	private ICharacterResourceFileService characterResourceFileService;
+
+	private ICharacterService characterService;
 
 	@Override
 	public IPage<CharacterResourceVO> selectCharacterResourcePage(IPage<CharacterResourceVO> page, CharacterResourceVO characterResource) {
@@ -158,6 +162,15 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		}
 	}
 
+	private void addValueByTypeAndFont(List<CharResFileVO> voList, Integer characterId, Integer subject,
+									   Integer resourceType, String font) {
+		CharacterResource cr = baseMapper.findUnion(characterId, subject, resourceType);
+		if (cr != null) {
+			List<CharacterResourceFile> list = characterResourceFileService.findByResourceAndFont(cr.getId(), font);
+			addValueFromCRFList(voList, list);
+		}
+	}
+
 	private void addValueFromCRFList(List<CharResFileVO> voList, List<CharacterResourceFile> list) {
 		if (list != null && !list.isEmpty()) {
 			for (CharResFileVO vo : voList) {
@@ -173,5 +186,123 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 				}
 			}
 		}
+	}
+
+	@Override
+	public Map<String, Object> findResources(Integer characterId, Integer subject, String font) {
+		Character character = characterService.getById(characterId);
+		if (character == null) {
+			return null;
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("characterId", characterId);
+		map.put("name", character.getCharS());
+		if (subject == 71) {
+			addSoftResources(map, characterId, font);
+		} else if (subject == 72) {
+			addHardResources(map, characterId, font);
+		}
+		return map;
+	}
+
+	private void addSoftResources(Map<String, Object> map, Integer characterId, String font) {
+		Integer subject = 71;
+		//欣赏
+		List<CharResFileVO> appreciation = new ArrayList<>();
+		appreciation.add(new CharResFileVO("spell", "text"));
+		appreciation.add(new CharResFileVO("white_character", "image"));
+		appreciation.add(new CharResFileVO("tablet", "image"));
+		addValueByTypeAndFont(appreciation, characterId, subject, 711, font);
+		//认读
+		List<CharResFileVO> recognition = new ArrayList<>();
+		recognition.add(new CharResFileVO("matts", "image"));
+		recognition.add(new CharResFileVO("spell", "text"));
+		recognition.add(new CharResFileVO("simple", "text"));
+		recognition.add(new CharResFileVO("radical", "text"));
+		recognition.add(new CharResFileVO("stroke_number", "text"));
+		recognition.add(new CharResFileVO("usage_audio", "audio"));
+		recognition.add(new CharResFileVO("usage_text", "text"));
+		recognition.add(new CharResFileVO("evolve_image", "image"));
+		addValueByTypeAndFont(recognition, characterId, subject, 712, font);
+		//观察
+		List<CharResFileVO> observation = new ArrayList<>();
+		observation.add(new CharResFileVO("observe_dot", "image"));
+		observation.add(new CharResFileVO("observe_arrow", "image"));
+		observation.add(new CharResFileVO("observe_triangle", "image"));
+		observation.add(new CharResFileVO("observe_text", "text"));
+		observation.add(new CharResFileVO("observe_audio", "audio"));
+		observation.add(new CharResFileVO("observe_image", "image"));
+		addValueByTypeAndFont(observation, characterId, subject, 713, font);
+		//分析
+		List<CharResFileVO> analysis = new ArrayList<>();
+		analysis.add(new CharResFileVO("analyse_image", "image"));
+		analysis.add(new CharResFileVO("stroke_text", "text"));
+		analysis.add(new CharResFileVO("stroke_audio", "audio"));
+		analysis.add(new CharResFileVO("space_text", "text"));
+		analysis.add(new CharResFileVO("space_audio", "audio"));
+		addValueByTypeAndFont(analysis, characterId, subject, 714, font);
+		//笔法
+		List<CharResFileVO> writing = new ArrayList<>();
+		writing.add(new CharResFileVO("writing_text", "text"));
+		writing.add(new CharResFileVO("technique_line", "video"));
+		writing.add(new CharResFileVO("technique_gesture", "video"));
+		addValueByTypeAndFont(writing, characterId, subject, 715, font);
+		//视频
+		List<CharResFileVO> learn = new ArrayList<>();
+		learn.add(new CharResFileVO("learn_text", "text"));
+		learn.add(new CharResFileVO("learn_video", "video"));
+		addValueByTypeAndFont(learn, characterId, subject, 716, font);
+		//对比
+		List<CharResFileVO> compare = new ArrayList<>();
+		compare.add(new CharResFileVO("compare_text", "text"));
+		compare.add(new CharResFileVO("compare_image", "text"));
+		addValueByTypeAndFont(compare, characterId, subject, 717, font);
+
+		map.put("1_appreciation", appreciation);
+		map.put("2_recognition", recognition);
+		map.put("3_observation", observation);
+		map.put("4_analysis", analysis);
+		map.put("5_writing", writing);
+		map.put("6_learn", learn);
+		map.put("7_compare", compare);
+	}
+
+	private void addHardResources(Map<String, Object> map, Integer characterId, String font) {
+		Integer subject = 72;
+		//认读
+		List<CharResFileVO> recognition = new ArrayList<>();
+		recognition.add(new CharResFileVO("character", "image"));
+		recognition.add(new CharResFileVO("spell", "text"));
+		recognition.add(new CharResFileVO("simple", "text"));
+		recognition.add(new CharResFileVO("radical", "text"));
+		recognition.add(new CharResFileVO("stroke_number", "text"));
+		recognition.add(new CharResFileVO("paraphrase_video", "audio"));
+		recognition.add(new CharResFileVO("paraphrase_text", "text"));
+		addValueByTypeAndFont(recognition, characterId, subject, 721, font);
+		//粉笔
+		List<CharResFileVO> chalk = new ArrayList<>();
+		chalk.add(new CharResFileVO("chalk_text", "text"));
+		chalk.add(new CharResFileVO("chalk_video", "video"));
+		addValueByTypeAndFont(chalk, characterId, subject, 722, font);
+		//钢笔
+		List<CharResFileVO> pen = new ArrayList<>();
+		pen.add(new CharResFileVO("pen_text", "text"));
+		pen.add(new CharResFileVO("pen_video", "video"));
+		addValueByTypeAndFont(pen, characterId, subject, 723, font);
+		//识字
+		List<CharResFileVO> learn = new ArrayList<>();
+		learn.add(new CharResFileVO("learn_text", "text"));
+		learn.add(new CharResFileVO("learn_video", "video"));
+		addValueByTypeAndFont(learn, characterId, subject, 724, font);
+		//找茬游戏
+		List<CharResFileVO> game = new ArrayList<>();
+		game.add(new CharResFileVO("game", "text"));
+		addValueByTypeAndFont(game, characterId, subject, 725, font);
+
+		map.put("1_recognition", recognition);
+		map.put("2_chalk", chalk);
+		map.put("3_pen", pen);
+		map.put("4_learn", learn);
+		map.put("5_game", game);
 	}
 }

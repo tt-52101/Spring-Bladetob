@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.resource.mapper.CharacterStructureMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="characterStructureResultMap" type="cn.rzedu.sf.resource.entity.CharacterStructure">
+        <id column="id" property="id"/>
+        <result column="type" property="type"/>
+        <result column="name" property="name"/>
+        <result column="image" property="image"/>
+        <result column="recognition_image" property="recognitionImage"/>
+        <result column="recognition_video" property="recognitionVideo"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <select id="selectCharacterStructurePage" resultMap="characterStructureResultMap">
+        select * from sf_character_structure where is_deleted = 0
+    </select>
+
+</mapper>

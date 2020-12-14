@@ -91,11 +91,6 @@ public class CharacterResource implements Serializable {
     @ApiModelProperty(value = "资源类型 1=视频模板（软/硬笔）  2=观察模板（软笔）  3=分析模板（软笔）  4=笔法模板（软笔）  5=识字动画模板（硬笔）  6=知识扩展模板（硬笔）")
     private Integer resourceType;
     /**
-     * 视频资源文件UUID
-     */
-    @ApiModelProperty(value = "视频资源文件UUID")
-    private String videoId;
-    /**
      * 创建时间
      */
     @ApiModelProperty(value = "创建时间")

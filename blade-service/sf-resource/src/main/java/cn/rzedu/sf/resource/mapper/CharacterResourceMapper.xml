@@ -14,7 +14,6 @@
         <result column="subject" property="subject"/>
         <result column="visited_count" property="visitedCount"/>
         <result column="resource_type" property="resourceType"/>
-        <result column="video_id" property="videoId"/>
         <result column="create_date" property="createDate"/>
         <result column="modify_date" property="modifyDate"/>
         <result column="is_deleted" property="isDeleted"/>

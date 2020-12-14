@@ -102,4 +102,13 @@ public interface ICharacterResourceService extends IService<CharacterResource> {
 	 * @return
 	 */
 	Map<String, Object> findSoftResource(Integer characterId);
+
+	/**
+	 * 获取资源包数据
+	 * @param characterId
+	 * @param subject
+	 * @param font
+	 * @return
+	 */
+	Map<String, Object> findResources(Integer characterId, Integer subject, String font);
 }

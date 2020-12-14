@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.resource.mapper.CharacterStrokeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="characterStrokeResultMap" type="cn.rzedu.sf.resource.entity.CharacterStroke">
+        <id column="id" property="id"/>
+        <result column="type" property="type"/>
+        <result column="name" property="name"/>
+        <result column="image" property="image"/>
+        <result column="recognition_image" property="recognitionImage"/>
+        <result column="recognition_video" property="recognitionVideo"/>
+        <result column="chalk_text" property="chalkText"/>
+        <result column="chalk_video" property="chalkVideo"/>
+        <result column="pen_text" property="penText"/>
+        <result column="pen_video" property="penVideo"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <select id="selectCharacterStrokePage" resultMap="characterStrokeResultMap">
+        select * from sf_character_stroke where is_deleted = 0
+    </select>
+
+</mapper>
