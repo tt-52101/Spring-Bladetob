@@ -20,4 +20,12 @@
         select * from sf_character_structure where is_deleted = 0
     </select>
 
+    <select id="findAllStructure" resultMap="characterStructureResultMap">
+        SELECT * FROM sf_character_structure WHERE is_deleted = 0
+    </select>
+
+    <select id="findByName" resultMap="characterStructureResultMap">
+        SELECT * FROM sf_character_structure WHERE is_deleted = 0 AND `name` = #{name} LIMIT 1
+    </select>
+
 </mapper>

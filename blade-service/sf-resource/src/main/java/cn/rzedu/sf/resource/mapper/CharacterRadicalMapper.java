@@ -23,4 +23,16 @@ public interface CharacterRadicalMapper extends BaseMapper<CharacterRadical> {
 	 */
 	List<CharacterRadicalVO> selectCharacterRadicalPage(IPage page, CharacterRadicalVO characterRadical);
 
+	/**
+	 * 所有偏旁
+	 * @return
+	 */
+	List<CharacterRadical> findAllRadical();
+
+	/**
+	 * 单个偏旁
+	 * @param name
+	 * @return
+	 */
+	CharacterRadical findByName(String name);
 }

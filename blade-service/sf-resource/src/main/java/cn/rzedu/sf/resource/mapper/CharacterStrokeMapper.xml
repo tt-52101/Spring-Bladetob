@@ -24,4 +24,12 @@
         select * from sf_character_stroke where is_deleted = 0
     </select>
 
+    <select id="findAllStroke" resultMap="characterStrokeResultMap">
+        SELECT * FROM sf_character_stroke WHERE is_deleted = 0
+    </select>
+
+    <select id="findByName" resultMap="characterStrokeResultMap">
+        SELECT * FROM sf_character_stroke WHERE is_deleted = 0 AND `name` = #{name} LIMIT 1
+    </select>
+
 </mapper>

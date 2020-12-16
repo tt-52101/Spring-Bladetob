@@ -23,4 +23,16 @@ public interface CharacterStrokeMapper extends BaseMapper<CharacterStroke> {
 	 */
 	List<CharacterStrokeVO> selectCharacterStrokePage(IPage page, CharacterStrokeVO characterStroke);
 
+	/**
+	 * 获取所有
+	 * @return
+	 */
+	List<CharacterStroke> findAllStroke();
+
+	/**
+	 * 根据名称获取
+	 * @param name
+	 * @return
+	 */
+	CharacterStroke findByName(String name);
 }

@@ -23,4 +23,16 @@ public interface CharacterStructureMapper extends BaseMapper<CharacterStructure>
 	 */
 	List<CharacterStructureVO> selectCharacterStructurePage(IPage page, CharacterStructureVO characterStructure);
 
+	/**
+	 * 所有结构
+	 * @return
+	 */
+	List<CharacterStructure> findAllStructure();
+
+	/**
+	 * 单个结构
+	 * @param name
+	 * @return
+	 */
+	CharacterStructure findByName(String name);
 }
