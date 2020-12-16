@@ -87,6 +87,11 @@ public class Textbook implements Serializable {
     @ApiModelProperty(value = "教材封面图   uuid")
     private String coverImage;
     /**
+     * 字体
+     */
+    @ApiModelProperty(value = "字体")
+    private String font;
+    /**
      * 课程总数
      */
     @ApiModelProperty(value = "课程总数")

@@ -13,6 +13,7 @@
         <result column="subject" property="subject"/>
         <result column="er_code" property="erCode"/>
         <result column="cover_image" property="coverImage"/>
+        <result column="font" property="font"/>
         <result column="lesson_count" property="lessonCount"/>
         <result column="char_count" property="charCount"/>
         <result column="visited_count" property="visitedCount"/>

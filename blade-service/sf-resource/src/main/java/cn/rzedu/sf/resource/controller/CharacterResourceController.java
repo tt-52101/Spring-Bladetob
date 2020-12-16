@@ -249,15 +249,21 @@ public class CharacterResourceController extends BladeController {
      */
     @GetMapping("/bag/{subject}/{characterId}")
     @ApiOperationSupport(order = 9)
-    @Cacheable(cacheNames = "resource-bag", key = "T(String).valueOf(#characterId).concat('_').concat(#subject)")
+//    @Cacheable(cacheNames = "resource-bag", key = "T(String).valueOf(#characterId).concat('_').concat(#subject)")
     @ApiOperation(value = "软硬笔资源包", notes = "软硬笔资源包")
     public R resourceBag(
             @ApiParam(value = "源学科 71=软笔书法 72=硬笔书法", required = true) @PathVariable(value = "subject") Integer subject,
             @ApiParam(value = "汉字id", required = true) @PathVariable(value = "characterId") Integer characterId,
-            @ApiParam(value = "字体") @RequestParam(value = "font", required = false) String font
+            @ApiParam(value = "字体") @RequestParam(value = "font", required = false, defaultValue = "") String font
     ) {
-        Map<String, Object> map = characterResourceService.findResources(characterId, subject, font);
-        return R.data(map);
+        String key = "resource-bag-#" + characterId + "_" + subject + "#" + font;
+        Object result = redisTemplate.opsForValue().get(key);
+        if (result == null) {
+            Map<String, Object> map = characterResourceService.findResources(characterId, subject, font);
+            redisTemplate.opsForValue().set(key, map, 2, TimeUnit.HOURS);
+            result = map;
+        }
+        return R.data(result);
     }
 
     /**
@@ -265,12 +271,15 @@ public class CharacterResourceController extends BladeController {
      */
     @GetMapping("/remove-resource-cache/{subject}/{characterId}")
     @ApiOperationSupport(order = 10)
-    @CacheEvict(cacheNames = "resource-bag", key = "T(String).valueOf(#characterId).concat('_').concat(#subject)")
+//    @CacheEvict(cacheNames = "resource-bag", key = "T(String).valueOf(#characterId).concat('_').concat(#subject)")
     @ApiOperation(value = "删除软硬笔资源包缓存", notes = "删除软笔资源缓存")
     public R removeResourceCache(
             @ApiParam(value = "源学科 71=软笔书法 72=硬笔书法", required = true) @PathVariable(value = "subject") Integer subject,
-            @ApiParam(value = "汉字id", required = true) @PathVariable(value = "characterId") Integer characterId) {
-        return R.success("删除缓存成功，characterId：" + characterId + "_" + subject);
+            @ApiParam(value = "汉字id", required = true) @PathVariable(value = "characterId") Integer characterId,
+            @ApiParam(value = "字体") @RequestParam(value = "font", required = false, defaultValue = "") String font) {
+        String key = "resource-bag-#" + characterId + "_" + subject + "#" + font;
+        redisTemplate.delete(key);
+        return R.success("删除缓存成功，characterId：" + characterId + "_" + subject + "#" + font);
     }
 
 
@@ -291,6 +300,19 @@ public class CharacterResourceController extends BladeController {
             result = map;
         }
         return R.data(result);
+    }
+
+    /**
+     * 删除标准笔法和基本笔画缓存
+     */
+    @GetMapping("/remove-resource-cache/basic")
+    @ApiOperationSupport(order = 12)
+    @ApiOperation(value = "删除标准笔法和基本笔画缓存", notes = "删除标准笔法和基本笔画缓存")
+    public R removeResourceCacheBasic(
+            @ApiParam(value = "字体") @RequestParam(value = "font", required = false, defaultValue = "") String font) {
+        String key = "resource-bag-basic-#" + font;
+        redisTemplate.delete(key);
+        return R.success("删除缓存成功，字体：#" + font);
     }
 
 
