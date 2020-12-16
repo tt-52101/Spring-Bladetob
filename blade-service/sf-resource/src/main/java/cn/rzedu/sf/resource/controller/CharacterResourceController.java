@@ -3,9 +3,7 @@ package cn.rzedu.sf.resource.controller;
 import cn.rzedu.sf.resource.entity.Character;
 import cn.rzedu.sf.resource.entity.CharacterResourceFile;
 import cn.rzedu.sf.resource.entity.TextbookLessonCharacter;
-import cn.rzedu.sf.resource.service.ICharacterResourceFileService;
-import cn.rzedu.sf.resource.service.ICharacterService;
-import cn.rzedu.sf.resource.service.ITextbookLessonCharacterService;
+import cn.rzedu.sf.resource.service.*;
 import cn.rzedu.sf.resource.vo.CharacterVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,12 +23,12 @@ import org.springblade.core.tool.api.ResultCode;
 import org.springblade.core.tool.utils.Func;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import cn.rzedu.sf.resource.entity.CharacterResource;
 import cn.rzedu.sf.resource.vo.CharacterResourceVO;
 import cn.rzedu.sf.resource.wrapper.CharacterResourceWrapper;
-import cn.rzedu.sf.resource.service.ICharacterResourceService;
 import org.springblade.core.boot.ctrl.BladeController;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -39,6 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 汉字资源 控制器
@@ -59,6 +58,10 @@ public class CharacterResourceController extends BladeController {
     private ITextbookLessonCharacterService textbookLessonCharacterService;
 
     private ICharacterResourceFileService characterResourceFileService;
+
+    private ICharacterBrushworkService characterBrushworkService;
+
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 软/硬笔资源
@@ -246,7 +249,7 @@ public class CharacterResourceController extends BladeController {
      */
     @GetMapping("/bag/{subject}/{characterId}")
     @ApiOperationSupport(order = 9)
-    @Cacheable(cacheNames = "soft-resource", key = "T(String).valueOf(#characterId).concat('_').concat(#subject)")
+    @Cacheable(cacheNames = "resource-bag", key = "T(String).valueOf(#characterId).concat('_').concat(#subject)")
     @ApiOperation(value = "软硬笔资源包", notes = "软硬笔资源包")
     public R resourceBag(
             @ApiParam(value = "源学科 71=软笔书法 72=硬笔书法", required = true) @PathVariable(value = "subject") Integer subject,
@@ -262,7 +265,7 @@ public class CharacterResourceController extends BladeController {
      */
     @GetMapping("/remove-resource-cache/{subject}/{characterId}")
     @ApiOperationSupport(order = 10)
-    @CacheEvict(cacheNames = "soft-resource", key = "T(String).valueOf(#characterId).concat('_').concat(#subject)")
+    @CacheEvict(cacheNames = "resource-bag", key = "T(String).valueOf(#characterId).concat('_').concat(#subject)")
     @ApiOperation(value = "删除软硬笔资源包缓存", notes = "删除软笔资源缓存")
     public R removeResourceCache(
             @ApiParam(value = "源学科 71=软笔书法 72=硬笔书法", required = true) @PathVariable(value = "subject") Integer subject,
@@ -271,53 +274,72 @@ public class CharacterResourceController extends BladeController {
     }
 
 
-
     /**
-     * 软笔观察、分析、笔法资源
+     * 标准笔法和基本笔画
      */
-    @ApiIgnore
-    @GetMapping("/soft/{characterId}")
-    @ApiOperationSupport(order = 9)
-    @Cacheable(cacheNames = "soft-resource", key = "#characterId")
-    @ApiOperation(value = "软笔观察、分析、笔法资源", notes = "软笔观察、分析、笔法资源")
-    public R softResource(
-            @ApiParam(value = "汉字id", required = true) @PathVariable(value = "characterId") Integer characterId) {
-        Map<String, Object> map = characterResourceService.findSoftResource(characterId);
-        return R.data(map);
-    }
-
-    /**
-     * 删除软笔资源缓存
-     */
-    @ApiIgnore
-    @GetMapping("/remove-resource-cache/{characterId}")
-    @ApiOperationSupport(order = 10)
-    @CacheEvict(cacheNames = "soft-resource", key = "#characterId")
-    @ApiOperation(value = "删除软笔资源缓存", notes = "删除软笔资源缓存")
-    public R removeResourceCache(@ApiParam(value = "汉字id", required = true) @PathVariable(value = "characterId") Integer characterId) {
-        return R.success("删除缓存成功，characterId：" + characterId);
-    }
-
-    /**
-     * 软笔观察、分析、笔法资源(整个课程所有汉字)
-     */
-    @ApiIgnore
-    @GetMapping("/soft/list/{lessonId}")
+    @GetMapping("/bag/basic")
     @ApiOperationSupport(order = 11)
-    @ApiOperation(value = "软笔观察、分析、笔法资源(整个课程所有汉字)", notes = "软笔观察、分析、笔法资源(整个课程所有汉字)")
-    public R softResourceList(
-            @ApiParam(value = "课程id", required = true) @PathVariable(value = "lessonId") Integer lessonId) {
-        List<Map<String, Object>> list = new ArrayList<>();
-
-        List<TextbookLessonCharacter> characterList = textbookLessonCharacterService.findByLessonId(lessonId);
-        Map<String, Object> map = null;
-        if (characterList != null && !characterList.isEmpty()) {
-            for (TextbookLessonCharacter tlc : characterList) {
-                map = characterResourceService.findSoftResource(tlc.getCharacterId());
-                list.add(map);
-            }
-
+    @ApiOperation(value = "标准笔法和基本笔画", notes = "标准笔法和基本笔画")
+    public R resourceBagBasic(
+            @ApiParam(value = "字体") @RequestParam(value = "font", required = false, defaultValue = "") String font
+    ) {
+        String key = "resource-bag-basic-#" + font;
+        Object result = redisTemplate.opsForValue().get(key);
+        if (result == null) {
+            Map<String, Object> map = characterBrushworkService.findBrushwork(font);
+            redisTemplate.opsForValue().set(key, map, 2, TimeUnit.HOURS);
+            result = map;
         }
-        return R.data(list);
+        return R.data(result);
     }
+
+
+//    /**
+//     * 软笔观察、分析、笔法资源
+//     */
+//    @ApiIgnore
+//    @GetMapping("/soft/{characterId}")
+//    @ApiOperationSupport(order = 9)
+//    @Cacheable(cacheNames = "soft-resource", key = "#characterId")
+//    @ApiOperation(value = "软笔观察、分析、笔法资源", notes = "软笔观察、分析、笔法资源")
+//    public R softResource(
+//            @ApiParam(value = "汉字id", required = true) @PathVariable(value = "characterId") Integer characterId) {
+//        Map<String, Object> map = characterResourceService.findSoftResource(characterId);
+//        return R.data(map);
+//    }
+//
+//    /**
+//     * 删除软笔资源缓存
+//     */
+//    @ApiIgnore
+//    @GetMapping("/remove-resource-cache/{characterId}")
+//    @ApiOperationSupport(order = 10)
+//    @CacheEvict(cacheNames = "soft-resource", key = "#characterId")
+//    @ApiOperation(value = "删除软笔资源缓存", notes = "删除软笔资源缓存")
+//    public R removeResourceCache(@ApiParam(value = "汉字id", required = true) @PathVariable(value = "characterId") Integer characterId) {
+//        return R.success("删除缓存成功，characterId：" + characterId);
+//    }
+//
+//    /**
+//     * 软笔观察、分析、笔法资源(整个课程所有汉字)
+//     */
+//    @ApiIgnore
+//    @GetMapping("/soft/list/{lessonId}")
+//    @ApiOperationSupport(order = 11)
+//    @ApiOperation(value = "软笔观察、分析、笔法资源(整个课程所有汉字)", notes = "软笔观察、分析、笔法资源(整个课程所有汉字)")
+//    public R softResourceList(
+//            @ApiParam(value = "课程id", required = true) @PathVariable(value = "lessonId") Integer lessonId) {
+//        List<Map<String, Object>> list = new ArrayList<>();
+//
+//        List<TextbookLessonCharacter> characterList = textbookLessonCharacterService.findByLessonId(lessonId);
+//        Map<String, Object> map = null;
+//        if (characterList != null && !characterList.isEmpty()) {
+//            for (TextbookLessonCharacter tlc : characterList) {
+//                map = characterResourceService.findSoftResource(tlc.getCharacterId());
+//                list.add(map);
+//            }
+//
+//        }
+//        return R.data(list);
+//    }
 }

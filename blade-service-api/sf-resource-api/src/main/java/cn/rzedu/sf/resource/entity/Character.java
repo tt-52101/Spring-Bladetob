@@ -41,21 +41,21 @@ public class Character implements Serializable {
      * 汉字简体
      */
 //    @NotBlank(message = "汉字简体不能为空")
-    @Size(max = 3, message = "汉字简体长度不能超过3")
+//    @Size(max = 3, message = "汉字简体长度不能超过3")
     @ApiModelProperty(value = "汉字简体")
     private String charS;
     /**
      * 汉字繁体
      */
 //    @NotBlank(message = "汉字繁体不能为空")
-    @Size(max = 3, message = "汉字繁体长度不能超过3")
+//    @Size(max = 3, message = "汉字繁体长度不能超过3")
     @ApiModelProperty(value = "汉字繁体")
     private String charT;
     /**
      * 关键字
      */
     @NotBlank(message = "关键字不能为空")
-    @Size(max = 50, message = "关键字长度不能超过50")
+//    @Size(max = 50, message = "关键字长度不能超过50")
     @ApiModelProperty(value = "关键字")
     private String keyword;
     /**

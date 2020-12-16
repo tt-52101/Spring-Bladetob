@@ -3,9 +3,7 @@ package cn.rzedu.sf.resource.controller;
 import cn.rzedu.sf.resource.entity.Character;
 import cn.rzedu.sf.resource.entity.TextbookLesson;
 import cn.rzedu.sf.resource.entity.TextbookLessonCharacter;
-import cn.rzedu.sf.resource.service.ICharacterService;
-import cn.rzedu.sf.resource.service.ITextbookLessonCharacterService;
-import cn.rzedu.sf.resource.service.ITextbookLessonService;
+import cn.rzedu.sf.resource.service.*;
 import cn.rzedu.sf.resource.utils.JcDataUtil;
 import cn.rzedu.sf.resource.vo.TextbookLessonVO;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -29,7 +27,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import cn.rzedu.sf.resource.entity.Textbook;
 import cn.rzedu.sf.resource.vo.TextbookVO;
 import cn.rzedu.sf.resource.wrapper.TextbookWrapper;
-import cn.rzedu.sf.resource.service.ITextbookService;
 import org.springblade.core.boot.ctrl.BladeController;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -60,6 +57,7 @@ public class TextbookController extends BladeController {
 
     private ICharacterService characterService;
 
+    private IPublisherService publisherService;
 
     /**
      * 出版社列表
@@ -69,11 +67,12 @@ public class TextbookController extends BladeController {
     @GetMapping("/publisher/{subject}")
     @ApiOperationSupport(order = 1)
     @ApiOperation(value = "出版社列表", notes = "根据科目显示出版社")
-    public R<List<String>> getPublisherList(@ApiParam(value = "资源学科 71=软笔书法 72=硬笔书法", required = true)
+    public R getPublisherList(@ApiParam(value = "资源学科 71=软笔书法 72=硬笔书法", required = true)
                                                 @PathVariable(value = "subject") Integer subject
     ) {
-        List<String> publisherList = textbookService.findPublisherList(subject);
-        return R.data(publisherList);
+//        List<String> publisherList = textbookService.findPublisherList(subject);
+        List<Map<String, Object>> list = publisherService.findBySubject(subject);
+        return R.data(list);
     }
 
 

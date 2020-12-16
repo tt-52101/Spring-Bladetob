@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.resource.mapper.PublisherMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="publisherResultMap" type="cn.rzedu.sf.resource.entity.Publisher">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="subject" property="subject"/>
+        <result column="logo" property="logo"/>
+        <result column="cover_image" property="coverImage"/>
+        <result column="thumb" property="thumb"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <select id="selectPublisherPage" resultMap="publisherResultMap">
+        select * from sf_publisher where is_deleted = 0
+    </select>
+
+    <select id="findBySubject" resultMap="publisherResultMap">
+        SELECT * FROM sf_publisher WHERE is_deleted = 0 AND `subject` = #{subject}
+    </select>
+
+</mapper>
