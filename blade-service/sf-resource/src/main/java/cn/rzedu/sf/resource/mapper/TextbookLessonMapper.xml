@@ -31,7 +31,7 @@
     </select>
 
     <select id="findLessonByTextbookId" resultMap="textbookLessonVoResultMap">
-        SELECT tl.*, SUM(tlc.visited_count) AS visited_count, GROUP_CONCAT(tlc.id) AS charIds
+        SELECT tl.*, SUM(tlc.visited_count) AS visited_count, GROUP_CONCAT(tlc.character_id) AS charIds
         FROM sf_textbook_lesson tl
         LEFT JOIN sf_textbook_lesson_character tlc ON tl.id = tlc.lesson_id AND tlc.is_deleted = 0
         WHERE 1=1
