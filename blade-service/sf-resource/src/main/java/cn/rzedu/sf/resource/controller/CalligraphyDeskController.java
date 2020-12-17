@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  */
 @RestController
 @AllArgsConstructor
-@RequestMapping("/Calligraphy")
+@RequestMapping("/calligraphy")
 @Api(value = "书法B端接口 ", tags = "书法B端接口")
 public class CalligraphyDeskController {
 
