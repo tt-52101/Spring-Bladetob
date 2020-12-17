@@ -99,12 +99,12 @@
                     <!--容器相关的属性-->
                     <container>
 				<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
-                        <entrypoint>
-                           <arg>java</arg>
-                           <arg>-Djava.security.egd=file:/dev/./urandom</arg>
-                           <arg>-jar</arg>
-                           <arg>/${project.artifactId}.jar</arg>
-                        </entrypoint>
+                        <!-- <entrypoint> -->
+                           <!-- <arg>java</arg> -->
+                           <!-- <arg>-Djava.security.egd=file:/dev/./urandom</arg> -->
+                           <!-- <arg>-jar</arg> -->
+                           <!-- <arg>/${project.artifactId}.jar</arg> -->
+                        <!-- </entrypoint> -->
                         <args>
                             <arg>--spring.profiles.active=test</arg>
                         </args>
@@ -112,6 +112,7 @@
                         <ports>
                             <port>9101</port>
                         </ports>
+                        <mainClass>cn.rzedu.sf.resource.SFResourceApplication</mainClass>
                     </container>
                 </configuration>
             </plugin>
