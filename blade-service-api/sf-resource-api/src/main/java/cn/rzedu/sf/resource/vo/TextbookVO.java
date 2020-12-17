@@ -25,4 +25,9 @@ public class TextbookVO extends Textbook {
      */
     @ApiModelProperty(value = "课程列表")
     private List<TextbookLessonVO> textbookLessonVOList;
+
+    /**
+     * 单元列表
+     */
+    private List unitList;
 }

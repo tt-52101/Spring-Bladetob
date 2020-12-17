@@ -94,7 +94,7 @@ public class CalligraphyDeskController {
     @ApiOperationSupport(order = 3)
     @ApiOperation(value = "教材课程详情", notes = "传入textbookId")
     public R<TextbookVO> textbookDetail(@ApiParam(value = "教材id", required = true) @PathVariable(value = "textbookId") Integer textbookId) {
-        TextbookVO textbookVO = textbookService.findTextBookById(textbookId);
+        TextbookVO textbookVO = textbookService.findTextBookByIdWithUnit(textbookId);
         return R.data(textbookVO);
     }
 

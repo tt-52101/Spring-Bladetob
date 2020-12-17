@@ -99,4 +99,11 @@ public interface ITextbookService extends IService<Textbook> {
 	 * @return
 	 */
 	List<String> findPublisherList(Integer subject);
+
+	/**
+	 * 获取教材详情，带课程数据，按单元分组
+	 * @param id
+	 * @return
+	 */
+	TextbookVO findTextBookByIdWithUnit(Integer id);
 }

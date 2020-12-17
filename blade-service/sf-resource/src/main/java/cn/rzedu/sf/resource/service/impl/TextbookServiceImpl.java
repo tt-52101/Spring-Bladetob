@@ -40,10 +40,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 书法教材 服务实现类
@@ -215,5 +212,49 @@ public class TextbookServiceImpl extends ServiceImpl<TextbookMapper, Textbook> i
     @Override
     public List<String> findPublisherList(Integer subject) {
         return baseMapper.findPublisherList(subject);
+    }
+
+    @Override
+    public TextbookVO findTextBookByIdWithUnit(Integer id) {
+        Textbook textbook = baseMapper.selectById(id);
+        if (textbook == null) {
+            return null;
+        }
+        TextbookVO textbookVO = BeanUtil.copy(textbook, TextbookVO.class);
+        List<TextbookLessonVO> lessonVOList = textbookLessonService.findLessonByTextbookId(id);
+        List unitList = transferUnitList(lessonVOList);
+        textbookVO.setUnitList(unitList);
+        return textbookVO;
+    }
+
+    private List transferUnitList(List<TextbookLessonVO> list) {
+        Map<String, List<TextbookLessonVO>> map = new LinkedHashMap<>();
+        List<TextbookLessonVO> valueList = null;
+        String section = "";
+        for (TextbookLessonVO vo : list) {
+            section = vo.getSection() + "_" + vo.getSectionName();
+            if (map.containsKey(section)) {
+                valueList = map.get(section);
+            } else {
+                valueList = new ArrayList<>();
+            }
+            valueList.add(vo);
+            map.put(section, valueList);
+        }
+
+        List<Map<String, Object>> result = new ArrayList<>(map.size());
+        Map<String, Object> resultMap = null;
+        for (Map.Entry<String, List<TextbookLessonVO>> entry : map.entrySet()) {
+            resultMap = new HashMap<>(3);
+            String[] str = entry.getKey().split("_");
+            if ("null".equals(str[1])) {
+                str[1] = "";
+            }
+            resultMap.put("section", str[0]);
+            resultMap.put("sectionName", str[1]);
+            resultMap.put("lessonList", entry.getValue());
+            result.add(resultMap);
+        }
+        return result;
     }
 }
