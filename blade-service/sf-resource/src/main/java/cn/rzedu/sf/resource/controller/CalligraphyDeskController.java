@@ -99,12 +99,23 @@ public class CalligraphyDeskController {
     }
 
     /**
+     * 单个课程详情
+     */
+    @GetMapping("/lesson/detail/{lessonId}")
+    @ApiOperationSupport(order = 4)
+    @ApiOperation(value = "单个课程详情", notes = "传入lessonId")
+    public R lessonDetail(@ApiParam(value = "课程id", required = true) @PathVariable(value = "lessonId") Integer lessonId) {
+        Map<String, Object> map = textbookLessonService.findLessonById(lessonId);
+        return R.data(map);
+    }
+
+    /**
      * 软硬笔资源包
      * @param characterId
      * @return
      */
     @GetMapping("/character/resource/{subject}/{characterId}")
-    @ApiOperationSupport(order = 4)
+    @ApiOperationSupport(order = 5)
     @ApiOperation(value = "软硬笔资源包", notes = "软硬笔资源包")
     public R resourceBag(
             @ApiParam(value = "源学科 71=软笔书法 72=硬笔书法", required = true) @PathVariable(value = "subject") Integer subject,
@@ -141,7 +152,7 @@ public class CalligraphyDeskController {
      * 标准笔法和基本笔画
      */
     @GetMapping("/character/resource/basic")
-    @ApiOperationSupport(order = 5)
+    @ApiOperationSupport(order = 7)
     @ApiOperation(value = "标准笔法和基本笔画", notes = "标准笔法和基本笔画")
     public R resourceBagBasic(
             @ApiParam(value = "字体") @RequestParam(value = "font", required = false, defaultValue = "") String font
@@ -160,7 +171,7 @@ public class CalligraphyDeskController {
      * 删除标准笔法和基本笔画缓存
      */
     @GetMapping("/character/resource/removeCache/basic")
-    @ApiOperationSupport(order = 7)
+    @ApiOperationSupport(order = 8)
     @ApiOperation(value = "删除标准笔法和基本笔画缓存", notes = "删除标准笔法和基本笔画缓存")
     public R removeResourceCacheBasic(
             @ApiParam(value = "字体") @RequestParam(value = "font", required = false, defaultValue = "") String font) {

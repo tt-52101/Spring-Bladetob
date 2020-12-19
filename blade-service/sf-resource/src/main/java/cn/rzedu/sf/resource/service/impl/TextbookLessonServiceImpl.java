@@ -22,8 +22,12 @@ import cn.rzedu.sf.resource.vo.TextbookLessonVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
+import org.springblade.core.tool.utils.Func;
+import org.springblade.core.tool.utils.StringUtil;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,5 +71,42 @@ public class TextbookLessonServiceImpl extends ServiceImpl<TextbookLessonMapper,
 	@Override
 	public boolean removeByTextbookIds(List<Integer> textbookIds) {
 		return SqlHelper.retBool(baseMapper.removeByTextbookIds(textbookIds));
+	}
+
+	@Override
+	public Map<String, Object> findLessonById(Integer lessonId) {
+		TextbookLessonVO lessonVO = baseMapper.findLessonById(lessonId);
+		if (lessonVO == null) {
+			return null;
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("id", lessonVO.getId());
+		map.put("textbookId", lessonVO.getTextbookId());
+		map.put("name", lessonVO.getName());
+		map.put("listOrder", lessonVO.getListOrder());
+		map.put("section", lessonVO.getSection());
+		map.put("sectionName", lessonVO.getSectionName());
+		map.put("chars", lessonVO.getChars());
+		map.put("charCount", lessonVO.getCharCount());
+		map.put("charIds", lessonVO.getCharIds());
+		map.put("charList", getCharList(lessonVO.getChars(), lessonVO.getCharIds()));
+		return map;
+	}
+
+	private List<Map<String, Object>> getCharList(String chars, String charIds) {
+		if (StringUtil.isBlank(chars)) {
+			return null;
+		}
+		List<String> charList = Func.toStrList("、", chars);
+		List<Integer> charIdList = Func.toIntList(charIds);
+		List<Map<String, Object>> list = new ArrayList<>();
+		Map<String, Object> map = null;
+		for (int i = 0; i < charList.size(); i++) {
+			map = new HashMap<>();
+			map.put("char", charList.get(i));
+			map.put("charId", charIdList.get(i));
+			list.add(map);
+		}
+		return list;
 	}
 }

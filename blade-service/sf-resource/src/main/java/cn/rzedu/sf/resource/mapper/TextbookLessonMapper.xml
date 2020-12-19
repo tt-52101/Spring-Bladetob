@@ -40,6 +40,16 @@
         GROUP BY tl.id
     </select>
 
+    <select id="findLessonById" resultMap="textbookLessonVoResultMap">
+        SELECT tl.*, SUM(tlc.visited_count) AS visited_count, GROUP_CONCAT(tlc.character_id) AS charIds
+        FROM sf_textbook_lesson tl
+        LEFT JOIN sf_textbook_lesson_character tlc ON tl.id = tlc.lesson_id AND tlc.is_deleted = 0
+        WHERE 1=1
+        AND tl.is_deleted = 0
+        AND tl.id = #{lessonId}
+        GROUP BY tl.id
+    </select>
+
     <update id="updateCharCount">
         UPDATE sf_textbook_lesson
         SET

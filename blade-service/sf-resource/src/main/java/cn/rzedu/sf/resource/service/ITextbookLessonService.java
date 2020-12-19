@@ -80,4 +80,11 @@ public interface ITextbookLessonService extends IService<TextbookLesson> {
 	 * @return
 	 */
 	boolean removeByTextbookIds(List<Integer> textbookIds);
+
+	/**
+	 * 单个课程
+	 * @param lessonId
+	 * @return
+	 */
+	Map<String, Object> findLessonById(Integer lessonId);
 }

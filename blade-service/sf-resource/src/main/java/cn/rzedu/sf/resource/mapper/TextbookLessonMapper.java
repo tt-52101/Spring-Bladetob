@@ -46,6 +46,13 @@ public interface TextbookLessonMapper extends BaseMapper<TextbookLesson> {
 	List<TextbookLessonVO> findLessonByTextbookId(Integer textbookId);
 
 	/**
+	 * 单个课程
+	 * @param lessonId
+	 * @return
+	 */
+	TextbookLessonVO findLessonById(Integer lessonId);
+
+	/**
 	 * 更新课程汉字和汉字数
 	 * @param id
 	 * @return
