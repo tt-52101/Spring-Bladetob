@@ -70,7 +70,7 @@
 
     <select id="findUnion" resultMap="characterResourceResultMap">
         select * from sf_character_resource where is_deleted = 0
-        AND enabled = 1
+--         AND enabled = 1
         AND character_id = #{characterId}
         AND `subject` = #{subject}
         AND resource_type = #{resourceType}

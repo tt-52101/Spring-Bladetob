@@ -258,13 +258,13 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		compare.add(new CharResFileVO("compare_image", "text"));
 		addValueByTypeAndFont(compare, characterId, subject, 717, font);
 
-		map.put("1_appreciation", appreciation);
-		map.put("2_recognition", recognition);
-		map.put("3_observation", observation);
-		map.put("4_analysis", analysis);
-		map.put("5_writing", writing);
-		map.put("6_learn", learn);
-		map.put("7_compare", compare);
+		map.put("appreciation_1", appreciation);
+		map.put("recognition_2", recognition);
+		map.put("observation_3", observation);
+		map.put("analysis_4", analysis);
+		map.put("writing_5", writing);
+		map.put("learn_6", learn);
+		map.put("compare_7", compare);
 	}
 
 	private void addHardResources(Map<String, Object> map, Integer characterId, String font) {
@@ -299,10 +299,10 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		game.add(new CharResFileVO("game", "text"));
 		addValueByTypeAndFont(game, characterId, subject, 725, font);
 
-		map.put("1_recognition", recognition);
-		map.put("2_chalk", chalk);
-		map.put("3_pen", pen);
-		map.put("4_learn", learn);
-		map.put("5_game", game);
+		map.put("recognition_1", recognition);
+		map.put("chalk_2", chalk);
+		map.put("pen_3", pen);
+		map.put("learn_4", learn);
+		map.put("game_5", game);
 	}
 }
