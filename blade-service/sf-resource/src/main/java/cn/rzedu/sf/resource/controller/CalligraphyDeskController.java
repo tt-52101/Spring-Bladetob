@@ -67,10 +67,12 @@ public class CalligraphyDeskController {
     public R<List<TextbookVO>> textbookList(
             @ApiParam(value = "出版社") @RequestParam(value = "publisher", required = false) String publisher,
             @ApiParam(value = "教材的学科 71=软笔书法 72=硬笔书法") @RequestParam(value = "subject", required = false) Integer subject,
+            @ApiParam(value = "学段 2=小学 3=初中") @RequestParam(value = "stage", required = false, defaultValue = "2") String stage,
             @ApiParam(value = "是否含课程") @RequestParam(value = "includeLessons", defaultValue = "false") Boolean includeLessons) {
         Map<String, Object> textbook = new HashMap<>();
         textbook.put("publisher", publisher);
         textbook.put("subject", subject);
+        textbook.put("stage_code", stage);
         List<Textbook> textbookList = textbookService.listByMap(textbook);
         if (textbookList == null || textbookList.isEmpty()) {
             return R.data(null);
