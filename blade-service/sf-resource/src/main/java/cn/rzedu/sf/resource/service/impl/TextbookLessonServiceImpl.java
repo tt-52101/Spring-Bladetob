@@ -15,13 +15,16 @@
  */
 package cn.rzedu.sf.resource.service.impl;
 
+import cn.rzedu.sf.resource.entity.Textbook;
 import cn.rzedu.sf.resource.entity.TextbookLesson;
 import cn.rzedu.sf.resource.mapper.TextbookLessonMapper;
+import cn.rzedu.sf.resource.mapper.TextbookMapper;
 import cn.rzedu.sf.resource.service.ITextbookLessonService;
 import cn.rzedu.sf.resource.vo.TextbookLessonVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
+import lombok.AllArgsConstructor;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringUtil;
 import org.springframework.stereotype.Service;
@@ -40,8 +43,11 @@ import java.util.Map;
  * @author Blade
  * @since 2020-08-05
  */
+@AllArgsConstructor
 @Service
 public class TextbookLessonServiceImpl extends ServiceImpl<TextbookLessonMapper, TextbookLesson> implements ITextbookLessonService {
+
+	private TextbookMapper textbookMapper;
 
 	@Override
 	public IPage<TextbookLessonVO> selectTextbookLessonPage(IPage<TextbookLessonVO> page, TextbookLessonVO textbookLesson) {
@@ -79,6 +85,11 @@ public class TextbookLessonServiceImpl extends ServiceImpl<TextbookLessonMapper,
 		if (lessonVO == null) {
 			return null;
 		}
+		Textbook textbook = textbookMapper.selectById(lessonVO.getTextbookId());
+		String font = "";
+		if (textbook != null) {
+			font = textbook.getFont();
+		}
 		Map<String, Object> map = new HashMap<>();
 		map.put("id", lessonVO.getId());
 		map.put("textbookId", lessonVO.getTextbookId());
@@ -90,6 +101,7 @@ public class TextbookLessonServiceImpl extends ServiceImpl<TextbookLessonMapper,
 		map.put("charCount", lessonVO.getCharCount());
 		map.put("charIds", lessonVO.getCharIds());
 		map.put("charList", getCharList(lessonVO.getChars(), lessonVO.getCharIds()));
+		map.put("font", font);
 		return map;
 	}
 
