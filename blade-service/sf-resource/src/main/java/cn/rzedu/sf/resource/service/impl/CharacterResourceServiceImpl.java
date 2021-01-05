@@ -305,4 +305,109 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		map.put("learn_4", learn);
 		map.put("game_5", game);
 	}
+
+	@Override
+	public boolean createResourceFile(String charS, Integer subject, Integer resourceType, String font,
+									  String objectId, String objectType, String value) {
+		List<Character> characterList = characterService.findByChars(charS);
+		Integer characterId = null;
+		if (characterList != null && !characterList.isEmpty()) {
+			characterId = characterList.get(0).getId();
+		} else {
+			Character character = new Character();
+			character.setCharS(charS);
+			character.setCharT(charS);
+			character.setKeyword(charS);
+			character.setType(1);
+			characterService.save(character);
+			characterId = character.getId();
+		}
+		if (characterId == null) {
+			return false;
+		}
+
+		Integer resourceId = null;
+		CharacterResource cr = baseMapper.findUnion(characterId, subject, resourceType);
+		if (cr != null) {
+			resourceId = cr.getId();
+		} else {
+			cr = new CharacterResource();
+			cr.setCharacterId(characterId);
+			cr.setNameTr(charS);
+			cr.setKeyword(charS);
+			cr.setCharS(charS);
+			cr.setCharT(charS);
+			cr.setEnabled(true);
+			cr.setSubject(subject);
+			cr.setResourceType(resourceType);
+			cr.setCreateDate(LocalDateTime.now());
+			baseMapper.insert(cr);
+			resourceId = cr.getId();
+		}
+		if (resourceId == null) {
+			return false;
+		}
+
+		String content = null;
+		String uuid = null;
+		if ("text".equals(objectType)) {
+			content = value;
+		} else {
+			uuid = value;
+		}
+
+		CharacterResourceFile crf = new CharacterResourceFile();
+		crf.setResourceId(resourceId);
+		crf.setCharacterId(characterId);
+		crf.setSubject(subject);
+		crf.setResourceType(resourceType);
+		crf.setFont(font);
+		crf.setObjectId(objectId);
+		crf.setObjectType(objectType);
+		crf.setContent(content);
+		crf.setUuid(uuid);
+		crf.setCreateDate(LocalDateTime.now());
+		characterResourceFileService.save(crf);
+		if (crf.getId() == null) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean createHardResourceFile(String charS, Integer resourceType, String objectCode, String value) {
+		String objectType = null;
+		if ("character".equals(objectCode)) {
+			objectType = "image";
+		} else if ("chalk_video".equals(objectCode) || "pen_video".equals(objectCode) || "learn_video".equals(objectCode)) {
+			objectType = "video";
+		} else if ("paraphrase_video".equals(objectCode)) {
+			objectType = "audio";
+		} else {
+			objectType = "text";
+		}
+		return createResourceFile(charS, 72, resourceType, null, objectCode, objectType, value);
+	}
+
+	@Override
+	public boolean createSoftResourceFile(String charS, Integer resourceType, String font, String objectCode,
+										  String value) {
+		String objectType = null;
+		if ("white_character".equals(objectCode) || "tablet".equals(objectCode)
+				|| "matts".equals(objectCode) || "evolve_image".equals(objectCode)
+				|| "observe_dot".equals(objectCode) || "observe_arrow".equals(objectCode)
+				|| "observe_triangle".equals(objectCode) || "observe_image".equals(objectCode)
+				|| "analyse_image".equals(objectCode)) {
+			objectType = "image";
+		} else if ("technique_line".equals(objectCode) || "technique_gesture".equals(objectCode)
+				|| "learn_video".equals(objectCode)) {
+			objectType = "video";
+		} else if ("usage_audio".equals(objectCode) || "observe_audio".equals(objectCode)
+				|| "stroke_audio".equals(objectCode) || "space_audio".equals(objectCode)) {
+			objectType = "audio";
+		} else {
+			objectType = "text";
+		}
+		return createResourceFile(charS, 71, resourceType, font, objectCode, objectType, value);
+	}
 }

@@ -111,4 +111,32 @@ public interface ICharacterResourceService extends IService<CharacterResource> {
 	 * @return
 	 */
 	Map<String, Object> findResources(Integer characterId, Integer subject, String font);
+
+
+	/**
+	 * 创建软硬笔资源
+	 * 先判断汉字是否存在，再判断资源模板是否存在，最后新增资源文件
+	 * @param charS			汉字
+	 * @param subject		科目，71=软笔，72=硬笔
+	 * @param resourceType	资源类型
+	 * @param font			字体
+	 * @param objectId		模板中的文件对象
+	 * @param objectType	文件类型
+	 * @param value			文件值，uuid或text
+	 * @return
+	 */
+	boolean createResourceFile(String charS, Integer subject, Integer resourceType,
+							   String font, String objectId, String objectType, String value);
+
+	/**
+	 * 创建硬笔资源
+	 * @return
+	 */
+	boolean createHardResourceFile(String charS, Integer resourceType, String objectCode, String value);
+
+	/**
+	 * 创建软笔资源
+	 * @return
+	 */
+	boolean createSoftResourceFile(String charS, Integer resourceType, String font, String objectCode, String value);
 }
