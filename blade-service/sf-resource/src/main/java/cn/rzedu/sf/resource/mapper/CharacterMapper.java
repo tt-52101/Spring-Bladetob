@@ -103,4 +103,6 @@ public interface CharacterMapper extends BaseMapper<Character> {
 	 * @return
 	 */
 	List<Character> findErCodeFromLesson(Integer textbookId);
+
+	Character findCharacterByKeyword(String name);
 }

@@ -228,4 +228,11 @@
         GROUP BY c.id
     </select>
 
+    <select id="findCharacterByKeyword" resultMap="characterResultMap">
+        SELECT * FROM sf_character WHERE is_deleted = 0
+        <if test="param1 != null">
+            AND keyword = #{param1}
+        </if>
+        LIMIT 1
+    </select>
 </mapper>

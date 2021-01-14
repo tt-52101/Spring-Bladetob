@@ -356,18 +356,25 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 			uuid = value;
 		}
 
-		CharacterResourceFile crf = new CharacterResourceFile();
-		crf.setResourceId(resourceId);
-		crf.setCharacterId(characterId);
-		crf.setSubject(subject);
-		crf.setResourceType(resourceType);
-		crf.setFont(font);
-		crf.setObjectId(objectId);
-		crf.setObjectType(objectType);
-		crf.setContent(content);
-		crf.setUuid(uuid);
-		crf.setCreateDate(LocalDateTime.now());
-		characterResourceFileService.save(crf);
+		CharacterResourceFile crf = characterResourceFileService.findUnionByResourceIdAndObjectId(resourceId, objectId, font);
+		if(crf != null){
+			crf.setContent(content);
+			crf.setUuid(uuid);
+			characterResourceFileService.updateById(crf);
+		} else {
+			crf = new CharacterResourceFile();
+			crf.setResourceId(resourceId);
+			crf.setCharacterId(characterId);
+			crf.setSubject(subject);
+			crf.setResourceType(resourceType);
+			crf.setFont(font);
+			crf.setObjectId(objectId);
+			crf.setObjectType(objectType);
+			crf.setContent(content);
+			crf.setUuid(uuid);
+			crf.setCreateDate(LocalDateTime.now());
+			characterResourceFileService.save(crf);
+		}
 		if (crf.getId() == null) {
 			return false;
 		}
@@ -408,6 +415,8 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		} else {
 			objectType = "text";
 		}
+
+
 		return createResourceFile(charS, 71, resourceType, font, objectCode, objectType, value);
 	}
 }

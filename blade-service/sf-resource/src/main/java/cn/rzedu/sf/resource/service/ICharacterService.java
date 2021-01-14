@@ -129,4 +129,6 @@ public interface ICharacterService extends IService<Character> {
 	 * @return
 	 */
 	List<Character> findErCodeFromLesson(Integer textbookId);
+
+	Character findCharacterByKeyword(String name);
 }

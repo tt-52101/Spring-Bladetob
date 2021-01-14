@@ -114,4 +114,9 @@ public class CharacterServiceImpl extends ServiceImpl<CharacterMapper, Character
 	public List<Character> findErCodeFromLesson(Integer textbookId) {
 		return baseMapper.findErCodeFromLesson(textbookId);
 	}
+
+	@Override
+	public Character findCharacterByKeyword(String name) {
+		return baseMapper.findCharacterByKeyword(name);
+	}
 }
