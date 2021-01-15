@@ -5,15 +5,19 @@ import cn.rzedu.sf.resource.service.*;
 import cn.rzedu.sf.resource.vo.TextbookLessonVO;
 import cn.rzedu.sf.resource.vo.TextbookVO;
 import cn.rzedu.sf.resource.wrapper.TextbookWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
+import org.apache.poi.ss.formula.functions.T;
 import org.springblade.core.tool.api.R;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Wrapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,14 +73,17 @@ public class CalligraphyDeskController {
             @ApiParam(value = "教材的学科 71=软笔书法 72=硬笔书法") @RequestParam(value = "subject", required = false) Integer subject,
             @ApiParam(value = "学段 2=小学 3=初中") @RequestParam(value = "stage", required = false, defaultValue = "2") String stage,
             @ApiParam(value = "是否含课程") @RequestParam(value = "includeLessons", defaultValue = "false") Boolean includeLessons) {
-        Map<String, Object> textbook = new HashMap<>();
-        textbook.put("publisher", publisher);
-        textbook.put("subject", subject);
-        textbook.put("stage_code", stage);
-        List<Textbook> textbookList = textbookService.listByMap(textbook);
+        Textbook text = new Textbook();
+        text.setPublisher(publisher);
+        text.setSubject(subject);
+        text.setStageCode(stage);
+        QueryWrapper<Textbook> query = Wrappers.query(text);
+        query.orderByAsc("grade_code");
+        List<Textbook> textbookList = textbookService.list(query);
         if (textbookList == null || textbookList.isEmpty()) {
             return R.data(null);
         }
+
         List<TextbookVO> textbookVOList = TextbookWrapper.build().listVO(textbookList);
         //传入课程数据
         if (includeLessons) {
