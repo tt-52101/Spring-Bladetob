@@ -15,8 +15,10 @@
  */
 package cn.rzedu.sf.resource.service.impl;
 
+import cn.rzedu.sf.resource.entity.Character;
 import cn.rzedu.sf.resource.entity.Textbook;
 import cn.rzedu.sf.resource.entity.TextbookLesson;
+import cn.rzedu.sf.resource.mapper.CharacterMapper;
 import cn.rzedu.sf.resource.mapper.TextbookLessonMapper;
 import cn.rzedu.sf.resource.mapper.TextbookMapper;
 import cn.rzedu.sf.resource.service.ITextbookLessonService;
@@ -48,6 +50,7 @@ import java.util.Map;
 public class TextbookLessonServiceImpl extends ServiceImpl<TextbookLessonMapper, TextbookLesson> implements ITextbookLessonService {
 
 	private TextbookMapper textbookMapper;
+	private CharacterMapper characterMapper;
 
 	@Override
 	public IPage<TextbookLessonVO> selectTextbookLessonPage(IPage<TextbookLessonVO> page, TextbookLessonVO textbookLesson) {
@@ -115,8 +118,14 @@ public class TextbookLessonServiceImpl extends ServiceImpl<TextbookLessonMapper,
 		Map<String, Object> map = null;
 		for (int i = 0; i < charList.size(); i++) {
 			map = new HashMap<>();
+			Integer charId = charIdList.get(i);
 			map.put("char", charList.get(i));
-			map.put("charId", charIdList.get(i));
+			map.put("charId", charId);
+			Character character = characterMapper.selectById(charId);
+			if(character != null){
+				map.put("type", character.getType());
+				map.put("image", character.getLightImage());
+			}
 			list.add(map);
 		}
 		return list;
