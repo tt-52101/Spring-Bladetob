@@ -79,6 +79,7 @@ public class CalligraphyDeskController {
         text.setStageCode(stage);
         QueryWrapper<Textbook> query = Wrappers.query(text);
         query.orderByAsc("grade_code");
+        query.orderByAsc("volume");
         List<Textbook> textbookList = textbookService.list(query);
         if (textbookList == null || textbookList.isEmpty()) {
             return R.data(null);
