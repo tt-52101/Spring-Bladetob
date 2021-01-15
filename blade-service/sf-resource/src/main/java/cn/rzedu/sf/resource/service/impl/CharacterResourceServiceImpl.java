@@ -197,6 +197,7 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		Map<String, Object> map = new HashMap<>();
 		map.put("characterId", characterId);
 		map.put("name", character.getCharS());
+		map.put("type", character.getType());
 		if (subject == 71) {
 			addSoftResources(map, characterId, font);
 		} else if (subject == 72) {
