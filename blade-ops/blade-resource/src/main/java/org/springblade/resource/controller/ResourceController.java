@@ -79,16 +79,15 @@ public class ResourceController {
 
 
     /**
-     * 上传文件
+     * 上传文件 - 阿里云视频点播
      *
      * @param file 文件
-     * @param type 文件类型 1=视频 2=图片
      * @return
      */
     @SneakyThrows
     @PostMapping("/put-file")
     @ApiOperation(value = "上传文件", notes = "点播服务上传文件接口", position = 1)
-    public R<VodResult> putFile(@RequestParam MultipartFile file, @ApiParam(value = "文件类型 1=视频 2=图片", required = true) @RequestParam(value = "type")Integer type) {
+    public R<VodResult> putFile(@RequestParam MultipartFile file) {
         VodResult vodResult = new VodResult();
 
         String md5 = FileMd5Util.getFileMd5(file.getInputStream(), 5);
@@ -96,57 +95,27 @@ public class ResourceController {
 
         if (entityFile == null) {
             entityFile = new EntityFile();
-            if (type == 1) {
-                UploadStreamResponse response = VodUploadUtil.uploadStream(ossProperties.getAccessKey(), ossProperties.getSecretKey(), file.getOriginalFilename(), file.getOriginalFilename(), file.getInputStream());
-                GetPlayInfoResponse getPlayInfoResponse = new GetPlayInfoResponse();
-                vodResult.setRequestId(response.getRequestId());
-                if (response.isSuccess()) {
-                    entityFile.setFileName(file.getOriginalFilename());
-                    entityFile.setRealFileName(file.getOriginalFilename());
-                    entityFile.setMd5Code(md5);
-                    entityFile.setSuffix(FileUtil.getFileExtension(file.getOriginalFilename()));
-                    entityFile.setSize((double) file.getSize());
-                    entityFile.setUuid(response.getVideoId());
-                    entityFile.setModifyDate(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-                    entityFile.setCreateDate(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-                    entityFileService.save(entityFile);
+            UploadStreamResponse response = VodUploadUtil.uploadStream(ossProperties.getAccessKey(), ossProperties.getSecretKey(), file.getOriginalFilename(), file.getOriginalFilename(), file.getInputStream());
+            GetPlayInfoResponse getPlayInfoResponse = new GetPlayInfoResponse();
+            vodResult.setRequestId(response.getRequestId());
+            if (response.isSuccess()) {
+                entityFile.setFileName(file.getOriginalFilename());
+                entityFile.setRealFileName(file.getOriginalFilename());
+                entityFile.setMd5Code(md5);
+                entityFile.setSuffix(FileUtil.getFileExtension(file.getOriginalFilename()));
+                entityFile.setSize((double) file.getSize());
+                entityFile.setUuid(response.getVideoId());
+                entityFile.setModifyDate(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+                entityFile.setCreateDate(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+                entityFileService.save(entityFile);
 
-                    vodResult.setUuid(response.getVideoId());
-                } else {
-                    vodResult.setErrorCode(response.getCode());
-                    vodResult.setErrorMessage(response.getMessage());
-                }
-
-            } else if (type == 2) {
-                UploadImageResponse response = VodUploadUtil.uploadImageStream(ossProperties.getAccessKey(), ossProperties.getSecretKey(), file.getInputStream());
-                vodResult.setRequestId(response.getRequestId());
-                if (response.isSuccess()) {
-                    entityFile.setFileName(file.getOriginalFilename());
-                    entityFile.setRealFileName(file.getOriginalFilename());
-                    entityFile.setMd5Code(md5);
-                    entityFile.setSuffix(FileUtil.getFileExtension(file.getOriginalFilename()));
-                    entityFile.setSize((double) file.getSize());
-                    entityFile.setUuid(response.getImageId());
-                    entityFile.setUrl(response.getImageURL());
-                    entityFile.setModifyDate(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-                    entityFile.setCreateDate(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-                    entityFileService.save(entityFile);
-
-                    vodResult.setImageId(response.getImageId());
-                    vodResult.setImageUrl(response.getImageURL());
-                } else {
-                    vodResult.setErrorCode(response.getCode());
-                    vodResult.setErrorMessage(response.getMessage());
-                }
+                vodResult.setUuid(response.getVideoId());
+            } else {
+                vodResult.setErrorCode(response.getCode());
+                vodResult.setErrorMessage(response.getMessage());
             }
-
         } else { //已存在，根据文件id查询url
-            if (type == 1) {
-                vodResult.setUuid(entityFile.getUuid());
-            } else if (type == 2) {
-                vodResult.setImageId(entityFile.getUuid());
-                vodResult.setImageUrl(entityFile.getUrl());
-            }
+            vodResult.setUuid(entityFile.getUuid());
         }
 
         return R.data(vodResult);
