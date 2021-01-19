@@ -29,8 +29,11 @@ import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import lombok.AllArgsConstructor;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringUtil;
+import org.springblade.resource.feign.EntityFileClient;
+import org.springblade.resource.vo.FileResult;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +54,7 @@ public class TextbookLessonServiceImpl extends ServiceImpl<TextbookLessonMapper,
 
 	private TextbookMapper textbookMapper;
 	private CharacterMapper characterMapper;
+	private EntityFileClient entityFileClient;
 
 	@Override
 	public IPage<TextbookLessonVO> selectTextbookLessonPage(IPage<TextbookLessonVO> page, TextbookLessonVO textbookLesson) {
@@ -123,8 +127,20 @@ public class TextbookLessonServiceImpl extends ServiceImpl<TextbookLessonMapper,
 			map.put("charId", charId);
 			Character character = characterMapper.selectById(charId);
 			if(character != null){
+				String uuid = character.getLightImage();
 				map.put("type", character.getType());
-				map.put("image", character.getLightImage());
+				map.put("image", uuid);
+				if(uuid != null && !"".equals(uuid)){
+					try {
+						FileResult fileResult = entityFileClient.findImageByUuid(uuid);
+						if(fileResult != null){
+							String link = fileResult.getLink();
+							map.put("imageUrl", link);
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 			list.add(map);
 		}
