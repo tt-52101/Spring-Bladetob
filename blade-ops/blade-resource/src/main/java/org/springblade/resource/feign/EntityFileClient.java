@@ -18,6 +18,7 @@ package org.springblade.resource.feign;
 
 import org.springblade.resource.entity.EntityFile;
 import org.springblade.resource.hystrix.EntityFileClientFallback;
+import org.springblade.resource.vo.FileResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -76,4 +77,12 @@ public interface EntityFileClient {
      */
     @PostMapping(API_PREFIX + "/uploadImage")
 	EntityFile uploadImage(@RequestBody File file) throws IOException;
+
+	/**
+	 *  查找图片资源
+	 * @param uuid
+	 * @return
+	 */
+	@PostMapping(API_PREFIX + "/findImageByUuid")
+	FileResult findImageByUuid(@RequestParam("uuid") String uuid) throws IOException;
 }

@@ -2,6 +2,7 @@ package org.springblade.resource.hystrix;
 
 import org.springblade.resource.entity.EntityFile;
 import org.springblade.resource.feign.EntityFileClient;
+import org.springblade.resource.vo.FileResult;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -30,6 +31,11 @@ public class EntityFileClientFallback implements EntityFileClient {
 
 	@Override
 	public EntityFile uploadImage(File file) throws IOException {
+		return null;
+	}
+
+	@Override
+	public FileResult findImageByUuid(String uuid) throws IOException {
 		return null;
 	}
 }

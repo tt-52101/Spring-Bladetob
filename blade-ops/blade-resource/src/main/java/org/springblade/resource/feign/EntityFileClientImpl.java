@@ -5,11 +5,14 @@ import lombok.AllArgsConstructor;
 import org.springblade.core.oss.AliossTemplate;
 import org.springblade.core.oss.model.BladeFile;
 import org.springblade.core.oss.props.OssProperties;
+import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.FileUtil;
+import org.springblade.core.tool.utils.StringPool;
 import org.springblade.resource.entity.EntityFile;
 import org.springblade.resource.service.IEntityFileService;
 import org.springblade.resource.utils.FileMd5Util;
 import org.springblade.resource.utils.VodUploadUtil;
+import org.springblade.resource.vo.FileResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -99,4 +102,21 @@ public class EntityFileClientImpl implements EntityFileClient {
         }
         return entityFile;
     }
+
+	@Override
+	public FileResult findImageByUuid(String uuid) throws IOException {
+		FileResult fileResult = new FileResult();
+
+		EntityFile entityFile = entityFileService.findFileByUuid(uuid);
+
+		if(entityFile != null){
+			fileResult.setUuid(entityFile.getUuid());
+			fileResult.setOriginalName(entityFile.getRealFileName());
+			fileResult.setLink(ossProperties.getHttpPrefix().concat(StringPool.SLASH).concat(entityFile.getUrl()));
+			fileResult.setThumbnailUrl(entityFile.getThumbnailUrl());
+			fileResult.setName(entityFile.getUrl());
+		}
+
+		return fileResult;
+	}
 }
