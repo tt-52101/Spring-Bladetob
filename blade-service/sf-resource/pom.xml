@@ -46,7 +46,24 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-vod-upload</artifactId>
+            <version>1.4.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springblade</groupId>
+            <artifactId>blade-resource</artifactId>
+            <version>2.7.1</version>
+            <scope>compile</scope>
+        </dependency>
 
+<!--        百度api智能语音转换-->
+        <dependency>
+            <groupId>com.baidu.aip</groupId>
+            <artifactId>java-sdk</artifactId>
+            <version>4.15.3</version>
+        </dependency>
     </dependencies>
 
     <build>
