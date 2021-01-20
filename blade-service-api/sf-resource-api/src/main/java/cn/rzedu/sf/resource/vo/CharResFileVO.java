@@ -45,4 +45,7 @@ public class CharResFileVO implements Serializable {
      */
     @ApiModelProperty(value = "对象的值，非文本类型，值为uuid")
     private String objectValue;
+
+    @ApiModelProperty(value = "图片URL")
+    private String imageUrl;
 }
