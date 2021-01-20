@@ -28,6 +28,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
+import org.springblade.resource.feign.EntityFileClient;
+import org.springblade.resource.vo.FileResult;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
@@ -53,6 +56,8 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 	private ICharacterResourceFileService characterResourceFileService;
 
 	private ICharacterService characterService;
+
+	private EntityFileClient entityFileClient;
 
 	@Override
 	public IPage<CharacterResourceVO> selectCharacterResourcePage(IPage<CharacterResourceVO> page, CharacterResourceVO characterResource) {
@@ -171,6 +176,7 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		}
 	}
 
+	@SneakyThrows
 	private void addValueFromCRFList(List<CharResFileVO> voList, List<CharacterResourceFile> list) {
 		if (list != null && !list.isEmpty()) {
 			for (CharResFileVO vo : voList) {
@@ -178,8 +184,16 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 					if (vo.getObjectId().equals(crf.getObjectId())) {
 						if (vo.getObjectType().equals("text")) {
 							vo.setObjectValue(crf.getContent());
-						} else {
-							vo.setObjectValue(crf.getUuid());
+						}else {
+							String uuid = crf.getUuid();
+							if(vo.getObjectType().equals("image")){
+								FileResult fileResult = entityFileClient.findImageByUuid(uuid);
+								if(fileResult != null){
+									String link = fileResult.getLink();
+									vo.setImageUrl(link);
+								}
+							}
+							vo.setObjectValue(uuid);
 						}
 						break;
 					}
