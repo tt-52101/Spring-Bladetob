@@ -239,6 +239,11 @@ public class TextbookServiceImpl extends ServiceImpl<TextbookMapper, Textbook> i
                 valueList = new ArrayList<>();
             }
             valueList.add(vo);
+
+            //排序
+            Comparator<TextbookLessonVO> ageComparator = (o1, o2)->o1.getListOrder().compareTo(o2.getListOrder());
+            valueList.sort(ageComparator);
+
             map.put(section, valueList);
         }
 
@@ -255,6 +260,8 @@ public class TextbookServiceImpl extends ServiceImpl<TextbookMapper, Textbook> i
             resultMap.put("lessonList", entry.getValue());
             result.add(resultMap);
         }
+
+
         return result;
     }
 }
