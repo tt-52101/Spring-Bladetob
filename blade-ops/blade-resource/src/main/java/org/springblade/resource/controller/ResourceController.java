@@ -242,9 +242,9 @@ public class ResourceController {
             logger.error("ErrCode:" + e.getErrCode());
             logger.error("ErrMsg:" + e.getErrMsg());
             logger.error("RequestId:" + e.getRequestId());
-            if("Forbidden.IllegalStatus".equals(e.getErrCode())){
-                return getVideo(videoId);
-            }
+//            if("Forbidden.IllegalStatus".equals(e.getErrCode())){
+//                return getVideo(videoId);
+//            }
         }
 
         return response;
