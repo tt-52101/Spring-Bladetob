@@ -157,7 +157,7 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
-                <version>2.7.0</version>
+                <version>${jib.version}</version>
                 <configuration>
                     <!--from节点用来设置镜像的基础镜像，相当于Docerkfile中的FROM关键字-->
                     <!--<allowInsecureRegistries>true</allowInsecureRegistries>-->
@@ -198,6 +198,14 @@
                         <mainClass>org.springblade.consumer.ConsumerApplication</mainClass>
                     </container>
                 </configuration>
+                <executions>
+                   <execution>
+                     <phase>package</phase>
+                     <goals>
+                       <goal>build</goal>
+                     </goals>
+                   </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

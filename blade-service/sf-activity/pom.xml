@@ -73,7 +73,7 @@
            <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
-                <version>2.7.0</version>
+                <version>${jib.version}</version>
                 <configuration>
                     <!--<allowInsecureRegistries>true</allowInsecureRegistries>-->
                     <from>
@@ -112,6 +112,14 @@
                         <mainClass>cn.rzedu.sf.activity.SFActivityApplication</mainClass>
                     </container>
                 </configuration>
+                <executions>
+                   <execution>
+                     <phase>package</phase>
+                     <goals>
+                       <goal>build</goal>
+                     </goals>
+                   </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
