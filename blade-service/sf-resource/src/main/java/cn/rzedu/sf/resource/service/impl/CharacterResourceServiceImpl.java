@@ -183,7 +183,18 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 				for (CharacterResourceFile crf : list) {
 					if (vo.getObjectId().equals(crf.getObjectId())) {
 						if (vo.getObjectType().equals("text")) {
-							vo.setObjectValue(crf.getContent());
+							String content = crf.getContent();
+							vo.setObjectValue(content);
+							if(vo.getObjectId().equals("practice_images") && content != null && !"".equals(content)){
+								String[] split = content.split(",");
+								for (String uuid : split) {
+									FileResult fileResult = entityFileClient.findImageByUuid(uuid);
+									if(fileResult != null){
+										String link = fileResult.getLink();
+										vo.setImageUrl(link);
+									}
+								}
+							}
 						}else {
 							String uuid = crf.getUuid();
 							if(vo.getObjectType().equals("image")){
