@@ -285,6 +285,7 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		map.put("learn_6", learn);
 		map.put("compare_7", compare);
 		map.put("practice_8", practice);
+
 	}
 
 	private void addHardResources(Map<String, Object> map, Integer characterId, String font) {
