@@ -275,7 +275,7 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		//随堂练习
 		List<CharResFileVO> practice = new ArrayList<>();
 		practice.add(new CharResFileVO("practice_images", "text"));
-		addValueByTypeAndFont(practice, characterId, subject, 717, font);
+		addValueByTypeAndFont(practice, characterId, subject, 718, font);
 
 		map.put("appreciation_1", appreciation);
 		map.put("recognition_2", recognition);
@@ -285,7 +285,7 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		map.put("learn_6", learn);
 		map.put("compare_7", compare);
 		map.put("practice_8", practice);
-
+		System.out.println(map);
 	}
 
 	private void addHardResources(Map<String, Object> map, Integer characterId, String font) {
