@@ -187,13 +187,17 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 							vo.setObjectValue(content);
 							if(vo.getObjectId().equals("practice_images") && content != null && !"".equals(content)){
 								String[] split = content.split(",");
+								String link = "";
 								for (String uuid : split) {
 									FileResult fileResult = entityFileClient.findImageByUuid(uuid);
 									if(fileResult != null){
-										String link = fileResult.getLink();
-										vo.setImageUrl(link);
+										link += fileResult.getLink() + ",";
 									}
 								}
+								if(!"".equals(link)){
+									link = link.substring(0, link.length() -1);
+								}
+								vo.setImageUrl(link);
 							}
 						}else {
 							String uuid = crf.getUuid();
