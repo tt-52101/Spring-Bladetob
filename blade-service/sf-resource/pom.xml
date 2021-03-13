@@ -149,7 +149,7 @@
                     <fork>false</fork>
                     <includeSystemScope>true</includeSystemScope>
                     <!--<classifier>exe</classifier>-->
-                    <skip>true</skip>
+                    <skip>false</skip>
                 </configuration>
             </plugin>
         </plugins>
