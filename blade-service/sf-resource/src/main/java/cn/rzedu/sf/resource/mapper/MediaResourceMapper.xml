@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.resource.mapper.MediaResourceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="mediaResourceResultMap" type="cn.rzedu.sf.resource.entity.MediaResource">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="subject" property="subject"/>
+        <result column="sort" property="sort"/>
+        <result column="object_type" property="objectType"/>
+        <result column="uuid" property="uuid"/>
+        <result column="cover_img_url" property="coverImgUrl"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="media_type" property="mediaType"/>
+    </resultMap>
+
+
+
+    <select id="selectMediaResourceSKJAPage" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource where is_deleted = 0 and media_type = 1
+    </select>
+
+    <select id="selectMediaResourceCZWAPage" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource where is_deleted = 0 and media_type = 2
+    </select>
+
+    <select id="selectMediaResourceGXSPPage" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource where is_deleted = 0 and media_type = 3
+    </select>
+
+    <select id="selectMediaResourceZSBKPage" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource where is_deleted = 0 and media_type = 4
+    </select>
+
+    <select id="selectMediaResourceMSWKPage" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource where is_deleted = 0 and media_type = 5
+    </select>
+
+
+    <select id="selectMediaResourceSKJAList" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource where is_deleted = 0 and media_type = 1 and sort = #{sort}
+    </select>
+
+    <select id="selectMediaResourceCZWAList" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource where is_deleted = 0 and media_type = 2 and sort = #{sort}
+    </select>
+
+    <select id="selectMediaResourceGXSPList" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource where is_deleted = 0 and media_type = 3 and sort = #{sort}
+    </select>
+
+    <select id="selectMediaResourceZSBKList" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource where is_deleted = 0 and media_type = 4 and sort = #{sort}
+    </select>
+
+    <select id="selectMediaResourceMSWKList" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource where is_deleted = 0 and media_type = 5 and sort = #{sort}
+    </select>
+
+
+
+    <select id="selectMediaResourceSKJADetail" resultType="java.lang.String">
+        select uuid from sf_media_resource where is_deleted = 0 and media_type = 1 and id = #{id}
+    </select>
+
+    <select id="selectMediaResourceCZWADetail" resultType="java.lang.String">
+        select uuid from sf_media_resource where is_deleted = 0 and media_type = 2 and id = #{id}
+    </select>
+
+    <select id="selectMediaResourceGXSPDetail" resultType="java.lang.String">
+        select uuid from sf_media_resource where is_deleted = 0 and media_type = 3 and id = #{id}
+    </select>
+
+    <select id="selectMediaResourceZSBKDetail" resultType="java.lang.String">
+        select uuid from sf_media_resource where is_deleted = 0 and media_type = 4 and id = #{id}
+    </select>
+
+    <select id="selectMediaResourceMSWKDetail" resultType="java.lang.String">
+        select uuid from sf_media_resource where is_deleted = 0 and media_type = 5 and id = #{id}
+    </select>
+
+
+
+
+
+
+
+    <select id="selectMediaResourceSort" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource where is_deleted = 0
+    </select>
+
+    <select id="selectMediaResourceFull" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource where is_deleted = 0
+    </select>
+
+</mapper>
