@@ -55,9 +55,9 @@
         <if test = "sortId != null and sortId != ''">
         and sort_id = #{sortId}
         </if>
-<!--        <if test = "title != null and title != ''">-->
-<!--        and title LIKE CONCAT('%',#{title},'%')-->
-<!--        </if>-->
+        <if test = "title != null and title != ''">
+        and title LIKE CONCAT('%',#{title},'%')
+        </if>
     </select>
 
 
