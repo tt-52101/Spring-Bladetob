@@ -18,10 +18,14 @@ package cn.rzedu.sf.resource.service.impl;
 import cn.rzedu.sf.resource.entity.MediaResource;
 import cn.rzedu.sf.resource.mapper.MediaResourceMapper;
 import cn.rzedu.sf.resource.service.IMediaResourceService;
+import cn.rzedu.sf.resource.vo.MediaResourceSortVO;
 import cn.rzedu.sf.resource.vo.MediaResourceVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.swagger.models.auth.In;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  *  服务实现类
@@ -33,66 +37,26 @@ import org.springframework.stereotype.Service;
 public class MediaResourceServiceImpl extends ServiceImpl<MediaResourceMapper, MediaResource> implements IMediaResourceService {
 
 	@Override
-	public IPage<MediaResourceVO> selectMediaResourceSKJAPage(IPage<MediaResourceVO> page, MediaResourceVO mediaResource) {
-		return page.setRecords(baseMapper.selectMediaResourceSKJAPage(page, mediaResource));
-	}
-	@Override
-	public IPage<MediaResourceVO> selectMediaResourceCZWAPage(IPage<MediaResourceVO> page, MediaResourceVO mediaResource) {
-		return page.setRecords(baseMapper.selectMediaResourceCZWAPage(page, mediaResource));
-	}
-	@Override
-	public IPage<MediaResourceVO> selectMediaResourceGXSPPage(IPage<MediaResourceVO> page, MediaResourceVO mediaResource) {
-		return page.setRecords(baseMapper.selectMediaResourceGXSPPage(page, mediaResource));
-	}
-	@Override
-	public IPage<MediaResourceVO> selectMediaResourceZSBKPage(IPage<MediaResourceVO> page, MediaResourceVO mediaResource) {
-		return page.setRecords(baseMapper.selectMediaResourceZSBKPage(page, mediaResource));
-	}
-	@Override
-	public IPage<MediaResourceVO> selectMediaResourceMSWKPage(IPage<MediaResourceVO> page, MediaResourceVO mediaResource) {
-		return page.setRecords(baseMapper.selectMediaResourceMSWKPage(page, mediaResource));
-	}
-
-
-	@Override
-	public IPage<MediaResourceVO> selectMediaResourceSKJAList(IPage<MediaResourceVO> page,String sort) {
-		return page.setRecords(baseMapper.selectMediaResourceSKJAList(page,sort));
-	}
-	@Override
-	public IPage<MediaResourceVO> selectMediaResourceCZWAList(IPage<MediaResourceVO> page,String sort) {
-		return page.setRecords(baseMapper.selectMediaResourceCZWAList(page,sort));
-	}
-	@Override
-	public IPage<MediaResourceVO> selectMediaResourceGXSPList(IPage<MediaResourceVO> page,String sort) {
-		return page.setRecords(baseMapper.selectMediaResourceGXSPList(page,sort));
-	}
-	@Override
-	public IPage<MediaResourceVO> selectMediaResourceZSBKList(IPage<MediaResourceVO> page,String sort) {
-		return page.setRecords(baseMapper.selectMediaResourceZSBKList(page,sort));
-	}
-	@Override
-	public IPage<MediaResourceVO> selectMediaResourceMSWKList(IPage<MediaResourceVO> page,String sort) {
-		return page.setRecords(baseMapper.selectMediaResourceMSWKList(page,sort));
+	public IPage<MediaResourceVO> selectMediaResourcePage(IPage<MediaResourceVO> page,Integer mediaType,Integer subject) {
+		return page.setRecords(baseMapper.selectMediaResourcePage(page,mediaType,subject));
 	}
 
 	@Override
-	public String selectMediaResourceSKJADetail(Integer id) {
-		return baseMapper.selectMediaResourceSKJADetail(id);
+	public List<MediaResourceSortVO> selectMediaResourceSortList(Integer mediaType,Integer subject) {
+
+		return baseMapper.selectMediaResourceSortList(mediaType,subject);
 	}
+
 	@Override
-	public String selectMediaResourceCZWADetail(Integer id) {
-		return baseMapper.selectMediaResourceCZWADetail(id);
+	public IPage<MediaResourceVO> selectMediaResourceList(IPage<MediaResourceVO> page,Integer mediaType,Integer sortId,Integer subject) {
+		return page.setRecords(baseMapper.selectMediaResourceList(page,mediaType,sortId,subject));
 	}
+
 	@Override
-	public String selectMediaResourceGXSPDetail(Integer id) {
-		return baseMapper.selectMediaResourceGXSPDetail(id);
+	public IPage<MediaResourceVO> selectMediaResourceSortSearch(IPage<MediaResourceVO> page, Integer mediaType, Integer sortId, Integer subject, String title) {
+		return page.setRecords(baseMapper.selectMediaResourceSortSearch(page,mediaType,sortId,subject,title));
 	}
-	@Override
-	public String selectMediaResourceZSBKDetail(Integer id) {
-		return baseMapper.selectMediaResourceZSBKDetail(id);
-	}
-	@Override
-	public String selectMediaResourceMSWKDetail(Integer id) {
-		return baseMapper.selectMediaResourceMSWKDetail(id);
-	}
+
+
+
 }

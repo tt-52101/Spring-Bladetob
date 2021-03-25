@@ -16,9 +16,12 @@
 package cn.rzedu.sf.resource.service;
 
 import cn.rzedu.sf.resource.entity.MediaResource;
+import cn.rzedu.sf.resource.vo.MediaResourceSortVO;
 import cn.rzedu.sf.resource.vo.MediaResourceVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  *  服务类
@@ -29,38 +32,43 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface IMediaResourceService extends IService<MediaResource> {
 
 	/**
-	 * 自定义分页
+	 * 首页-全部资源
 	 *
 	 * @param page
-	 * @param mediaResource
+	 * @param mediaType
 	 * @return
 	 */
-	IPage<MediaResourceVO> selectMediaResourceSKJAPage(IPage<MediaResourceVO> page, MediaResourceVO mediaResource);
-	IPage<MediaResourceVO> selectMediaResourceCZWAPage(IPage<MediaResourceVO> page, MediaResourceVO mediaResource);
-	IPage<MediaResourceVO> selectMediaResourceGXSPPage(IPage<MediaResourceVO> page, MediaResourceVO mediaResource);
-	IPage<MediaResourceVO> selectMediaResourceZSBKPage(IPage<MediaResourceVO> page, MediaResourceVO mediaResource);
-	IPage<MediaResourceVO> selectMediaResourceMSWKPage(IPage<MediaResourceVO> page, MediaResourceVO mediaResource);
+	IPage<MediaResourceVO> selectMediaResourcePage(IPage<MediaResourceVO> page, Integer mediaType,Integer subject);
 
 	/**
-	 * 一级分类
+	 * 一级分类列表
 	 *
-	 * @param sort
+	 * @param mediaType
 	 * @return
 	 */
-	IPage<MediaResourceVO> selectMediaResourceSKJAList(IPage<MediaResourceVO> page, String sort);
-	IPage<MediaResourceVO> selectMediaResourceCZWAList(IPage<MediaResourceVO> page, String sort);
-	IPage<MediaResourceVO> selectMediaResourceGXSPList(IPage<MediaResourceVO> page, String sort);
-	IPage<MediaResourceVO> selectMediaResourceZSBKList(IPage<MediaResourceVO> page, String sort);
-	IPage<MediaResourceVO> selectMediaResourceMSWKList(IPage<MediaResourceVO> page, String sort);
+	List<MediaResourceSortVO> selectMediaResourceSortList(Integer mediaType,Integer subject);
+
 	/**
-	 * getUuid
-	 *
-	 * @param id
+	 * 一级分类资源列表
+	 * @param page
+	 * @param mediaType
+	 * @param sortId
 	 * @return
 	 */
-	String selectMediaResourceSKJADetail(Integer id);
-	String selectMediaResourceCZWADetail(Integer id);
-	String selectMediaResourceGXSPDetail(Integer id);
-	String selectMediaResourceZSBKDetail(Integer id);
-	String selectMediaResourceMSWKDetail(Integer id);
+
+	IPage<MediaResourceVO> selectMediaResourceList(IPage<MediaResourceVO> page,Integer mediaType,Integer sortId,Integer subject);
+
+	/**
+	 * 分类搜索资源列表
+	 * @param page
+	 * @param mediaType
+	 * @param sortId
+	 * @param subject
+	 * @param title
+	 * @return
+	 */
+	IPage<MediaResourceVO> selectMediaResourceSortSearch(IPage<MediaResourceVO> page,Integer mediaType,Integer sortId,Integer subject,String title);
+
+
+
 }

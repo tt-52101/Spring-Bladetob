@@ -3,84 +3,65 @@
 <mapper namespace="cn.rzedu.sf.resource.mapper.MediaResourceMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="mediaResourceResultMap" type="cn.rzedu.sf.resource.entity.MediaResource">
+    <resultMap id="mediaResourceResultMap" type="cn.rzedu.sf.resource.vo.MediaResourceVO">
         <id column="id" property="id"/>
         <result column="title" property="title"/>
         <result column="subject" property="subject"/>
-        <result column="sort" property="sort"/>
+        <result column="sort_id" property="sortId"/>
+        <result column="tags" property="tags"/>
         <result column="object_type" property="objectType"/>
         <result column="uuid" property="uuid"/>
-        <result column="cover_img_url" property="coverImgUrl"/>
+        <result column="cover_img_uuid" property="coverImgUuid"/>
         <result column="create_date" property="createDate"/>
         <result column="modify_date" property="modifyDate"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="media_type" property="mediaType"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="media_type" property="mediaType"/>
+    </resultMap>
+
+    <resultMap id="mediaResourceSortResultMap" type="cn.rzedu.sf.resource.vo.MediaResourceSortVO">
+        <id column="sort_id" property="sortId"/>
+        <result column="sort_name" property="sortName"/>
+        <result column="subject" property="subject"/>
+        <result column="sort_media_type" property="sortMediaType"/>
     </resultMap>
 
 
 
-    <select id="selectMediaResourceSKJAPage" resultMap="mediaResourceResultMap">
-        select * from sf_media_resource where is_deleted = 0 and media_type = 1
+
+    <select id="selectMediaResourcePage" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource where is_deleted = 0 and media_type = #{mediaType} and subject = #{subject}
     </select>
 
-    <select id="selectMediaResourceCZWAPage" resultMap="mediaResourceResultMap">
-        select * from sf_media_resource where is_deleted = 0 and media_type = 2
+    <select id="selectMediaResourceSortList" resultMap="mediaResourceSortResultMap">
+        select sort_id,sort_name,subject,sort_media_type from sf_media_resource_sort where sort_media_type = #{mediaType} and subject = #{subject} order by order_id
     </select>
 
-    <select id="selectMediaResourceGXSPPage" resultMap="mediaResourceResultMap">
-        select * from sf_media_resource where is_deleted = 0 and media_type = 3
-    </select>
-
-    <select id="selectMediaResourceZSBKPage" resultMap="mediaResourceResultMap">
-        select * from sf_media_resource where is_deleted = 0 and media_type = 4
-    </select>
-
-    <select id="selectMediaResourceMSWKPage" resultMap="mediaResourceResultMap">
-        select * from sf_media_resource where is_deleted = 0 and media_type = 5
+    <select id="selectMediaResourceList" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource
+        where is_deleted = 0 and media_type = #{mediaType}
+        and subject = #{subject}
+        <if test="sortId != null and sortId != ''">
+            and sort_id = #{sortId}
+        </if>
     </select>
 
 
-    <select id="selectMediaResourceSKJAList" resultMap="mediaResourceResultMap">
-        select * from sf_media_resource where is_deleted = 0 and media_type = 1 and sort = #{sort}
-    </select>
-
-    <select id="selectMediaResourceCZWAList" resultMap="mediaResourceResultMap">
-        select * from sf_media_resource where is_deleted = 0 and media_type = 2 and sort = #{sort}
-    </select>
-
-    <select id="selectMediaResourceGXSPList" resultMap="mediaResourceResultMap">
-        select * from sf_media_resource where is_deleted = 0 and media_type = 3 and sort = #{sort}
-    </select>
-
-    <select id="selectMediaResourceZSBKList" resultMap="mediaResourceResultMap">
-        select * from sf_media_resource where is_deleted = 0 and media_type = 4 and sort = #{sort}
-    </select>
-
-    <select id="selectMediaResourceMSWKList" resultMap="mediaResourceResultMap">
-        select * from sf_media_resource where is_deleted = 0 and media_type = 5 and sort = #{sort}
+    <select id="selectMediaResourceSortSearch" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource
+        where is_deleted = 0 and media_type = #{mediaType}
+        and subject = #{subject}
+        <if test = "sortId != null and sortId != ''">
+        and sort_id = #{sortId}
+        </if>
+<!--        <if test = "title != null and title != ''">-->
+<!--        and title LIKE CONCAT('%',#{title},'%')-->
+<!--        </if>-->
     </select>
 
 
 
-    <select id="selectMediaResourceSKJADetail" resultType="java.lang.String">
-        select uuid from sf_media_resource where is_deleted = 0 and media_type = 1 and id = #{id}
-    </select>
-
-    <select id="selectMediaResourceCZWADetail" resultType="java.lang.String">
-        select uuid from sf_media_resource where is_deleted = 0 and media_type = 2 and id = #{id}
-    </select>
-
-    <select id="selectMediaResourceGXSPDetail" resultType="java.lang.String">
-        select uuid from sf_media_resource where is_deleted = 0 and media_type = 3 and id = #{id}
-    </select>
-
-    <select id="selectMediaResourceZSBKDetail" resultType="java.lang.String">
-        select uuid from sf_media_resource where is_deleted = 0 and media_type = 4 and id = #{id}
-    </select>
-
-    <select id="selectMediaResourceMSWKDetail" resultType="java.lang.String">
-        select uuid from sf_media_resource where is_deleted = 0 and media_type = 5 and id = #{id}
-    </select>
 
 
 

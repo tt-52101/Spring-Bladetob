@@ -17,6 +17,7 @@ package cn.rzedu.sf.resource.vo;
 
 import cn.rzedu.sf.resource.entity.MediaResource;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -32,4 +33,14 @@ import lombok.EqualsAndHashCode;
 public class MediaResourceVO extends MediaResource {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * 文件对应的url
+	 */
+	@ApiModelProperty(value = "文件对应的url")
+	private String uuidUrl;
+	/**
+	 * 封面图url
+	 */
+	@ApiModelProperty(value = "封面图对应的url")
+	private String coverImgUuidUrl;
 }

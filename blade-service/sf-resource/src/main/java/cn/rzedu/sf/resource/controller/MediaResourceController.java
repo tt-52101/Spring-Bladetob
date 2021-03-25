@@ -16,6 +16,7 @@
 package cn.rzedu.sf.resource.controller;
 
 import cn.rzedu.sf.resource.service.IMediaResourceService;
+import cn.rzedu.sf.resource.vo.MediaResourceSortVO;
 import cn.rzedu.sf.resource.vo.MediaResourceVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
@@ -27,10 +28,9 @@ import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  *  控制器
@@ -50,127 +50,69 @@ public class MediaResourceController extends BladeController {
 	/**
 	 * 首页
 	 */
-	@GetMapping("/teachingPlanPage")
+	@GetMapping("/Page")
 	@ApiOperationSupport(order = 1)
-	@ApiOperation(value = "授课教案-首页", notes = "全部教案")
-	public R<IPage<MediaResourceVO>> teachingPlanPage(MediaResourceVO mediaResource, Query query) {
-		IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceSKJAPage(Condition.getPage(query), mediaResource);
-		return R.data(pages);
-	}
-
-	@GetMapping("/creationPapeworkPage")
-	@ApiOperationSupport(order = 2)
-	@ApiOperation(value = "创作文案-首页", notes = "ALl")
-	public R<IPage<MediaResourceVO>> creationPapeworkPage(MediaResourceVO mediaResource, Query query) {
-		IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceCZWAPage(Condition.getPage(query), mediaResource);
-		return R.data(pages);
-	}
-
-	@GetMapping("/sinologVideoPage")
-	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "国学视频-首页", notes = "ALl")
-	public R<IPage<MediaResourceVO>> sinologVideoPage(MediaResourceVO mediaResource, Query query) {
-		IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceGXSPPage(Condition.getPage(query), mediaResource);
-		return R.data(pages);
-	}
-
-	@GetMapping("/knowledgeBasePage")
-	@ApiOperationSupport(order = 4)
-	@ApiOperation(value = "知识宝库-首页", notes = "ALl")
-	public R<IPage<MediaResourceVO>> knowledgeBasePage(MediaResourceVO mediaResource, Query query) {
-		IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceZSBKPage(Condition.getPage(query), mediaResource);
-		return R.data(pages);
-	}
-
-	@GetMapping("/microLecturePage")
-	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "名师微课-首页", notes = "ALl")
-	public R<IPage<MediaResourceVO>> microLecturePage(MediaResourceVO mediaResource, Query query) {
-		IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceMSWKPage(Condition.getPage(query), mediaResource);
+	@ApiOperation(value = "首页", notes = "1=授课教案,2=创作文案,3=国学视频,4=知识宝库,5=名师微课")
+	public R<IPage<MediaResourceVO>> MediaResourcePage(Query query,
+		@ApiParam(value = "mediaType",required = true)@RequestParam(value = "mediaType") Integer mediaType,
+		@ApiParam(value = "subject",required = true)@RequestParam(value = "subject") Integer subject) {
+		IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourcePage(Condition.getPage(query),mediaType,subject);
 		return R.data(pages);
 	}
 
 	/**
-	 * 分类
+	 * 分类列表
+	 *
+	 * @param mediaType
+	 * @return
 	 */
-	@GetMapping("/TeachingPlanList/{sort}")
-	@ApiOperationSupport(order = 6)
-	@ApiOperation(value = "授课教案-分类", notes = "根据传入的sort")
-	public R<IPage<MediaResourceVO>> TeachingPlanList(MediaResourceVO mediaResource, Query query,@ApiParam(value = "一级分类",required = true)@PathVariable(value = "sort") String sort) {
-		IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceSKJAList(Condition.getPage(query),sort);
-		return R.data(pages);
+	@GetMapping("/sort/{mediaType}")
+	@ApiOperationSupport(order = 2)
+	@ApiOperation(value = "分类列表", notes = "1=授课教案,2=创作文案,3=国学视频,4=知识宝库,5=名师微课")
+	public R<List<MediaResourceSortVO>> MediaResourceSortList(
+		@ApiParam(value = "mediaType",required = true)@PathVariable(value = "mediaType") Integer mediaType,
+		@ApiParam(value = "subject",required = true)@RequestParam(value = "subject") Integer subject) {
+		List<MediaResourceSortVO> list = mediaResourceService.selectMediaResourceSortList(mediaType,subject);
+		return R.data(list);
 	}
 
-	@GetMapping("/creationPapeworkList/{sort}")
-	@ApiOperationSupport(order = 7)
-	@ApiOperation(value = "创作文案-分类", notes = "根据传入的sort")
-	public R<IPage<MediaResourceVO>> creationPapeworkList(MediaResourceVO mediaResource, Query query,@ApiParam(value = "一级分类",required = true)@PathVariable(value = "sort") String sort) {
-		IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceCZWAList(Condition.getPage(query),sort);
-		return R.data(pages);
-	}
-
-	@GetMapping("/sinologVideoList/{sort}")
-	@ApiOperationSupport(order = 8)
-	@ApiOperation(value = "国学视频-分类", notes = "根据传入的sort")
-	public R<IPage<MediaResourceVO>> sinologVideoList(MediaResourceVO mediaResource, Query query,@ApiParam(value = "一级分类",required = true)@PathVariable(value = "sort") String sort) {
-		IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceGXSPList(Condition.getPage(query),sort);
-		return R.data(pages);
-	}
-
-	@GetMapping("/knowledgeBaseList/{sort}")
-	@ApiOperationSupport(order = 9)
-	@ApiOperation(value = "知识宝库-分类", notes = "根据传入的sort")
-	public R<IPage<MediaResourceVO>> knowledgeBaseList(MediaResourceVO mediaResource, Query query,@ApiParam(value = "一级分类",required = true)@PathVariable(value = "sort") String sort) {
-		IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceZSBKList(Condition.getPage(query),sort);
-		return R.data(pages);
-	}
-
-	@GetMapping("/microLectureList/{sort}")
-	@ApiOperationSupport(order = 10)
-	@ApiOperation(value = "名师微课-分类", notes = "根据传入的sort")
-	public R<IPage<MediaResourceVO>> microLectureList(MediaResourceVO mediaResource, Query query,@ApiParam(value = "一级分类",required = true)@PathVariable(value = "sort") String sort) {
-		IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceMSWKList(Condition.getPage(query),sort);
-		return R.data(pages);
-	}
 
 	/**
-	* 详情
-	*/
-	@GetMapping("/TeachingPlanDetail/{id}")
-    @ApiOperationSupport(order = 11)
-	@ApiOperation(value = "授课教案-详情", notes = "传入ID")
-	public R<String > TeachingPlanDetail(@ApiParam(value = "id",required = true)@PathVariable(value = "id") Integer id) {
-		String uuid = mediaResourceService.selectMediaResourceSKJADetail(id);
-		return R.data(uuid);
+	 * 资源列表
+	 */
+	@GetMapping("/sortList/{mediaType}")
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "资源列表", notes = "根据传入sortId返回资源列表")
+	public R<IPage<MediaResourceVO>> MediaResourceList(Query query,
+	@ApiParam(value = "media_type",required = true) @PathVariable(value = "mediaType") Integer mediaType,
+	@ApiParam(value = "一级分类")@RequestParam(value = "sortId",required = false) Integer sortId,
+	@ApiParam(value = "subject",required = true)@RequestParam(value = "subject") Integer subject) {
+
+			IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceList(Condition.getPage(query),mediaType,sortId,subject);
+			return R.data(pages);
+
 	}
-	@GetMapping("/creationPapeworkDetail/{id}")
-	@ApiOperationSupport(order = 12)
-	@ApiOperation(value = "创作文案-详情", notes = "传入ID")
-	public R<String > creationPapeworkDetail(@ApiParam(value = "id",required = true)@PathVariable(value = "id") Integer id) {
-		String uuid = mediaResourceService.selectMediaResourceCZWADetail(id);
-		return R.data(uuid);
-	}
-	@GetMapping("/sinologVideoDetail/{id}")
-	@ApiOperationSupport(order = 13)
-	@ApiOperation(value = "国学视频-详情", notes = "传入ID")
-	public R<String > sinologVideoDetail(@ApiParam(value = "id",required = true)@PathVariable(value = "id") Integer id) {
-		String uuid = mediaResourceService.selectMediaResourceGXSPDetail(id);
-		return R.data(uuid);
-	}
-	@GetMapping("/knowledgeBaseDetail/{id}")
-	@ApiOperationSupport(order = 14)
-	@ApiOperation(value = "知识宝库-详情", notes = "传入ID")
-	public R<String > knowledgeBaseDetail(@ApiParam(value = "id",required = true)@PathVariable(value = "id") Integer id) {
-		String uuid = mediaResourceService.selectMediaResourceZSBKDetail(id);
-		return R.data(uuid);
-	}
-	@GetMapping("/microLectureDetail/{id}")
-	@ApiOperationSupport(order = 15)
-	@ApiOperation(value = "名师微课-详情", notes = "传入ID")
-	public R<String > microLectureDetail(@ApiParam(value = "id",required = true)@PathVariable(value = "id") Integer id) {
-		String uuid = mediaResourceService.selectMediaResourceMSWKDetail(id);
-		return R.data(uuid);
-	}
+
+
+	/**
+	 * 搜索资源列表
+	 */
+	@GetMapping("/searchList/{mediaType}")
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "资源搜索", notes = "根据搜索title返回资源列表")
+	public R<IPage<MediaResourceVO>> MediaResourceSearchList(Query query,
+		@ApiParam(value = "mediaType",required = true) @PathVariable(value = "mediaType") Integer mediaType,
+		@ApiParam(value = "一级分类")@RequestParam(value = "sortId",required = false) Integer sortId,
+		@ApiParam(value = "subject 71=硬笔 72 =软笔",required = true)@RequestParam(value = "subject") Integer subject,
+		@ApiParam(value = "title")@RequestParam(value = "title",required = false) String title) {
+
+			IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceSortSearch(Condition.getPage(query),mediaType,sortId,subject,title);
+			return R.data(pages);
+		}
+
+
+
+
 
 
 

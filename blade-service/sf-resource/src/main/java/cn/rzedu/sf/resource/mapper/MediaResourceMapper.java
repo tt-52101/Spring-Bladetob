@@ -16,6 +16,7 @@
 package cn.rzedu.sf.resource.mapper;
 
 import cn.rzedu.sf.resource.entity.MediaResource;
+import cn.rzedu.sf.resource.vo.MediaResourceSortVO;
 import cn.rzedu.sf.resource.vo.MediaResourceVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -34,30 +35,33 @@ public interface MediaResourceMapper extends BaseMapper<MediaResource> {
 	 * 自定义分页
 	 *
 	 * @param page
-	 * @param mediaResource
+	 * @param mediaType
 	 * @return
 	 */
-	List<MediaResourceVO> selectMediaResourceSKJAPage(IPage page, MediaResourceVO mediaResource);
-	List<MediaResourceVO> selectMediaResourceCZWAPage(IPage page, MediaResourceVO mediaResource);
-	List<MediaResourceVO> selectMediaResourceGXSPPage(IPage page, MediaResourceVO mediaResource);
-	List<MediaResourceVO> selectMediaResourceZSBKPage(IPage page, MediaResourceVO mediaResource);
-	List<MediaResourceVO> selectMediaResourceMSWKPage(IPage page, MediaResourceVO mediaResource);
-	/**
-	 * 分类
-	 *
-	 * @param sort
-	 * @return
-	 */
-	List<MediaResourceVO> selectMediaResourceSKJAList(IPage page, String sort);
-	List<MediaResourceVO> selectMediaResourceCZWAList(IPage page, String sort);
-	List<MediaResourceVO> selectMediaResourceGXSPList(IPage page, String sort);
-	List<MediaResourceVO> selectMediaResourceZSBKList(IPage page, String sort);
-	List<MediaResourceVO> selectMediaResourceMSWKList(IPage page, String sort);
+	List<MediaResourceVO> selectMediaResourcePage(IPage page,Integer mediaType,Integer subject);
 
-	String selectMediaResourceSKJADetail(Integer id);
-	String selectMediaResourceCZWADetail(Integer id);
-	String selectMediaResourceGXSPDetail(Integer id);
-	String selectMediaResourceZSBKDetail(Integer id);
-	String selectMediaResourceMSWKDetail(Integer id);
+	/**
+	 * 分类列表
+	 *
+	 * @param mediaType
+	 * @return
+	 */
+	List<MediaResourceSortVO> selectMediaResourceSortList(Integer mediaType,Integer subject);
+
+
+	/**
+	 * 资源列表
+	 * @param page
+	 * @param mediaType
+	 * @param sortId
+	 * @return
+	 */
+	List<MediaResourceVO> selectMediaResourceList(IPage page,Integer mediaType,Integer sortId,Integer subject);
+
+	List<MediaResourceVO> selectMediaResourceSortSearch(IPage page,Integer mediaType,Integer sortId,Integer subject,String title);
+
+
+
+
 
 }

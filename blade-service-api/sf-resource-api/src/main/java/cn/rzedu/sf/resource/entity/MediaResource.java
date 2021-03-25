@@ -54,9 +54,16 @@ public class MediaResource implements Serializable {
      * 分类 多分类用逗号隔开
      */
     @ApiModelProperty(value = "分类 多分类用逗号隔开")
-    private String sort;
-    /**
-     * 文件类型  video，audio，image，text
+    private Integer sortId;
+
+  /**
+   * 标签
+   */
+    @ApiModelProperty(value = "标签")
+    private String tags;
+
+  /**
+   * 文件类型  video，audio，image，text
      */
     @ApiModelProperty(value = "文件类型  video，audio，image，text")
     private String objectType;
@@ -68,8 +75,8 @@ public class MediaResource implements Serializable {
     /**
      * 封面图url
      */
-    @ApiModelProperty(value = "封面图url")
-    private String coverImgUrl;
+    @ApiModelProperty(value = "封面图对应的uuid")
+    private String coverImgUuid;
     /**
      * 创建时间
      */
