@@ -38,9 +38,5 @@ public class MediaResourceVO extends MediaResource {
 	 */
 	@ApiModelProperty(value = "文件对应的url")
 	private String uuidUrl;
-	/**
-	 * 封面图url
-	 */
-	@ApiModelProperty(value = "封面图对应的url")
-	private String coverImgUuidUrl;
+
 }
