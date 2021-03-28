@@ -82,7 +82,7 @@ public class MediaResource implements Serializable {
     /**
      * 封面图url
      */
-    @ApiModelProperty(value = "封面图对应的uuid")
+    @ApiModelProperty(value = "封面图对应的url")
     private String coverImgUrl;
     /**
      * 创建时间

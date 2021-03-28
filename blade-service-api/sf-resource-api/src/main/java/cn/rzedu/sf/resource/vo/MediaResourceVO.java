@@ -33,10 +33,5 @@ import lombok.EqualsAndHashCode;
 public class MediaResourceVO extends MediaResource {
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 文件对应的url
-	 */
-	@ApiModelProperty(value = "文件对应的url")
-	private String uuidUrl;
 
 }
