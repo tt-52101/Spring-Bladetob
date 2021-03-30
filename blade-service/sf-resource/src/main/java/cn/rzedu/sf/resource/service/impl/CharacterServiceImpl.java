@@ -28,6 +28,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.sql.Wrapper;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -92,7 +93,33 @@ public class CharacterServiceImpl extends ServiceImpl<CharacterMapper, Character
 
 	@Override
 	public List<Character> findByChars(String chars) {
-		return baseMapper.findByChars(Func.toStrList("、", chars));
+		List<Character> list = new ArrayList<Character>();
+		List<String> stringList = Func.toStrList("、", chars);
+		for (String s : stringList) {
+			Character character = baseMapper.findCharacterByKeyword(s);
+			if(character != null){
+				list.add(character);
+			} else {
+				Integer type = 1;
+				if(s.length() > 1){
+					type = 2;
+				}
+
+				character = new Character();
+				character.setCharS(s);
+				character.setCharT(s);
+				character.setKeyword(s);
+				character.setType(type);
+				character.setCreateDate(LocalDateTime.now());
+				character.setModifyDate(LocalDateTime.now());
+				character.setIsDeleted(0);
+
+				baseMapper.insert(character);
+				list.add(character);
+			}
+		}
+
+		return list;
 	}
 
 	@Override
