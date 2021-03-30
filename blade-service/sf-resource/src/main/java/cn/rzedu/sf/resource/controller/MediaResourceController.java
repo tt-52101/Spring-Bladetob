@@ -103,7 +103,7 @@ public class MediaResourceController extends BladeController {
 	public R<IPage<MediaResourceVO>> MediaResourceSearchList(Query query,
 		@ApiParam(value = "mediaType",required = true) @PathVariable(value = "mediaType") Integer mediaType,
 		@ApiParam(value = "一级分类")@RequestParam(value = "sortId",required = false) Integer sortId,
-		@ApiParam(value = "subject 71=硬笔 72 =软笔",required = true)@RequestParam(value = "subject") Integer subject,
+		@ApiParam(value = "subject 71=软笔 72=硬笔",required = true)@RequestParam(value = "subject") Integer subject,
 		@ApiParam(value = "title")@RequestParam(value = "title",required = false) String title) {
 
 			IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceSortSearch(Condition.getPage(query),mediaType,sortId,subject,title);

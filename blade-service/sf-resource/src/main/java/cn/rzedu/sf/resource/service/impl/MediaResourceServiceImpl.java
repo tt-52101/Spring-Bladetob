@@ -38,6 +38,9 @@ public class MediaResourceServiceImpl extends ServiceImpl<MediaResourceMapper, M
 
 	@Override
 	public IPage<MediaResourceVO> selectMediaResourcePage(IPage<MediaResourceVO> page,Integer mediaType,Integer subject) {
+
+
+
 		return page.setRecords(baseMapper.selectMediaResourcePage(page,mediaType,subject));
 	}
 

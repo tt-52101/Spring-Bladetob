@@ -10,8 +10,9 @@
         <result column="sort_id" property="sortId"/>
         <result column="tags" property="tags"/>
         <result column="object_type" property="objectType"/>
+        <result column="suffix" property="suffix"/>
         <result column="uuid" property="uuid"/>
-        <result column="cover_img_uuid" property="coverImgUuid"/>
+        <result column="cover_img_url" property="coverImgUrl"/>
         <result column="create_date" property="createDate"/>
         <result column="modify_date" property="modifyDate"/>
         <result column="is_deleted" property="isDeleted"/>
