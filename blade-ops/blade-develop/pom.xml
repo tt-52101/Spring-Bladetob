@@ -73,15 +73,6 @@
                         <!--镜像名称和tag，使用了mvn内置变量${project.version}，表示当前工程的version-->
                         <image>${DEST_REGISTRY_URL}/tob-${project.artifactId}:latest</image>
                     </to>
-                    <extraDirectories>
-                       <paths>
-                          <path>
-                        <!--<allowInsecureRegistries>true</allowInsecureRegistries>-->
-                            <from>target/</from>
-                            <into>/</into>
-                          </path>
-                        </paths>
-                    </extraDirectories>
                     <!--容器相关的属性-->
                     <container>
                         <creationTime>USE_CURRENT_TIMESTAMP</creationTime>

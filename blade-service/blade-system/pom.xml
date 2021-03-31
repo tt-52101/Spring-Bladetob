@@ -55,16 +55,6 @@
                         <image>${DEST_REGISTRY_URL}/tob-${project.artifactId}:latest</image>
                     </to>
                     <!--容器相关的属性-->
-		    <extraDirectories>
-                       <paths>
-                          <path>
-			<!--<allowInsecureRegistries>true</allowInsecureRegistries>-->
-                            <from>target/</from>
-                            <into>/</into>
-                          </path>
-                        </paths>
-                    </extraDirectories>
-                    <!--容器相关的属性-->
                     <container>
 			<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
                         <entrypoint>
