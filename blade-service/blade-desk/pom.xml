@@ -65,12 +65,12 @@
                     <!--容器相关的属性-->
                     <container>
 			<creationTime>USE_CURRENT_TIMESTAMP</creationTime>
-                        <entrypoint>
+                        <!--<entrypoint>
                            <arg>java</arg>
                            <arg>-Djava.security.egd=file:/dev/./urandom</arg>
                            <arg>-jar</arg>
                            <arg>/${project.artifactId}.jar</arg>
-                        </entrypoint>
+                        </entrypoint>-->
                         <args>
                             <arg>--spring.profiles.active=test</arg>
                         </args>
