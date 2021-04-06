@@ -22,7 +22,6 @@ import cn.rzedu.sf.resource.vo.MediaResourceSortVO;
 import cn.rzedu.sf.resource.vo.MediaResourceVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.swagger.models.auth.In;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -60,6 +59,9 @@ public class MediaResourceServiceImpl extends ServiceImpl<MediaResourceMapper, M
 		return page.setRecords(baseMapper.selectMediaResourceSortSearch(page,mediaType,sortId,subject,title));
 	}
 
-
+	@Override
+	public IPage<MediaResourceVO> selectMediaResourceHardpenSearch(IPage<MediaResourceVO> page, Integer mediaType, String title) {
+		return page.setRecords(baseMapper.selectMediaResourceHardpenSearch(page,mediaType,title));
+	}
 
 }
