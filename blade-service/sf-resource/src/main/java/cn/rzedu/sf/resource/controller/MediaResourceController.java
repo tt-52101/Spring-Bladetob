@@ -110,8 +110,23 @@ public class MediaResourceController extends BladeController {
 			return R.data(pages);
 		}
 
+	/**
+	 * 硬笔查询
+	 * @param query
+	 * @param mediaType
+	 * @param title
+	 * @return
+	 */
+	@GetMapping("/HardpenSerchList/")
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "硬笔查询", notes = "根据搜索title返回资源列表")
+	public R<IPage<MediaResourceVO>> MediaResourceSearchList(Query query,
+															 @ApiParam(value = "mediaType") @RequestParam(value = "mediaType",required = false) Integer mediaType,
+															 @ApiParam(value = "title")@RequestParam(value = "title",required = false) String title) {
 
-
+		IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceHardpenSearch(Condition.getPage(query),mediaType,title);
+		return R.data(pages);
+	}
 
 
 

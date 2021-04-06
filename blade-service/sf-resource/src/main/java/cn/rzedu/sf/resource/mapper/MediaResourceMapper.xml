@@ -61,7 +61,17 @@
         </if>
     </select>
 
-
+    <select id="selectMediaResourceHardpenSearch" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource
+        where is_deleted = 0
+        and subject = 72
+        <if test = "title != null and title != ''">
+            and title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test = "mediaType != null and mediaType != ''">
+            and media_type = #{media_type}
+        </if>
+    </select>
 
 
 
