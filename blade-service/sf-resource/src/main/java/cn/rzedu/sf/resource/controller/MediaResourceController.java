@@ -118,7 +118,7 @@ public class MediaResourceController extends BladeController {
 	 * @param name
 	 * @return
 	 */
-	@GetMapping("/HardPenQueryList/")
+	@GetMapping("/HardPenQueryList")
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "硬笔查询", notes = "根据搜索name返回资源列表")
 	public R<IPage<HardPenQueryVO>> hardPenQueryList(Query query,
