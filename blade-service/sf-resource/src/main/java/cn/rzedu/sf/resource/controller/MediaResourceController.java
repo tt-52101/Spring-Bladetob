@@ -15,7 +15,9 @@
  */
 package cn.rzedu.sf.resource.controller;
 
+import cn.rzedu.sf.resource.service.IHardPenQueryService;
 import cn.rzedu.sf.resource.service.IMediaResourceService;
+import cn.rzedu.sf.resource.vo.HardPenQueryVO;
 import cn.rzedu.sf.resource.vo.MediaResourceSortVO;
 import cn.rzedu.sf.resource.vo.MediaResourceVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -45,7 +47,7 @@ import java.util.List;
 public class MediaResourceController extends BladeController {
 
 	private IMediaResourceService mediaResourceService;
-
+	private IHardPenQueryService hardPenQueryService;
 
 	/**
 	 * 首页
@@ -113,64 +115,16 @@ public class MediaResourceController extends BladeController {
 	/**
 	 * 硬笔查询
 	 * @param query
-	 * @param mediaType
-	 * @param title
+	 * @param name
 	 * @return
 	 */
-	@GetMapping("/HardpenSerchList/")
+	@GetMapping("/HardPenQueryList/")
 	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "硬笔查询", notes = "根据搜索title返回资源列表")
-	public R<IPage<MediaResourceVO>> MediaResourceSearchList(Query query,
-															 @ApiParam(value = "mediaType") @RequestParam(value = "mediaType",required = false) Integer mediaType,
-															 @ApiParam(value = "title")@RequestParam(value = "title",required = false) String title) {
-
-		IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceHardpenSearch(Condition.getPage(query),mediaType,title);
+	@ApiOperation(value = "硬笔查询", notes = "根据搜索name返回资源列表")
+	public R<IPage<HardPenQueryVO>> hardPenQueryList(Query query,
+		@ApiParam(value = "name")@RequestParam(value = "name",required = false) String name) {
+		IPage<HardPenQueryVO> pages = hardPenQueryService.selectHardPenQuery(Condition.getPage(query),name);
 		return R.data(pages);
 	}
-
-
-
-
-//	/**
-//	* 新增
-//	*/
-//	@PostMapping("/save")
-//    @ApiOperationSupport(order = 16)
-//	@ApiOperation(value = "新增", notes = "传入mediaResource")
-//	public R save(@Valid @RequestBody MediaResource mediaResource) {
-//		return R.status(mediaResourceService.save(mediaResource));
-//	}
-//
-//	/**
-//	* 修改
-//	*/
-//	@PostMapping("/update")
-//    @ApiOperationSupport(order = 17)
-//	@ApiOperation(value = "修改", notes = "传入mediaResource")
-//	public R update(@Valid @RequestBody MediaResource mediaResource) {
-//		return R.status(mediaResourceService.updateById(mediaResource));
-//	}
-//
-//	/**
-//	* 新增或修改
-//	*/
-//	@PostMapping("/submit")
-//    @ApiOperationSupport(order = 18)
-//	@ApiOperation(value = "新增或修改", notes = "传入mediaResource")
-//	public R submit(@Valid @RequestBody MediaResource mediaResource) {
-//		return R.status(mediaResourceService.saveOrUpdate(mediaResource));
-//	}
-//
-//
-//	/**
-//	* 删除
-//	*/
-//	@PostMapping("/remove")
-//    @ApiOperationSupport(order = 19)
-//	@ApiOperation(value = "删除", notes = "传入id")
-//	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
-//		return R.status(mediaResourceService.removeByIds(Func.toLongList(ids)));
-//	}
-
 	
 }

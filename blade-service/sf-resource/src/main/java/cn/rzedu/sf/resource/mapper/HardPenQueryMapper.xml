@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.resource.mapper.HardPenQueryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="hardPenQueryVOResultMap" type="cn.rzedu.sf.resource.vo.HardPenQueryVO">
+        <id column="id" property="id"/>
+        <result column="type" property="type"/>
+        <result column="name" property="name"/>
+        <result column="image" property="image"/>
+        <result column="recognition_image" property="recognitionImage"/>
+        <result column="recognition_video" property="recognitionVideo"/>
+        <result column="chalk_text" property="chalkText"/>
+        <result column="chalk_video" property="chalkVideo"/>
+        <result column="pen_text" property="penText"/>
+        <result column="pen_video" property="penVideo"/>
+    </resultMap>
+
+
+
+
+    <select id="selectHardPenQuery" resultMap="hardPenQueryVOResultMap">
+        select * from (
+                          (select
+                               id,
+                               null as type,
+                               title as name,
+                               cover_img_url as image,
+                               null as recognition_image,
+                               uuid as recognition_video,
+                               null as chalk_text,
+                               null as chalk_video,
+                               null as pen_text,
+                               null as pen_video
+                           from sf_media_resource
+                           where is_deleted = 0 and `subject` = 72
+                          )
+                          union
+                          (select
+                               id,
+                               type,
+                               name,
+                               image,
+                               recognition_image,
+                               recognition_video,
+                               null as chalk_text,
+                               null as chalk_video,
+                               null as pen_text,
+                               null as pen_video
+                           from sf_character_radical
+                           where is_deleted = 0)
+                          union
+                          (select
+                               id,
+                               type,
+                               name,
+                               image,
+                               recognition_image,
+                               recognition_video,
+                               null as chalk_text,
+                               null as chalk_video,
+                               null as pen_text,
+                               null as pen_video
+                           from sf_character_structure
+                           where is_deleted = 0)
+                          union
+                          (select
+                               id,
+                               type,
+                               name,
+                               image,
+                               recognition_image,
+                               recognition_video,
+                               chalk_text,
+                               chalk_video,
+                               pen_text,
+                               pen_video
+                           from sf_character_stroke
+                           where is_deleted = 0)) a
+        where a.name like CONCAT('%',#{name},'%') or a.type like CONCAT('%',#{name},'%')
+    </select>
+
+
+
+</mapper>

@@ -69,13 +69,5 @@ public interface IMediaResourceService extends IService<MediaResource> {
 	 */
 	IPage<MediaResourceVO> selectMediaResourceSortSearch(IPage<MediaResourceVO> page,Integer mediaType,Integer sortId,Integer subject,String title);
 
-	/**
-	 * 硬笔查询
-	 * @param page
-	 * @param mediaType
-	 * @param title
-	 * @return
-	 */
-	IPage<MediaResourceVO> selectMediaResourceHardpenSearch(IPage<MediaResourceVO> page,Integer mediaType,String title);
 
 }
