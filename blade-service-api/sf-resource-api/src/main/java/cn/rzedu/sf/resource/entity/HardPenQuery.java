@@ -19,7 +19,10 @@ public class HardPenQuery implements Serializable{
     @ApiModelProperty(value = "id")
     private Integer id;
 
-    @ApiModelProperty(value = "type")
+    @ApiModelProperty(value = "objectType")
+    private String objectType;
+
+    @ApiModelProperty(value = "type/文件后缀")
     private String type;
 
     @ApiModelProperty(value = "name(标题/名称)")
