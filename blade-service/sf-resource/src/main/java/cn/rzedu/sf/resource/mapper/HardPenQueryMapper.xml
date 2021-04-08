@@ -82,7 +82,10 @@
                                pen_video
                            from sf_character_stroke
                            where is_deleted = 0)) a
-        where a.name like CONCAT('%',#{name},'%')
+        <if test = "name != null and name != ''">
+            where a.name like CONCAT('%',#{name},'%')
+        </if>
+
     </select>
 
 
