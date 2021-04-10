@@ -70,5 +70,13 @@ public interface MediaResourceMapper extends BaseMapper<MediaResource> {
 	 */
 	List<MediaResourceVO> selectMediaResourceSortSearch(IPage page,Integer mediaType,Integer sortId,Integer subject,String title);
 
+	/**
+	 * 资源查询
+	 * @param page
+	 * @param subject
+	 * @param title
+	 * @return
+	 */
+	List<MediaResourceVO> selectMediaResourceQuery(IPage page,Integer subject,String title);
 
 }

@@ -32,7 +32,7 @@
 
 
     <select id="selectMediaResourcePage" resultMap="mediaResourceResultMap">
-        select * from sf_media_resource where is_deleted = 0 and media_type = #{mediaType} and subject = #{subject}
+        select * from sf_media_resource where is_deleted = 0 and media_type = #{mediaType} and subject = #{subject} order by create_date
     </select>
 
     <select id="selectMediaResourceSortList" resultMap="mediaResourceSortResultMap">
@@ -46,6 +46,7 @@
         <if test="sortId != null and sortId != ''">
             and sort_id = #{sortId}
         </if>
+        order by create_date
     </select>
 
 
@@ -59,9 +60,18 @@
         <if test = "title != null and title != ''">
         and title LIKE CONCAT('%',#{title},'%')
         </if>
+        order by create_date
     </select>
 
-
+    <select id="selectMediaResourceQuery" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource
+        where is_deleted = 0
+        and subject = #{subject}
+        <if test = "title != null and title != ''">
+            and title LIKE CONCAT('%',#{title},'%')
+        </if>
+        order by create_date
+    </select>
 
     <select id="selectMediaResourceSort" resultMap="mediaResourceResultMap">
         select * from sf_media_resource where is_deleted = 0

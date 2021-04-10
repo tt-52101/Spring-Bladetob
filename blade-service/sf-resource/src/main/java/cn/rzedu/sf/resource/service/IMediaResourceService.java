@@ -69,5 +69,13 @@ public interface IMediaResourceService extends IService<MediaResource> {
 	 */
 	IPage<MediaResourceVO> selectMediaResourceSortSearch(IPage<MediaResourceVO> page,Integer mediaType,Integer sortId,Integer subject,String title);
 
+	/**
+	 * 查询
+	 * @param page
+	 * @param subject
+	 * @param title
+	 * @return
+	 */
+	IPage<MediaResourceVO> selectMediaResourceQuery(IPage<MediaResourceVO> page,Integer subject,String title);
 
 }

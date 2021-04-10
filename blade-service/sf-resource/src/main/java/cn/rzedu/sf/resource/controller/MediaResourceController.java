@@ -113,18 +113,36 @@ public class MediaResourceController extends BladeController {
 		}
 
 	/**
+	 * 查询
+	 * @param query
+	 * @param subject
+	 * @param title
+	 * @return
+	 */
+	@GetMapping("/QueryList/{mediaType}")
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "资源查询", notes = "根据查询title返回资源列表")
+	public R<IPage<MediaResourceVO>> MediaResourceQueryList(Query query,
+		@ApiParam(value = "subject 71=软笔 72=硬笔",required = true)@RequestParam(value = "subject") Integer subject,
+		@ApiParam(value = "title")@RequestParam(value = "title",required = false) String title) {
+		IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceQuery(Condition.getPage(query),subject,title);
+		return R.data(pages);
+	}
+
+
+	/**
 	 * 硬笔查询
 	 * @param query
 	 * @param name
 	 * @return
 	 */
-	@GetMapping("/HardPenQueryList")
-	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "硬笔查询", notes = "根据搜索name返回资源列表")
-	public R<IPage<HardPenQueryVO>> hardPenQueryList(Query query,
-		@ApiParam(value = "name")@RequestParam(value = "name",required = false) String name) {
-		IPage<HardPenQueryVO> pages = hardPenQueryService.selectHardPenQuery(Condition.getPage(query),name);
-		return R.data(pages);
-	}
+//	@GetMapping("/HardPenQueryList")
+//	@ApiOperationSupport(order = 3)
+//	@ApiOperation(value = "硬笔查询", notes = "根据搜索name返回资源列表")
+//	public R<IPage<HardPenQueryVO>> hardPenQueryList(Query query,
+//		@ApiParam(value = "name")@RequestParam(value = "name",required = false) String name) {
+//		IPage<HardPenQueryVO> pages = hardPenQueryService.selectHardPenQuery(Condition.getPage(query),name);
+//		return R.data(pages);
+//	}
 	
 }

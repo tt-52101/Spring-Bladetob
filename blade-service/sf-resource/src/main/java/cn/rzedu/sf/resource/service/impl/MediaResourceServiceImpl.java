@@ -59,5 +59,8 @@ public class MediaResourceServiceImpl extends ServiceImpl<MediaResourceMapper, M
 		return page.setRecords(baseMapper.selectMediaResourceSortSearch(page,mediaType,sortId,subject,title));
 	}
 
-
+	@Override
+	public IPage<MediaResourceVO> selectMediaResourceQuery(IPage<MediaResourceVO> page,Integer subject, String title) {
+		return page.setRecords(baseMapper.selectMediaResourceQuery(page,subject,title));
+	}
 }
