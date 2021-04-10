@@ -119,11 +119,11 @@ public class MediaResourceController extends BladeController {
 	 * @param title
 	 * @return
 	 */
-	@GetMapping("/QueryList/{mediaType}")
+	@GetMapping("/QueryList/{subject}")
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "资源查询", notes = "根据查询title返回资源列表")
 	public R<IPage<MediaResourceVO>> MediaResourceQueryList(Query query,
-		@ApiParam(value = "subject 71=软笔 72=硬笔",required = true)@RequestParam(value = "subject") Integer subject,
+		@ApiParam(value = "subject 71=软笔 72=硬笔",required = true)@PathVariable(value = "subject") Integer subject,
 		@ApiParam(value = "title")@RequestParam(value = "title",required = false) String title) {
 		IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceQuery(Condition.getPage(query),subject,title);
 		return R.data(pages);

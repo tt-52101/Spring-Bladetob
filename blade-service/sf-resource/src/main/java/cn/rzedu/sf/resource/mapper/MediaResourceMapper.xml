@@ -73,12 +73,6 @@
         order by create_date
     </select>
 
-    <select id="selectMediaResourceSort" resultMap="mediaResourceResultMap">
-        select * from sf_media_resource where is_deleted = 0
-    </select>
 
-    <select id="selectMediaResourceFull" resultMap="mediaResourceResultMap">
-        select * from sf_media_resource where is_deleted = 0
-    </select>
 
 </mapper>
