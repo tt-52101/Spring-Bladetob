@@ -173,6 +173,7 @@ public class CharacterController extends BladeController {
             if(isExist){
                 result.setIsExist(1);
                 result.setCharacterId(c.getId());
+                result.setCharacterName(c.getCharS());
                 return R.data(result);
             }
         }
