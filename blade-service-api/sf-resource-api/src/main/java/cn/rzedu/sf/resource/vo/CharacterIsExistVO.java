@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
  * @since 2020-08-05
  */
 @Data
-@ApiModel(value = "CharacterVO对象", description = "汉字")
+@ApiModel(value = "CharacterIsExistVO对象", description = "汉字")
 public class CharacterIsExistVO{
     private static final long serialVersionUID = 1L;
 
