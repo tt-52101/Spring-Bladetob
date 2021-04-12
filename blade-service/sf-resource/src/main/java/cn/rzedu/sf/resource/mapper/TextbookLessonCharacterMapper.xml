@@ -68,4 +68,19 @@
             ) t
         )
     </update>
+
+    <select id="isExistHardResourceByCharacterId" resultMap="textbookLessonCharacterResultMap">
+        SELECT
+            tlc.*
+        FROM
+            sf_textbook_lesson_character tlc
+            LEFT JOIN sf_textbook_lesson tl ON tlc.lesson_id = tl.id
+            AND tl.is_deleted = 0
+            LEFT JOIN sf_textbook t ON tl.textbook_id = t.id
+            AND t.is_deleted = 0
+        WHERE
+            tlc.character_id = #{param1}
+            AND tlc.is_deleted = 0
+            AND t.subject = 72
+    </select>
 </mapper>

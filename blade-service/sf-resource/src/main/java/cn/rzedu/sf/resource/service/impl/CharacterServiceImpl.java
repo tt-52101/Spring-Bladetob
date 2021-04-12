@@ -16,12 +16,16 @@
 package cn.rzedu.sf.resource.service.impl;
 
 import cn.rzedu.sf.resource.entity.Character;
+import cn.rzedu.sf.resource.entity.TextbookLessonCharacter;
+import cn.rzedu.sf.resource.mapper.TextbookLessonCharacterMapper;
+import cn.rzedu.sf.resource.service.ITextbookLessonCharacterService;
 import cn.rzedu.sf.resource.vo.CharacterVO;
 import cn.rzedu.sf.resource.mapper.CharacterMapper;
 import cn.rzedu.sf.resource.service.ICharacterService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
+import lombok.AllArgsConstructor;
 import org.springblade.core.tool.utils.Func;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -40,8 +44,11 @@ import java.util.List;
  * @author Blade
  * @since 2020-08-05
  */
+@AllArgsConstructor
 @Service
 public class CharacterServiceImpl extends ServiceImpl<CharacterMapper, Character> implements ICharacterService {
+
+	private TextbookLessonCharacterMapper textbookLessonCharacterMapper;
 
 	@Override
 	public IPage<CharacterVO> selectCharacterPage(IPage<CharacterVO> page, CharacterVO character) {
@@ -145,5 +152,17 @@ public class CharacterServiceImpl extends ServiceImpl<CharacterMapper, Character
 	@Override
 	public Character findCharacterByKeyword(String name) {
 		return baseMapper.findCharacterByKeyword(name);
+	}
+
+	@Override
+	public boolean isExistHardResourceByCharacterId(Integer id) {
+		if(id == null){
+			return false;
+		}
+		List<TextbookLessonCharacter> list = textbookLessonCharacterMapper.isExistHardResourceByCharacterId(id);
+		if(list != null && list.size() > 0){
+			return true;
+		}
+		return false;
 	}
 }
