@@ -30,4 +30,10 @@ public class CharacterIsExistVO{
     @ApiModelProperty(value = "汉字ID")
     private Integer characterId;
 
+    /**
+     * 汉字
+     */
+    @ApiModelProperty(value = "汉字")
+    private String characterName;
+
 }
