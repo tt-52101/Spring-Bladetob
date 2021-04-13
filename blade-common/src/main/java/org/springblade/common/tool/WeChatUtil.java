@@ -11,6 +11,7 @@ import org.springblade.common.props.WeChatProperties;
 import org.springblade.common.vo.EventVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -26,9 +27,10 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Component
+@EnableConfigurationProperties(WeChatProperties.class)
 public class WeChatUtil {
 
-//	private static WeChatProperties weChatProperties;
+	private static WeChatProperties weChatProperties;
 
 	//获取access_token接口地址
 	public static final String WX_ACCESSTOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
@@ -70,10 +72,10 @@ public class WeChatUtil {
 		WeChatUtil.APP_SECRET = appSecret;
 	}
 
-//	@Autowired
-//	public void init(WeChatProperties weChatProperties) {
-//		WeChatUtil.weChatProperties = weChatProperties;
-//	}
+	@Resource
+	public void setWeChatProperties(WeChatProperties weChatProperties) {
+		this.weChatProperties = weChatProperties;
+	}
 
 	public static EventVo getPullMessage(HttpServletRequest request) throws IOException, JAXBException {
 		InputStream stream = null;
@@ -176,7 +178,7 @@ public class WeChatUtil {
 	public static String getAccessToken() {
 		System.out.println("ACCESS_TOKEN --------- " + ACCESS_TOKEN);
 		System.out.println("EXPIRESTIME --------- " + EXPIRESTIME);
-		
+
 		Object obj = redisTemplate.opsForValue().get("ACCESS_TOKEN");
 		
 		if(obj != null){
@@ -195,25 +197,21 @@ public class WeChatUtil {
 	}
 
 
-//	public static String getXCXAccessToken() {
-//		String xcxAppId = weChatProperties.getXcxAppId();
-//		String xcxAppSecret = weChatProperties.getXcxAppSecret();
-//
-//		return xcxAppId;
-//		String accessToken = null;
-//		Object obj = redisTemplate.opsForValue().get("XCX_ACCESS_TOKEN");
-//		if (obj != null) {
-//			accessToken = obj.toString();
-//		} else {
-//			String result = HttpClient.sendGet(WX_ACCESSTOKEN_URL.replace("APPID", weChatProperties.getXcxAppId()).replace("APPSECRET", weChatProperties.getXcxAppSecret()));
-//			System.out.println("TOKEN--------------------------" + result);
-//			JSONObject json = JSONObject.parseObject(result);
-//			accessToken = json.getString("access_token");
-//			redisTemplate.opsForValue().set("XCX_ACCESS_TOKEN", accessToken, 2, TimeUnit.HOURS);
-//		}
-//		System.out.println("XCX_ACCESS_TOKEN --------- " + accessToken);
-//		return accessToken;
-//	}
+	public static String getXCXAccessToken() {
+		String accessToken = null;
+		Object obj = redisTemplate.opsForValue().get("XCX_ACCESS_TOKEN");
+		if (obj != null) {
+			accessToken = obj.toString();
+		} else {
+			String result = HttpClient.sendGet(WX_ACCESSTOKEN_URL.replace("APPID", weChatProperties.getXcxAppId()).replace("APPSECRET", weChatProperties.getXcxAppSecret()));
+			System.out.println("TOKEN--------------------------" + result);
+			JSONObject json = JSONObject.parseObject(result);
+			accessToken = json.getString("access_token");
+			redisTemplate.opsForValue().set("XCX_ACCESS_TOKEN", accessToken, 2, TimeUnit.HOURS);
+		}
+		System.out.println("XCX_ACCESS_TOKEN --------- " + accessToken);
+		return accessToken;
+	}
 
 	/**
 	 * 获取jsapi_ticket
