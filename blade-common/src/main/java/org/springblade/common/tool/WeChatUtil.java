@@ -7,7 +7,9 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 
 import org.springblade.common.cache.CacheNames;
+import org.springblade.common.props.WeChatProperties;
 import org.springblade.common.vo.EventVo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -26,8 +28,8 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class WeChatUtil {
 
-	//连接微信服务器的token
-	public static final String WX_TOKEN = "R_Z_Z_H_X_Y";
+	private static WeChatProperties weChatProperties;
+
 	//获取access_token接口地址
 	public static final String WX_ACCESSTOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
 	//发送模板消息的接口地址
@@ -52,8 +54,6 @@ public class WeChatUtil {
 	
 	private static RedisTemplate<String, Object> redisTemplate;
 
-	private static String SNS_APP_ID = "";
-	private static String SNS_APP_SECRET = "";
 
 	@Resource
 	public void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {
@@ -70,14 +70,9 @@ public class WeChatUtil {
 		WeChatUtil.APP_SECRET = appSecret;
 	}
 
-	@Value("${wechat.config.snsAppId}")
-	public void setSnsAppId(String snsAppId) {
-		WeChatUtil.SNS_APP_ID = snsAppId;
-	}
-
-	@Value("${wechat.config.snsAppSecret}")
-	public void setSnsAppSecret(String snsAppSecret) {
-		WeChatUtil.SNS_APP_SECRET = snsAppSecret;
+	@Autowired
+	public void init(WeChatProperties weChatProperties) {
+		WeChatUtil.weChatProperties = weChatProperties;
 	}
 
 	public static EventVo getPullMessage(HttpServletRequest request) throws IOException, JAXBException {
@@ -194,54 +189,26 @@ public class WeChatUtil {
 			Long expires_in = json.getLong("expires_in");
 			EXPIRESTIME = System.currentTimeMillis() + (expires_in * 1000);
 			redisTemplate.opsForValue().set("ACCESS_TOKEN", ACCESS_TOKEN, 2, TimeUnit.HOURS);
-			
-			
 		}
-		
-		/*if (ACCESS_TOKEN == null || System.currentTimeMillis() > EXPIRESTIME) {
-			String result = HttpClient.sendGet(WX_ACCESSTOKEN_URL.replace("APPID", APP_ID).replace("APPSECRET", APP_SECRET));
-			System.out.println("TOKEN--------------------------" + result);
-			JSONObject json = JSONObject.parseObject(result);
-			ACCESS_TOKEN = json.getString("access_token");
-			Long expires_in = json.getLong("expires_in");
-			EXPIRESTIME = System.currentTimeMillis() + (expires_in * 1000);
-		}*/
+
 		return ACCESS_TOKEN;
 	}
 
 
-	public static String getSnsAccessToken() {
+	public static String getXCXAccessToken() {
 		String accessToken = null;
-		Object obj = redisTemplate.opsForValue().get("SNS_ACCESS_TOKEN");
+		Object obj = redisTemplate.opsForValue().get("XCX_ACCESS_TOKEN");
 		if (obj != null) {
 			accessToken = obj.toString();
 		} else {
-			String result = HttpClient.sendGet(WX_ACCESSTOKEN_URL.replace("APPID", SNS_APP_ID).replace("APPSECRET", SNS_APP_SECRET));
+			String result = HttpClient.sendGet(WX_ACCESSTOKEN_URL.replace("APPID", weChatProperties.getXcxAppId()).replace("APPSECRET", weChatProperties.getXcxAppSecret()));
 			System.out.println("TOKEN--------------------------" + result);
 			JSONObject json = JSONObject.parseObject(result);
 			accessToken = json.getString("access_token");
-			redisTemplate.opsForValue().set("SNS_ACCESS_TOKEN", accessToken, 2, TimeUnit.HOURS);
+			redisTemplate.opsForValue().set("XCX_ACCESS_TOKEN", accessToken, 2, TimeUnit.HOURS);
 		}
-		System.out.println("SNS_ACCESS_TOKEN --------- " + accessToken);
+		System.out.println("XCX_ACCESS_TOKEN --------- " + accessToken);
 		return accessToken;
-	}
-
-	/**
-	 * 少年说 发送模板消息
-	 * @param data
-	 * @return
-	 */
-	public static String sendSNSTemplateMessages(String openId, String templateId, String url, Map<String, Map<String, Object>> data) {
-		String jsonData = JSONUtils.toJSONString(data);
-		String dataNew = "{\n" +
-				"           \"touser\":\"" + openId + "\",\n" +
-				"           \"template_id\":\"" + templateId + "\",\n" +
-				"           \"url\":\"" + url + "\",\n" +
-				"           \"data\":" + jsonData +
-				"       }";
-		System.out.println("SNS_sendTemplateMessages_data: " + dataNew);
-		String result = HttpClient.sendPost(WX_SEND_TEMPLATE_MESSAGES_URL.replace("ACCESS_TOKEN", getSnsAccessToken()), dataNew);
-		return result;
 	}
 
 	/**

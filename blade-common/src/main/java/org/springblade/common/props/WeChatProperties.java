@@ -44,5 +44,10 @@ public class WeChatProperties {
     private String LSmediaId;
     
     private String teacherTemplateId;
-    
+
+    //小程序 appId
+    private String xcxAppId;
+    //小程序 appSecret
+    private String xcxAppSecret;
+
 }
