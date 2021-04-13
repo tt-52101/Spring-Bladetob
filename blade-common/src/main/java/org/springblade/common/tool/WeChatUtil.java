@@ -29,6 +29,8 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class WeChatUtil {
 
+	private static WeChatProperties weChatProperties;
+
 	//获取access_token接口地址
 	public static final String WX_ACCESSTOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
 	//发送模板消息的接口地址
@@ -54,6 +56,11 @@ public class WeChatUtil {
 	private static RedisTemplate<String, Object> redisTemplate;
 
 
+	@Resource
+	public void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {
+		this.redisTemplate = redisTemplate;
+	}
+
 	@Value("${wechat.config.appId}")
 	public void setAPP_KEY(String appId) {
 		WeChatUtil.APP_ID = appId;
@@ -64,6 +71,10 @@ public class WeChatUtil {
 		WeChatUtil.APP_SECRET = appSecret;
 	}
 
+	@Resource
+	public void setWeChatProperties(WeChatProperties weChatProperties) {
+		this.weChatProperties = weChatProperties;
+	}
 
 	public static EventVo getPullMessage(HttpServletRequest request) throws IOException, JAXBException {
 		InputStream stream = null;
@@ -185,7 +196,12 @@ public class WeChatUtil {
 	}
 
 
-//	public static String getXCXAccessToken() {
+	public static String getXCXAccessToken() {
+		String xcxAppId = weChatProperties.getXcxAppId();
+		String xcxAppSecret = weChatProperties.getXcxAppSecret();
+
+		return xcxAppId;
+
 //		String accessToken = null;
 //		Object obj = redisTemplate.opsForValue().get("XCX_ACCESS_TOKEN");
 //		if (obj != null) {
@@ -199,7 +215,7 @@ public class WeChatUtil {
 //		}
 //		System.out.println("XCX_ACCESS_TOKEN --------- " + accessToken);
 //		return accessToken;
-//	}
+	}
 
 	/**
 	 * 获取jsapi_ticket
