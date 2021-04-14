@@ -23,15 +23,15 @@ public class DemoController {
      *
      * @return ObjectStat
      */
-    @SneakyThrows
-    @GetMapping("/test")
-//	@ApiOperation(value = "上传文件", notes = "oss上传文件接口" , position = 1)
-    public Object putFile() {
-
-		String xcxAccessToken = WeChatUtil.getXCXAccessToken();
-		System.out.println(xcxAccessToken);
-
-        return xcxAccessToken;
-    }
+//    @SneakyThrows
+//    @GetMapping("/test")
+////	@ApiOperation(value = "上传文件", notes = "oss上传文件接口" , position = 1)
+//    public Object putFile() {
+//
+//		String xcxAccessToken = WeChatUtil.getXCXAccessToken();
+//		System.out.println(xcxAccessToken);
+//
+//        return xcxAccessToken;
+//    }
 
 }

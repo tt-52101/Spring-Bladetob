@@ -1,8 +1,6 @@
 package cn.rzedu.sf.user.feign;
 
-import cn.rzedu.sf.user.service.ISnsUserService;
 import cn.rzedu.sf.user.service.IUserService;
-import cn.rzedu.sf.user.vo.SnsUserVO;
 import cn.rzedu.sf.user.vo.UserVO;
 import lombok.AllArgsConstructor;
 import org.springblade.core.tool.api.R;
@@ -20,8 +18,6 @@ import springfox.documentation.annotations.ApiIgnore;
 public class SFUserClient implements ISFUserClient {
 
     private IUserService userService;
-
-    private ISnsUserService snsUserService;
 
     @Override
     public R<UserVO> detail(Integer id) {
@@ -46,11 +42,6 @@ public class SFUserClient implements ISFUserClient {
     @Override
     public R<Boolean> updateById(UserVO userVO) {
         return R.data(userService.updateUserVo(userVO));
-    }
-
-    @Override
-    public R<SnsUserVO> detailUserForSns(String openId, String nickname, String headImgUrl) {
-        return R.data(snsUserService.findByOpenId(openId, nickname, headImgUrl));
     }
 
     @Override
