@@ -1,7 +1,5 @@
 package cn.rzedu.sf.user.feign;
 
-import cn.rzedu.sf.user.entity.SnsUser;
-import cn.rzedu.sf.user.vo.SnsUserVO;
 import cn.rzedu.sf.user.vo.UserVO;
 import org.springblade.core.tool.api.R;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -73,20 +71,6 @@ public interface ISFUserClient {
 
     @PostMapping(API_PREFIX + "/updateById")
     R<Boolean> updateById(@RequestBody  UserVO userVO);
-
-
-    /**
-     * 少年说报名用户
-     *
-     * @param openId 微信openId
-     * @param nickname  微信用户昵称
-     * @param headImgUrl 微信用户头像地址
-     * @return
-     */
-    @PostMapping(API_PREFIX + "/sns/detail")
-    R<SnsUserVO> detailUserForSns(@RequestParam("openId") String openId,
-                                  @RequestParam("nickname") String nickname,
-                                  @RequestParam("headImgUrl") String headImgUrl);
 
     @GetMapping(API_PREFIX + "/detail/unionId")
     R<UserVO> detailByUnionId(@RequestParam("unionId") String unionId);

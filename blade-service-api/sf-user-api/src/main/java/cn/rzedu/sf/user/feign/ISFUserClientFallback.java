@@ -1,6 +1,5 @@
 package cn.rzedu.sf.user.feign;
 
-import cn.rzedu.sf.user.vo.SnsUserVO;
 import cn.rzedu.sf.user.vo.UserVO;
 import org.springblade.core.tool.api.R;
 import org.springframework.stereotype.Component;
@@ -47,8 +46,4 @@ public class ISFUserClientFallback implements ISFUserClient {
         return R.fail("调用失败");
     }
 
-    @Override
-    public R<SnsUserVO> detailUserForSns(String openId, String nickname, String headImgUrl) {
-        return R.fail("调用失败");
-    }
 }
