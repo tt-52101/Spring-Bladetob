@@ -52,14 +52,17 @@ public class AnalyzeWordUtil {
 //            System.out.println("responseBody:" +response.body());
             JSONObject object = JSONObject.parseObject(response.body());
             Integer errCode = Integer.parseInt(String.valueOf(object.get("err_code")));
-            if (errCode == 0) {
-                AnalyzeWordHard data = JSONObject.toJavaObject(object.getJSONObject("data"), AnalyzeWordHard.class);
-                data.setUploadImage(base64);
-                data.setOriginalImage(downloadOriginalImg(data.getOriginalData()));
-                return data;
-            } else {
-                return null;
+            String error = String.valueOf(object.get("error"));
+            JSONObject data = object.getJSONObject("data");
+            AnalyzeWordHard result = new AnalyzeWordHard();
+            if (data != null) {
+                result = JSONObject.toJavaObject(data, AnalyzeWordHard.class);
+                result.setUploadImage(base64);
+                result.setOriginalImage(downloadOriginalImg(result.getOriginalData()));
             }
+            result.setErrorCode(errCode);
+            result.setError(error);
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,14 +84,17 @@ public class AnalyzeWordUtil {
             Connection.Response response = HttpUtils.post(CEZI_SOFT_URL, headers, "{\"image\": \"" + base64 + "\"}");
             JSONObject object = JSONObject.parseObject(response.body());
             Integer errCode = Integer.parseInt(String.valueOf(object.get("err_code")));
-            if (errCode == 0) {
-                AnalyzeWordSoft data = JSONObject.toJavaObject(object.getJSONObject("data"), AnalyzeWordSoft.class);
-                data.setUploadImage(base64);
-                data.setOriginalImage(batchDownloadOriginalImg(data.getOriginalData()));
-                return data;
-            } else {
-                return null;
+            String error = String.valueOf(object.get("error"));
+            JSONObject data = object.getJSONObject("data");
+            AnalyzeWordSoft result = new AnalyzeWordSoft();
+            if (result != null) {
+                result = JSONObject.toJavaObject(data, AnalyzeWordSoft.class);
+                result.setUploadImage(base64);
+                result.setOriginalImage(batchDownloadOriginalImg(result.getOriginalData()));
             }
+            result.setErrorCode(errCode);
+            result.setError(error);
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
         }

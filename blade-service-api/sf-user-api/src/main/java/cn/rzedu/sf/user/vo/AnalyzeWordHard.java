@@ -50,4 +50,15 @@ public class AnalyzeWordHard {
      */
     @ApiModelProperty(value = "标准字图片")
     private String originalImage;
+
+    /**
+     * 业务代码，为0时，业务正常
+     */
+    @ApiModelProperty(value = "业务代码，为0时，业务正常")
+    private Integer errorCode;
+    /**
+     * 错误提示信息
+     */
+    @ApiModelProperty(value = "错误提示信息")
+    private String error;
 }
