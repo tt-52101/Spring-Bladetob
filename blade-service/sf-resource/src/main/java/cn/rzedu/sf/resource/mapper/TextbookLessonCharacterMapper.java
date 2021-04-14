@@ -15,6 +15,7 @@
  */
 package cn.rzedu.sf.resource.mapper;
 
+import cn.rzedu.sf.resource.entity.Character;
 import cn.rzedu.sf.resource.entity.TextbookLessonCharacter;
 import cn.rzedu.sf.resource.vo.TextbookLessonCharacterVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -74,4 +75,10 @@ public interface TextbookLessonCharacterMapper extends BaseMapper<TextbookLesson
 	 * @return
 	 */
 	int removeByTextbookIds(List<Integer> list);
+
+	/**
+	 * 根据 Character.id
+	 * 判断汉字 是否存在硬笔资源
+	 */
+	List<TextbookLessonCharacter> isExistHardResourceByCharacterId(Integer id);
 }

@@ -16,6 +16,7 @@
 package cn.rzedu.sf.resource.controller;
 
 import cn.rzedu.sf.resource.service.ICharacterResourceService;
+import cn.rzedu.sf.resource.vo.CharacterIsExistVO;
 import io.swagger.annotations.*;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import lombok.AllArgsConstructor;
@@ -149,5 +150,33 @@ public class CharacterController extends BladeController {
         List<Character> list = characterService.findErCodeFromLesson(textbookId);
         characterService.updateBatchById(list);
         return R.status(true);
+    }
+
+    /**
+     * 硬笔查询 同步教学资源
+     * 根据 汉字 获取详情
+     * @param characterName
+     * @return
+     */
+    @GetMapping("/hard/{character}")
+    @ApiOperationSupport(order = 7)
+    @ApiOperation(value = "硬笔查询汉字-同步教学资源", notes = "根据单个汉字获取汉字ID")
+    public R<CharacterIsExistVO> getDetailPageByCharacter(@ApiParam(value = "主键", required = true) @PathVariable(value = "character") String characterName) {
+        CharacterIsExistVO result = new CharacterIsExistVO();
+
+        Character character = new Character();
+        character.setCharS(characterName);
+        character.setIsDeleted(0);
+        Character c = characterService.getOne(Condition.getQueryWrapper(character));
+        if(c != null){
+            boolean isExist = characterService.isExistHardResourceByCharacterId(c.getId());
+            if(isExist){
+                result.setIsExist(1);
+                result.setCharacterId(c.getId());
+                result.setCharacterName(c.getCharS());
+                return R.data(result);
+            }
+        }
+        return R.data(result);
     }
 }

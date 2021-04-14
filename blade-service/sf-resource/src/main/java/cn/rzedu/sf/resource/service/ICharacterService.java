@@ -131,4 +131,10 @@ public interface ICharacterService extends IService<Character> {
 	List<Character> findErCodeFromLesson(Integer textbookId);
 
 	Character findCharacterByKeyword(String name);
+
+	/**
+	 * 根据 Character.id
+	 * 判断汉字 是否存在硬笔资源
+	 */
+	boolean isExistHardResourceByCharacterId(Integer id);
 }

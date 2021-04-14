@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Chill
  */
 @Configuration
-@EnableConfigurationProperties(WeChatProperties.class)
+//@EnableConfigurationProperties(WeChatProperties.class)
 public class WeChatConfiguration {
 
 }
