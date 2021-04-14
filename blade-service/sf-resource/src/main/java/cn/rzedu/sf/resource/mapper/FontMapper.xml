@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.resource.mapper.FontMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="fontResultMap" type="cn.rzedu.sf.resource.entity.Font">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="type" property="type"/>
+        <result column="subject" property="subject"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <select id="selectFontPage" resultMap="fontResultMap">
+        select * from sf_font
+        where is_deleted = 0
+        <if test="font != null">
+            <if test="font.subject != null">
+                AND subject = #{font.subject}
+            </if>
+        </if>
+    </select>
+
+</mapper>
