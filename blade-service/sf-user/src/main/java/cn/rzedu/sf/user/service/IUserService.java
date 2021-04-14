@@ -65,6 +65,8 @@ public interface IUserService extends IService<User> {
      */
     UserVO addUserVO(String openId, String name, String headImgUrl, Integer sourceType);
 
+    Boolean updateUserVo(UserVO userVO);
+
     /**
      * 获取用户获得的所有星数
      * @param userId
@@ -96,4 +98,20 @@ public interface IUserService extends IService<User> {
     List<UserVO> findInitiatorByAssistNumber(Integer greaterNumber, Integer lessNumber);
     
     List<UserVO> selectAllUser();
+
+    /**
+     * 根据微信unionId获取用户信息
+     * @param unionId
+     * @return
+     */
+    UserVO findByUnionId(String unionId);
+
+    /**
+     * 根据微信openid获取用户信息，无用户则新增，有则同步用户名和头像地址
+     * @param unionId
+     * @param name
+     * @param headImgUrl
+     * @return
+     */
+    UserVO findByUnionId(String unionId, String name, String headImgUrl);
 }

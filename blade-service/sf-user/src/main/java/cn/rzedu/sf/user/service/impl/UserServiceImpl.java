@@ -47,6 +47,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return baseMapper.findByOpenId(openId);
     }
 
+
+
+
     @Override
     public UserVO findByOpenId(String openId, String name, String headImgUrl) {
         UserVO userVO = baseMapper.findByOpenId(openId);
@@ -73,6 +76,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return userVO;
     }
 
+
     @Override
     public UserVO addUserVO(String openId, String name, String headImgUrl, Integer sourceType) {
         UserVO userVO = baseMapper.findByOpenId(openId);
@@ -98,6 +102,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             baseMapper.insert(userVO);
         }
         return userVO;
+    }
+
+    @Override
+    public Boolean updateUserVo(UserVO userVO) {
+        int i = baseMapper.updateById(userVO);
+        return i >= 1;
     }
 
     /**
@@ -235,4 +245,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 	public List<UserVO> selectAllUser() {
 		return baseMapper.selectAllUser();
 	}
+
+    @Override
+    public UserVO findByUnionId(String unionId) {
+        return baseMapper.findByUnionId(unionId);
+    }
+
+    @Override
+    public UserVO findByUnionId(String unionId, String name, String headImgUrl) {
+        UserVO userVO = baseMapper.findByUnionId(unionId);
+        if (userVO == null) {
+            userVO = new UserVO();
+            userVO.setName(name);
+            userVO.setUnionId(unionId);
+            userVO.setIcon(headImgUrl);
+            userVO.setSex(0);
+            userVO.setUuid(generateUUID());
+            userVO.setCreateDate(LocalDateTime.now());
+            userVO.setModifyDate(LocalDateTime.now());
+            userVO.setIsDeleted(0);
+            userVO.setSourceType(0);
+            baseMapper.insert(userVO);
+        }
+        return userVO;
+    }
 }

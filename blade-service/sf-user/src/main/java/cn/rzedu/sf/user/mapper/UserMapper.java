@@ -103,4 +103,6 @@ public interface UserMapper extends BaseMapper<User> {
     List<UserVO> findInitiatorByAssistNumber(Integer greaterNumber, Integer lessNumber);
     
     List<UserVO> selectAllUser();
+
+    UserVO findByUnionId(String unionId);
 }

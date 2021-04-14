@@ -289,6 +289,7 @@ public class HttpUtils {
      */
     private static void getTrust() {
         try {
+            System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2,SSLv3");
             HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
 
                 public boolean verify(String hostname, SSLSession session) {

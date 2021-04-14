@@ -202,9 +202,6 @@ public class AuthController {
 			result.put("sex", userVO.getSex());
 			result.put("birthday", userVO.getBirthday());
 			result.put("icon", userVO.getIcon());
-			result.put("gradeCode", userVO.getGradeCode());
-			result.put("subjects", userVO.getSubjects());
-			result.put("studyGrade", userVO.getStudyGrade());
 			result.put("uuid", userVO.getUuid());
 			result.put("isExist", true);
 		} else {

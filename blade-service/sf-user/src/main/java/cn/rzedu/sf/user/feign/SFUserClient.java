@@ -44,7 +44,22 @@ public class SFUserClient implements ISFUserClient {
     }
 
     @Override
+    public R<Boolean> updateById(UserVO userVO) {
+        return R.data(userService.updateUserVo(userVO));
+    }
+
+    @Override
     public R<SnsUserVO> detailUserForSns(String openId, String nickname, String headImgUrl) {
         return R.data(snsUserService.findByOpenId(openId, nickname, headImgUrl));
+    }
+
+    @Override
+    public R<UserVO> detailByUnionId(String unionId) {
+        return R.data(userService.findByUnionId(unionId));
+    }
+
+    @Override
+    public R<UserVO> detailByUnionId(String unionId, String name, String headImgUrl) {
+        return R.data(userService.findByUnionId(unionId, name, headImgUrl));
     }
 }

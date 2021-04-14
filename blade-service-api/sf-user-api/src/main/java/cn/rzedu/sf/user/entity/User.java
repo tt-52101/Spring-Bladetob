@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.springblade.core.mp.base.BaseEntity;
 
 /**
  * 用户表 书法系统的用户 实体类
@@ -28,6 +29,11 @@ public class User implements Serializable {
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+    /**
+     * 微信unionId
+     */
+    @ApiModelProperty(value = "微信unionId")
+    private String unionId;
     /**
      * 用户账号
      */
@@ -58,27 +64,7 @@ public class User implements Serializable {
      */
     @ApiModelProperty(value = "生日")
     private LocalDateTime birthday;
-    /**
-     * 所在学校
-     */
-    @ApiModelProperty(value = "所在学校")
-    private String school;
-    /**
-     * 所在学段  stage.code
-     */
-    @ApiModelProperty(value = "所在学段  2=小学 3=初中 4=高中")
-    private String stageCode;
-    /**
-     * 所在年级  grade.code
-     */
-    @ApiModelProperty(value = "所在年级 10=学龄前 21=一年级 22=二年级 23=三年级 24=四年级 25=五年级 26=六年级 31=初一 32=初二 33=初三 41=高一 42=高二 " +
-            "43=高三")
-    private String gradeCode;
-    /**
-     * 关注学科，多个
-     */
-    @ApiModelProperty(value = "关注学科，多个学科用逗号隔开")
-    private String subjects;
+
     /**
      * 头像  uuid
      */
@@ -105,12 +91,6 @@ public class User implements Serializable {
     @ApiModelProperty(value = "微信openId")
     private String openId;
     /**
-     * 现就读年级，一经确定不能随意改动
-     */
-    @ApiModelProperty(value = "现就读年级，一经确定不能随意改动 21=一年级 22=二年级 23=三年级 24=四年级 25=五年级 26=六年级 " +
-            "31=初一 32=初二 33=初三 41=高一 42=高二  43=高三")
-    private String studyGrade;
-    /**
      * 系统用户的唯一识别码
      */
     @ApiModelProperty(value = "系统用户的唯一识别码")
@@ -135,6 +115,12 @@ public class User implements Serializable {
      */
     @ApiModelProperty(value = "是否机器人（虚拟用户）")
     private Integer isRobot;
+
+    /**
+     * 是否机器人（虚拟用户）
+     */
+    @ApiModelProperty(value = "是否获取了微信用户信息）")
+    private Boolean isGetInfo;
     /**
      * 创建时间
      */

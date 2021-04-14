@@ -33,6 +33,21 @@ public class ISFUserClientFallback implements ISFUserClient {
     }
 
     @Override
+    public R<Boolean> updateById(UserVO userVO) {
+        return R.fail("调用失败");
+    }
+
+    @Override
+    public R<UserVO> detailByUnionId(String unionId) {
+        return R.fail("调用失败");
+    }
+
+    @Override
+    public R<UserVO> detailByUnionId(String unionId, String name, String headImgUrl) {
+        return R.fail("调用失败");
+    }
+
+    @Override
     public R<SnsUserVO> detailUserForSns(String openId, String nickname, String headImgUrl) {
         return R.fail("调用失败");
     }

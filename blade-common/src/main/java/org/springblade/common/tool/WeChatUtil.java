@@ -19,8 +19,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -32,6 +31,8 @@ public class WeChatUtil {
 	public static final String WX_ACCESSTOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
 	//发送模板消息的接口地址
 	public static final String WX_SEND_TEMPLATE_MESSAGES_URL = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN";
+	/** 发送消息的接口地址 */
+	public static final String WX_SEND_MESSAGES_URL = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN";
 	//访问接口所需的access_token凭证
 	public static String ACCESS_TOKEN;
 	//access_token凭证的有效时间
@@ -42,6 +43,15 @@ public class WeChatUtil {
 	// APP密钥
 	private static String APP_SECRET = "";
 
+	//APPID
+	public static String XCX_APP_ID = "";
+	// APP密钥
+	public static String XCX_APP_SECRET = "";
+
+	public static String XCX_GRANT_TYPE = "";
+
+	public static String JCODE_2_SESSION_URL = "";
+
 	//微信获取jsapi_ticket地址
 	private static final String WX_JSAPI_TICKET_URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=jsapi";
 	//jsapi_ticket
@@ -49,7 +59,7 @@ public class WeChatUtil {
 	//jsapi_ticket有效期
 	public static Long EXPIRES_TIME_JSAPI_TICKET;
 
-	
+
 	private static RedisTemplate<String, Object> redisTemplate;
 
 	private static String SNS_APP_ID = "";
@@ -69,6 +79,22 @@ public class WeChatUtil {
 	public void setAPP_SECRET(String appSecret) {
 		WeChatUtil.APP_SECRET = appSecret;
 	}
+
+	@Value("${wechat.config.xcxAppId}")
+	public void setXCX_APP_ID(String xcxAppId) {
+		WeChatUtil.XCX_APP_ID = xcxAppId;
+	}
+
+	@Value("${wechat.config.xcxAppSecret}")
+	public void setXCX_APP_SECRET(String xcxAppSecret) {
+		WeChatUtil.XCX_APP_SECRET = xcxAppSecret;
+	}
+
+	@Value("${wechat.config.xcxGrantType}")
+	public void setXCX_GRANT_TYPE(String xcxGrantType) { WeChatUtil.XCX_GRANT_TYPE = xcxGrantType;}
+
+	@Value("${wechat.config.jcode2SessionUrl}")
+	public void setJcode2SessionUrl(String jcode2SessionUrl) { WeChatUtil.JCODE_2_SESSION_URL = jcode2SessionUrl;}
 
 	@Value("${wechat.config.snsAppId}")
 	public void setSnsAppId(String snsAppId) {
@@ -181,9 +207,9 @@ public class WeChatUtil {
 	public static String getAccessToken() {
 		System.out.println("ACCESS_TOKEN --------- " + ACCESS_TOKEN);
 		System.out.println("EXPIRESTIME --------- " + EXPIRESTIME);
-		
+
 		Object obj = redisTemplate.opsForValue().get("ACCESS_TOKEN");
-		
+
 		if(obj != null){
 			ACCESS_TOKEN = obj.toString();
 		}else{
@@ -194,10 +220,10 @@ public class WeChatUtil {
 			Long expires_in = json.getLong("expires_in");
 			EXPIRESTIME = System.currentTimeMillis() + (expires_in * 1000);
 			redisTemplate.opsForValue().set("ACCESS_TOKEN", ACCESS_TOKEN, 2, TimeUnit.HOURS);
-			
-			
+
+
 		}
-		
+
 		/*if (ACCESS_TOKEN == null || System.currentTimeMillis() > EXPIRESTIME) {
 			String result = HttpClient.sendGet(WX_ACCESSTOKEN_URL.replace("APPID", APP_ID).replace("APPSECRET", APP_SECRET));
 			System.out.println("TOKEN--------------------------" + result);
@@ -261,5 +287,66 @@ public class WeChatUtil {
 			EXPIRES_TIME_JSAPI_TICKET = System.currentTimeMillis() + (expires_in * 1000);
 		}
 		return JSAPI_TICKET;
+	}
+
+	/**
+	 * 发送图文客服消息
+	 * @param openId		接受方（用户的openId）
+	 * @param title			图文消息标题
+	 * @param description	内容
+	 * @param picurl		图片路径
+	 * @param url			跳转地址
+	 */
+	public static void sendNewsCustomMessage(String openId, String title, String description, String picurl, String url) {
+		String content = "{\n" +
+				"    \"touser\":\"" + openId + "\",\n" +
+				"    \"msgtype\":\"news\",\n" +
+				"    \"news\":{\n" +
+				"        \"articles\": [\n" +
+				"         {\n" +
+				"             \"title\":\"" + title + "\",\n" +
+				"             \"description\":\"" + description + "\",\n" +
+				"             \"url\":\"" + url + "\",\n" +
+				"             \"picurl\":\"" + picurl +"\"\n" +
+				"         }\n" +
+				"         ]\n" +
+				"    }\n" +
+				"}";
+		JSONObject paramInner = JSONObject.parseObject(content);
+		try {
+			HttpClient.httpPost(WX_SEND_MESSAGES_URL.replace("ACCESS_TOKEN", getAccessToken()), paramInner, true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 发送文本消息
+	 * @param openId
+	 * @param stringBuffer  消息内容
+	 */
+	public static void sendTextMessage(String openId, StringBuffer stringBuffer) {
+		try {
+			String content = "{\"touser\":\"" + openId + "\",\"msgtype\":\"text\",\"text\":{\"content\":\"" + stringBuffer.toString() + "\"}}";
+			JSONObject paramInner = JSONObject.parseObject(content);
+			HttpClient.httpPost(WX_SEND_MESSAGES_URL.replace("ACCESS_TOKEN", getAccessToken()), paramInner, true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 发送图片消息
+	 * @param openId
+	 * @param mediaId  图片id
+	 */
+	public static void sendImageMessage(String openId, String mediaId) {
+		try {
+			String content = "{\"touser\":\"" + openId + "\",\"msgtype\":\"image\",\"image\":{\"media_id\":\"" + mediaId + "\"}}";
+			JSONObject paramInner = JSONObject.parseObject(content);
+			HttpClient.httpPost(WX_SEND_MESSAGES_URL.replace("ACCESS_TOKEN", getAccessToken()), paramInner, true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

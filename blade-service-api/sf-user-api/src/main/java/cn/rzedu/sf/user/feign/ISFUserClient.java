@@ -7,6 +7,7 @@ import org.springblade.core.tool.api.R;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -70,6 +71,9 @@ public interface ISFUserClient {
                                @RequestParam("headImgUrl") String headImgUrl,
                                @RequestParam("sourceType") Integer sourceType);
 
+    @PostMapping(API_PREFIX + "/updateById")
+    R<Boolean> updateById(@RequestBody  UserVO userVO);
+
 
     /**
      * 少年说报名用户
@@ -83,4 +87,12 @@ public interface ISFUserClient {
     R<SnsUserVO> detailUserForSns(@RequestParam("openId") String openId,
                                   @RequestParam("nickname") String nickname,
                                   @RequestParam("headImgUrl") String headImgUrl);
+
+    @GetMapping(API_PREFIX + "/detail/unionId")
+    R<UserVO> detailByUnionId(@RequestParam("unionId") String unionId);
+
+    @GetMapping(API_PREFIX + "/detail/unionIdAndOther")
+    R<UserVO> detailByUnionId(@RequestParam("unionId") String unionId,
+                              @RequestParam("name") String name,
+                              @RequestParam("headImgUrl") String headImgUrl);
 }
