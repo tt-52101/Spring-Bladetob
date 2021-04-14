@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.user.mapper.FrontUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="frontUserResultMap" type="cn.rzedu.sf.user.vo.FrontUserVO">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="type_id" property="typeId"/>
+        <result column="type_name" property="typeName"/>
+        <result column="province_code" property="provinceCode"/>
+        <result column="province_name" property="provinceName"/>
+        <result column="city_code" property="cityCode"/>
+        <result column="city_name" property="cityName"/>
+        <result column="district_code" property="districtCode"/>
+        <result column="district_name" property="districtName"/>
+        <result column="remark" property="remark"/>
+        <result column="department" property="department"/>
+        <result column="publisher_name" property="publisherName"/>
+        <result column="publisher_id" property="publisherId"/>
+        <result column="grade_id" property="gradeId"/>
+        <result column="grade_name" property="gradeName"/>
+        <result column="function_id" property="gradeId"/>
+        <result column="function_name" property="functionId"/>
+        <result column="create_date" property="functionName"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="status" property="status"/>
+        <result column="last_use_time" property="lastUseTime"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <select id="selectFrontUserDetail" resultMap="frontUserResultMap">
+        select * from sf_front_user where is_deleted = 0 and username = #{userName}
+    </select>
+
+    <select id="selectFrontUserList" resultMap="frontUserResultMap">
+        select * from sf_front_user where is_deleted = 0
+        <if test = "userName != null and userName != ''">
+            and username = #{userName}
+        </if>
+        <if test = "provinceName != null and provinceName != ''">
+            and province_name = #{provinceName}
+        </if>
+        <if test = "cityName != null and cityName != ''">
+            and city_name = #{cityName}
+        </if>
+        <if test = "districtName != null and districtName != ''">
+            and district_name = #{districtName}
+        </if>
+        <if test = "department != null and department != ''">
+            and department = #{department}
+        </if>
+        <if test = "remark != null and remark != ''">
+            and remark = #{remark}
+        </if>
+    </select>
+
+    <select id="selectUserName" resultType="java.lang.String">
+        select username from sf_front_user where is_deleted = 0 and username = #{userName}
+    </select>
+
+    <update id="userUpdatePassword">
+        update sf_front_user set password = #{passWord} where is_deleted = 0 and username = #{userName}
+    </update>
+
+    <update id="userUpdateStatus">
+        update sf_front_user set status = #{status},last_use_time = #{lastUseTime} where is_deleted = 0 and username = #{userName}
+    </update>
+
+    <insert id="frontUserRegister">
+        insert into sf_front_user (username,password,type_id,type_name,province_code,province_name,city_code,city_name,district_code,district_name,department,remark,
+                                   create_date,modify_date)
+        values (#{username},#{password},#{typeId},#{typeName},#{province_code},#{province_name},#{city_code},#{city_name},#{district_code},#{district_name},#{department},#{remark},
+                #{create_date},#{modify_date})
+    </insert>
+
+    <update id="updateFrontUser">
+        update sf_front_user set
+        <if test = "newUserName != null and newUserName != ''">
+             username = #{newUserName},
+        </if>
+        <if test = "passWord != null and passWord != ''">
+            password = #{passWord},
+        </if>
+        <if test = "provinceCode != null and provinceCode != ''">
+            province_code = #{provinceCode},
+        </if>
+        <if test = "provinceName != null and provinceName != ''">
+             province_name = #{provinceName},
+        </if>
+        <if test = "cityCode != null and cityCode != ''">
+            city_code = #{cityCode},
+        </if>
+        <if test = "cityName != null and cityName != ''">
+             city_name = #{cityName},
+        </if>
+        <if test = "districtCode != null and districtCode != ''">
+            district_code = #{districtCode},
+        </if>
+        <if test = "districtName != null and districtName != ''">
+             district_name = #{districtName},
+        </if>
+        <if test = "department != null and department != ''">
+             department = #{department},
+        </if>
+        <if test = "remark != null and remark != ''">
+            remark = #{remark},
+        </if>
+            is_deleted = 0
+        where is_deleted = 0 and username = #{userName}
+    </update>
+
+    <update id="deleteFrontUser">
+        update sf_front_user set is_deleted = 1 where username = #{userName}
+    </update>
+    
+    <update id="updateFunctionAuth">
+        update sf_front_user set function_id = #{functionId},
+                                 function_name = #{functionName},
+                                 publisher_id = #{publisherId},
+                                 publisher_name = #{publisherName},
+                                 grade_id = #{gradeId},
+                                 grade_name = #{grade_name}
+        where is_deleted = 0 and username = #{userName}
+    </update>
+    
+</mapper>
