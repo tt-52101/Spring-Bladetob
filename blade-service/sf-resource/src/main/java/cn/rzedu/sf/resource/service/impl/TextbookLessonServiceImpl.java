@@ -146,4 +146,25 @@ public class TextbookLessonServiceImpl extends ServiceImpl<TextbookLessonMapper,
 		}
 		return list;
 	}
+
+	@Override
+	public List<Map<String, Object>> findAllLessonByTextbook(Integer textbookId) {
+		List<TextbookLessonVO> list = baseMapper.findLessonByTextbookId(textbookId);
+		if (list == null || list.isEmpty()) {
+			return null;
+		}
+		List<Map<String, Object>> result = new ArrayList<>();
+		Map<String, Object> map = null;
+		for (TextbookLessonVO vo : list) {
+			map = new HashMap<>();
+			map.put("lessonId", vo.getId());
+			map.put("listOrder", vo.getListOrder());
+			map.put("name", vo.getName());
+			map.put("chars", vo.getChars());
+			map.put("charCount", vo.getCharCount());
+			map.put("charIds", vo.getCharIds());
+			result.add(map);
+		}
+		return result;
+	}
 }

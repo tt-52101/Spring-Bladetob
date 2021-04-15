@@ -87,4 +87,11 @@ public interface ITextbookLessonService extends IService<TextbookLesson> {
 	 * @return
 	 */
 	Map<String, Object> findLessonById(Integer lessonId);
+
+	/**
+	 * 所有课程
+	 * @param textbookId
+	 * @return
+	 */
+	List<Map<String, Object>> findAllLessonByTextbook(Integer textbookId);
 }

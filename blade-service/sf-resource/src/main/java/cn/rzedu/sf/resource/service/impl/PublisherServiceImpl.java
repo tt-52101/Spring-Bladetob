@@ -44,4 +44,9 @@ public class PublisherServiceImpl extends ServiceImpl<PublisherMapper, Publisher
 		}
 		return list;
 	}
+
+	@Override
+	public List<Publisher> findPublisherBySubject(Integer subject) {
+		return baseMapper.findBySubject(subject);
+	}
 }

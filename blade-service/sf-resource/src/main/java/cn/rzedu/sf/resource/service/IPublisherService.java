@@ -31,4 +31,11 @@ public interface IPublisherService extends IService<Publisher> {
 	 * @return
 	 */
 	List<Map<String,Object>> findBySubject(Integer subject);
+
+	/**
+	 * 根据学科获取出版社数据
+	 * @param subject
+	 * @return
+	 */
+	List<Publisher> findPublisherBySubject(Integer subject);
 }

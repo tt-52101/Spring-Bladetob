@@ -38,6 +38,7 @@
         AND tl.is_deleted = 0
         AND tl.textbook_id = #{textbookId}
         GROUP BY tl.id
+        ORDER BY tl.list_order
     </select>
 
     <select id="findLessonById" resultMap="textbookLessonVoResultMap">

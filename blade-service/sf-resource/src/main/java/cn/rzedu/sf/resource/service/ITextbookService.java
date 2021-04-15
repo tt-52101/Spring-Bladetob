@@ -106,4 +106,10 @@ public interface ITextbookService extends IService<Textbook> {
 	 * @return
 	 */
 	TextbookVO findTextBookByIdWithUnit(Integer id);
+
+	/**
+	 * 获取所有教材，根据软硬笔和出版社分类
+	 * @return
+	 */
+	List findAllTextbook();
 }

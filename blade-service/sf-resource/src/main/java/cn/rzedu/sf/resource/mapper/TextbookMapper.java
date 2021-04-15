@@ -67,4 +67,12 @@ public interface TextbookMapper extends BaseMapper<Textbook> {
 	 * @return
 	 */
 	List<String> findPublisherList(Integer subject);
+
+	/**
+	 * 根据科目和出版社获取
+	 * @param subject
+	 * @param publisher
+	 * @return
+	 */
+	List<Textbook> findBySubjectAndPublisher(Integer subject, String publisher);
 }

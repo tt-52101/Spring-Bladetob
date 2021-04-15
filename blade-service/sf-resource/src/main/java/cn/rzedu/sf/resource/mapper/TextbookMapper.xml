@@ -87,4 +87,15 @@
     <select id="findPublisherList" resultType="java.lang.String">
         SELECT publisher FROM `sf_textbook` WHERE is_deleted = 0 AND `subject` = #{subject} GROUP BY publisher
     </select>
+
+    <select id="findBySubjectAndPublisher" resultMap="textbookResultMap">
+        SELECT * FROM sf_textbook WHERE is_deleted = 0
+        <if test="subject != null">
+            AND `subject` = #{subject}
+        </if>
+        <if test="publisher != null and publisher != ''">
+            AND publisher LIKE CONCAT(CONCAT('%', #{publisher}),'%')
+        </if>
+        ORDER BY grade_code, volume
+    </select>
 </mapper>

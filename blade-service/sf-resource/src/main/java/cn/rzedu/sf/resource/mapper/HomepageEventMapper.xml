@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.resource.mapper.HomepageEventMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="homepageEventResultMap" type="cn.rzedu.sf.resource.entity.HomepageEvent">
+        <id column="id" property="id"/>
+        <result column="type" property="type"/>
+        <result column="title" property="title"/>
+        <result column="link" property="link"/>
+        <result column="picture" property="picture"/>
+        <result column="list_order" property="listOrder"/>
+        <result column="enabled" property="enabled"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <select id="selectHomepageEventPage" resultMap="homepageEventResultMap">
+        select * from sf_homepage_event where is_deleted = 0
+    </select>
+
+    <select id="findByType" resultMap="homepageEventResultMap">
+        SELECT * FROM sf_homepage_event WHERE is_deleted = 0
+        AND `type` = #{type}
+        <if test="isAll != null and isAll == 0">
+            AND enabled = 1
+        </if>
+        ORDER BY list_order DESC
+    </select>
+
+</mapper>

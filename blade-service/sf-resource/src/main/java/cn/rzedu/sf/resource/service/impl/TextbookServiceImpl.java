@@ -15,18 +15,13 @@
  */
 package cn.rzedu.sf.resource.service.impl;
 
+import cn.rzedu.sf.resource.entity.*;
 import cn.rzedu.sf.resource.entity.Character;
-import cn.rzedu.sf.resource.entity.Textbook;
-import cn.rzedu.sf.resource.entity.TextbookLesson;
-import cn.rzedu.sf.resource.entity.TextbookLessonCharacter;
-import cn.rzedu.sf.resource.service.ICharacterService;
-import cn.rzedu.sf.resource.service.ITextbookLessonCharacterService;
-import cn.rzedu.sf.resource.service.ITextbookLessonService;
+import cn.rzedu.sf.resource.service.*;
 import cn.rzedu.sf.resource.vo.CharLinkVO;
 import cn.rzedu.sf.resource.vo.TextbookLessonVO;
 import cn.rzedu.sf.resource.vo.TextbookVO;
 import cn.rzedu.sf.resource.mapper.TextbookMapper;
-import cn.rzedu.sf.resource.service.ITextbookService;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -57,6 +52,8 @@ public class TextbookServiceImpl extends ServiceImpl<TextbookMapper, Textbook> i
     private ITextbookLessonCharacterService textbookLessonCharacterService;
 
     private ICharacterService characterService;
+
+    private IPublisherService publisherService;
 
     @Override
     public IPage<TextbookVO> selectTextbookPage(IPage<TextbookVO> page, TextbookVO textbook) {
@@ -260,8 +257,63 @@ public class TextbookServiceImpl extends ServiceImpl<TextbookMapper, Textbook> i
             resultMap.put("lessonList", entry.getValue());
             result.add(resultMap);
         }
-
-
         return result;
+    }
+
+    @Override
+    public List findAllTextbook() {
+        int soft = 71;
+        int hard = 72;
+        List list = new ArrayList();
+        Map<String, Object> hardMap = new HashMap<>(3);
+        hardMap.put("subject", hard);
+        hardMap.put("name", "硬笔");
+        hardMap.put("publisherList", getPublishersBySubject(hard));
+        list.add(hardMap);
+        Map<String, Object> softMap = new HashMap<>(3);
+        softMap.put("subject", soft);
+        softMap.put("name", "软笔");
+        softMap.put("publisherList", getPublishersBySubject(soft));
+        list.add(softMap);
+        return list;
+    }
+
+    private List getPublishersBySubject(Integer subject) {
+        List list = new ArrayList();
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("name", "全部");
+        map.put("textbookList", getTextbookByPublisher(subject, null));
+        list.add(map);
+
+        List<Publisher> publisherList = publisherService.findPublisherBySubject(subject);
+        if (publisherList != null && !publisherList.isEmpty()) {
+            for (Publisher publisher : publisherList) {
+                map = new HashMap<>(2);
+                map.put("name", publisher.getName());
+                map.put("textbookList", getTextbookByPublisher(subject, publisher.getName()));
+                list.add(map);
+            }
+        }
+        return list;
+    }
+
+    private List getTextbookByPublisher(Integer subject, String publisher) {
+        List list = new ArrayList();
+        Map<String, Object> map = null;
+
+        List<Textbook> textbookList = baseMapper.findBySubjectAndPublisher(subject, publisher);
+        for (Textbook tb : textbookList) {
+            map = new HashMap<>();
+            map.put("textbookId", tb.getId());
+            map.put("name", tb.getName());
+            map.put("publisher", tb.getPublisher());
+            map.put("stageCode", tb.getStageCode());
+            map.put("gradeCode", tb.getGradeCode());
+            map.put("volume", tb.getVolume());
+            map.put("coverImage", tb.getCoverImage());
+            map.put("font", tb.getFont());
+            list.add(map);
+        }
+        return list;
     }
 }

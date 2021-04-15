@@ -190,5 +190,25 @@ public class CalligraphyDeskController {
         return R.success("删除缓存成功，字体：#" + font);
     }
 
+    /**
+     * 出版社教材列表
+     */
+    @GetMapping("/publisher/textbook")
+    @ApiOperationSupport(order = 9)
+    @ApiOperation(value = "出版社教材列表", notes = "先按软硬笔分组，再按出版社分组显示")
+    public R publisherTextbookList() {
+        List list = textbookService.findAllTextbook();
+        return R.data(list);
+    }
 
+    /**
+     * 教材所有课程
+     */
+    @GetMapping("/lesson/list")
+    @ApiOperationSupport(order = 10)
+    @ApiOperation(value = "教材所有课程", notes = "根据教材id获取所有课程")
+    public R lessonList(@ApiParam(value = "教材id", required = true) @RequestParam(value = "textbookId") Integer textbookId) {
+        List<Map<String, Object>> list = textbookLessonService.findAllLessonByTextbook(textbookId);
+        return R.data(list);
+    }
 }
