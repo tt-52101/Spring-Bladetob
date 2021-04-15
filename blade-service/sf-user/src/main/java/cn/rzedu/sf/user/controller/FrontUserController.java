@@ -62,7 +62,7 @@ public class FrontUserController extends BladeController {
 	/**
 	* 用户登录
 	*/
-	@GetMapping("/userLogin")
+	@PostMapping("/userLogin")
     @ApiOperationSupport(order = 1)
 	@ApiOperation(value = "用户登录", notes = "传入userName,passWord")
 	public R<FrontUserVO> FrontUserLogin(
@@ -76,12 +76,12 @@ public class FrontUserController extends BladeController {
 	/**
 	 * 修改密码
 	 */
-	@GetMapping("/userUpdatePassWord")
+	@PostMapping("/userUpdatePassWord")
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "修改密码", notes = "传入userName,oldPassWord,newPassWord")
 	public R FrontUserUpdatePassWord(
 		@ApiParam(value = "userName") @RequestParam(value = "userName")String userName,
-		@ApiParam(value = "OldPassWord") @RequestParam(value = "OldPassWord")String OldPassWord,
+		@ApiParam(value = "OldPassWord") @RequestParam(value = "oldPassWord")String OldPassWord,
 		@ApiParam(value = "newPassWord") @RequestParam(value = "newPassWord")String newPassWord
 	) {
 		return R.status(frontUserService.userUpdatePassword(userName,OldPassWord,newPassWord));
@@ -109,7 +109,7 @@ public class FrontUserController extends BladeController {
 	/**
 	 * 单用户注册
 	 */
-	@GetMapping("/frontUserRegister")
+	@PostMapping("/frontUserRegister")
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "单用户注册", notes = "传入参数")
 	public R frontUserRegister(
@@ -129,7 +129,7 @@ public class FrontUserController extends BladeController {
 		return R.status(frontUserService.frontUserRegister(userName,passWord,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark));
 	}
 
-	@GetMapping("/frontUserBatchRegister")
+	@PostMapping("/frontUserBatchRegister")
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "批量用户注册", notes = "传入参数")
 	public void frontUseBatchRegister(
@@ -220,7 +220,7 @@ public class FrontUserController extends BladeController {
 	/**
 	 * 编辑
 	 */
-	@GetMapping("/updateFrontUser")
+	@PostMapping("/updateFrontUser")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "编辑", notes = "传入参数")
 	public  R updateFrontUser(
@@ -239,14 +239,14 @@ public class FrontUserController extends BladeController {
 		return R.status(frontUserService.updateFrontUser(userName,newUserName,passWord,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark));
 	}
 
-	@GetMapping("/deleteFrontUser")
+	@PostMapping("/deleteFrontUser")
 	@ApiOperationSupport(order = 8)
 	@ApiOperation(value = "删除", notes = "传入userName")
 	public  R deleteFrontUser(@ApiParam(value = "userName") @RequestParam(value = "userName")String userName) {
 		return R.status(frontUserService.deleteFrontUser(userName));
 	}
 
-	@GetMapping("/updateFunctionAuth")
+	@PostMapping("/updateFunctionAuth")
 	@ApiOperationSupport(order = 9)
 	@ApiOperation(value = "功能权限", notes = "传入参数")
 	public  R<FrontUserVO> updateFunctionAuth(
@@ -261,7 +261,7 @@ public class FrontUserController extends BladeController {
 		return R.status(frontUserService.updateFunctionAuth(userName,functionId,functionName,publisherId,publisherName,gradeId,gradeName));
 	}
 
-	@GetMapping("/deletedBatchFrontUser")
+	@PostMapping("/deletedBatchFrontUser")
 	@ApiOperationSupport(order = 10)
 	@ApiOperation(value = "批量删除", notes = "传入userName")
 	public  R<FrontUserVO> deletedBatchFrontUser(@ApiParam(value = "userNameList") @RequestParam(value = "userNameList")List<String> userNameList) {
