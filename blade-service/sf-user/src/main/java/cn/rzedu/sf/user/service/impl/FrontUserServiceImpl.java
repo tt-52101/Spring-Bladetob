@@ -90,22 +90,11 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 	}
 
 	@Override
-	public void frontUserBatchRegister(int batchSize, String passWord, int typeId, String typeName, String province_code, String province_name, String city_code, String city_name, String district_code, String district_name, String department, String remark) throws InterruptedException, IOException, WriteException {
+	public List<FrontUserVO> frontUserBatchRegister(int batchSize, String passWord, int typeId, String typeName, String province_code, String province_name, String city_code, String city_name, String district_code, String district_name, String department, String remark) throws InterruptedException, IOException, WriteException {
 		List<FrontUserVO> userVOList = new ArrayList<>();
 		FrontUserVO frontUserVO;
 		String dfpassWord = "123456";
 		LocalDateTime localDateTime=LocalDateTime.now();
-		String year = localDateTime.toString().substring(0,4);
-		String month = localDateTime.toString().substring(5,7);
-		String day = localDateTime.toString().substring(8,10);
-		String filePath = "UserDetail("+year+month+day+")"+".xlsx";
-		File userFile = new File(filePath);
-		WritableWorkbook wwb = Workbook.createWorkbook(userFile);
-		if (!userFile.exists() || userFile.isDirectory()) {
-			userFile.createNewFile();
-		}else {
-			userFile.delete();
-		}
 		for (int i = 0;i < batchSize;i++){
 			String username = this.userRandom();
 			if(baseMapper.selectUserName(username) == null || baseMapper.selectUserName(username).equals(" ")){
@@ -150,32 +139,7 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 				i -= 1;
 			}
 		}
-		WritableSheet ws = wwb.createSheet("列表 1", 0);
-		ws.addCell(new Label(0,0,"username"));
-		ws.addCell(new Label(1,0,"password"));
-		ws.addCell(new Label(2,0,"type_name"));
-		ws.addCell(new Label(3,0,"province_name"));
-		ws.addCell(new Label(4,0,"city_name"));
-		ws.addCell(new Label(5,0,"district_name"));
-		ws.addCell(new Label(6,0,"department"));
-		ws.addCell(new Label(7,0,"remark"));
-		ws.addCell(new Label(8,0,"create_date"));
-		ws.addCell(new Label(9,0,"modify_date"));
-		int index = 0;
-		for(FrontUserVO frontUser:userVOList){
-			ws.addCell(new Label(0,index+1,frontUser.getUsername()));
-			ws.addCell(new Label(1,index+1,frontUser.getPassword()));
-			ws.addCell(new Label(2,index+1,frontUser.getTypeName()));
-			ws.addCell(new Label(3,index+1,frontUser.getProvinceName()));
-			ws.addCell(new Label(4,index+1,frontUser.getCityName()));
-			ws.addCell(new Label(5,index+1,frontUser.getDistrictName()));
-			ws.addCell(new Label(6,index+1,frontUser.getDepartment()));
-			ws.addCell(new Label(7,index+1,frontUser.getRemark()));
-			ws.addCell(new Label(8,index+1,String.valueOf(frontUser.getCreateDate())));
-			ws.addCell(new Label(9,index+1,String.valueOf(frontUser.getModifyDate())));
-			index++;
-		}
-
+		return userVOList;
 	}
 
 	@Override
@@ -212,13 +176,12 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 
 	@Override
 	public boolean deletedBatchFrontUser(List<String> userNameList) {
-		int size = userNameList.size();
-		int index = 0;
+		int count = 0;
 		for (String userName : userNameList){
-			baseMapper.deleteFrontUser(userName);
-			index ++;
+			int r = baseMapper.deleteFrontUser(userName);
+			count += r;
 		}
-		if (size == index){
+		if (count > 0){
 			return true;
 		}else
 		return false;
