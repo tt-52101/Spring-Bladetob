@@ -81,10 +81,10 @@ public class FrontUserController extends BladeController {
 	@ApiOperation(value = "修改密码", notes = "传入userName,oldPassWord,newPassWord")
 	public R FrontUserUpdatePassWord(
 		@ApiParam(value = "userName") @RequestParam(value = "userName")String userName,
-		@ApiParam(value = "OldPassWord") @RequestParam(value = "oldPassWord")String OldPassWord,
+		@ApiParam(value = "oldPassWord") @RequestParam(value = "oldPassWord")String oldPassWord,
 		@ApiParam(value = "newPassWord") @RequestParam(value = "newPassWord")String newPassWord
 	) {
-		return R.status(frontUserService.userUpdatePassword(userName,OldPassWord,newPassWord));
+		return R.status(frontUserService.userUpdatePassword(userName,oldPassWord,newPassWord));
 	}
 
 	/**
