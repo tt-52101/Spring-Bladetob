@@ -1,10 +1,13 @@
 package cn.rzedu.sf.resource.entity;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
@@ -23,8 +26,8 @@ public class HomepageEvent implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-  @TableId(value = "id", type = IdType.AUTO)
-  private Integer id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
     /**
      * 1=轮播，2=导航
      */
@@ -68,6 +71,7 @@ public class HomepageEvent implements Serializable {
     /**
      * 删除标识
      */
+    @TableLogic
     @ApiModelProperty(value = "删除标识")
     private Integer isDeleted;
 
