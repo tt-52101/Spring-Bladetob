@@ -20,7 +20,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.ApiParam;
-import jxl.write.WriteException;
+import jxl.Workbook;
+import jxl.format.Colour;
+import jxl.format.UnderlineStyle;
+import jxl.write.*;
 import lombok.AllArgsConstructor;
 
 
@@ -31,12 +34,14 @@ import org.springframework.web.bind.annotation.*;
 import cn.rzedu.sf.user.vo.FrontUserVO;
 import cn.rzedu.sf.user.service.IFrontUserService;
 import org.springblade.core.boot.ctrl.BladeController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -57,7 +62,7 @@ public class FrontUserController extends BladeController {
 	/**
 	* 用户登录
 	*/
-	@GetMapping("/userLogin")
+	@PostMapping("/userLogin")
     @ApiOperationSupport(order = 1)
 	@ApiOperation(value = "用户登录", notes = "传入userName,passWord")
 	public R<FrontUserVO> FrontUserLogin(
@@ -71,15 +76,15 @@ public class FrontUserController extends BladeController {
 	/**
 	 * 修改密码
 	 */
-	@GetMapping("/userUpdatePassWord")
+	@PostMapping("/userUpdatePassWord")
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "修改密码", notes = "传入userName,oldPassWord,newPassWord")
 	public R FrontUserUpdatePassWord(
 		@ApiParam(value = "userName") @RequestParam(value = "userName")String userName,
-		@ApiParam(value = "OldPassWord") @RequestParam(value = "OldPassWord")String OldPassWord,
+		@ApiParam(value = "oldPassWord") @RequestParam(value = "oldPassWord")String oldPassWord,
 		@ApiParam(value = "newPassWord") @RequestParam(value = "newPassWord")String newPassWord
 	) {
-		return R.status(frontUserService.userUpdatePassword(userName,OldPassWord,newPassWord));
+		return R.status(frontUserService.userUpdatePassword(userName,oldPassWord,newPassWord));
 	}
 
 	/**
@@ -104,7 +109,7 @@ public class FrontUserController extends BladeController {
 	/**
 	 * 单用户注册
 	 */
-	@GetMapping("/frontUserRegister")
+	@PostMapping("/frontUserRegister")
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "单用户注册", notes = "传入参数")
 	public R frontUserRegister(
@@ -124,10 +129,10 @@ public class FrontUserController extends BladeController {
 		return R.status(frontUserService.frontUserRegister(userName,passWord,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark));
 	}
 
-	@GetMapping("/frontUserBatchRegister")
+	@PostMapping("/frontUserBatchRegister")
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "批量用户注册", notes = "传入参数")
-	public void frontUseBatchRegister(HttpServletResponse response,
+	public void frontUseBatchRegister(
 									  @ApiParam(value = "批量生成数量") @RequestParam(value = "batchSize")Integer batchSize,
 									  @ApiParam(value = "密码") @RequestParam(value = "passWord",required = false)String passWord,
 									  @ApiParam(value = "1=普及版，2=基础版，3=互动版") @RequestParam(value = "typeId",defaultValue = "1",required = false)Integer typeId,
@@ -141,24 +146,64 @@ public class FrontUserController extends BladeController {
 									  @ApiParam(value = "remark") @RequestParam(value = "remark",required = false)String remark,
 									  @ApiParam(value = "department") @RequestParam(value = "department",required = false)String department
 	) throws InterruptedException, IOException, WriteException {
-		frontUserService.frontUserBatchRegister(batchSize,passWord,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark);
-		LocalDate localDate=LocalDate.now();
-		String year = localDate.toString().substring(0,4);
-		String month = localDate.toString().substring(5,7);
-		String day = localDate.toString().substring(8,10);
-		String filePath = "UserDetail("+year+month+day+")"+".xlsx";
-		String fileName = new String(("UserDetail("+year+month+day+")"+".xlsx").getBytes(), "ISO-8859-1");
-		response.addHeader("Content-Disposition", "filename=" + fileName);
-		OutputStream outputStream = response.getOutputStream();
-		FileInputStream fileInputStream = new FileInputStream(filePath);
-		byte[] b = new byte[1024];
-		int j;
-		while ((j = fileInputStream.read(b)) > 0) {
-			outputStream.write(b, 0, j);
+
+		List<FrontUserVO> userVOList = frontUserService.frontUserBatchRegister(batchSize,passWord,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark);
+		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		HttpServletResponse response = requestAttributes.getResponse();
+		HttpServletRequest request = requestAttributes.getRequest();
+		LocalDateTime localDateTime=LocalDateTime.now();
+		String year = localDateTime.toString().substring(0,4);
+		String month = localDateTime.toString().substring(5,7);
+		String day = localDateTime.toString().substring(8,10);
+		String fileName = "UserDetail("+year+month+day+")"+".xls";
+		String filePath = request.getSession().getServletContext().getRealPath("") + "/" +fileName;
+		File name = new File(filePath);
+		// 创建写工作簿对象
+		WritableWorkbook workbook = Workbook.createWorkbook(name);
+		// 工作表
+		WritableSheet ws = workbook.createSheet("userList", 0);
+		ws.addCell(new Label(0,0,"username"));
+		ws.addCell(new Label(1,0,"password"));
+		ws.addCell(new Label(2,0,"type_name"));
+		ws.addCell(new Label(3,0,"province_name"));
+		ws.addCell(new Label(4,0,"city_name"));
+		ws.addCell(new Label(5,0,"district_name"));
+		ws.addCell(new Label(6,0,"department"));
+		ws.addCell(new Label(7,0,"remark"));
+		ws.addCell(new Label(8,0,"create_date"));
+		ws.addCell(new Label(9,0,"modify_date"));
+		int index = 0;
+		for(FrontUserVO frontUser:userVOList){
+			ws.addCell(new Label(0,index+1,frontUser.getUsername()));
+			ws.addCell(new Label(1,index+1,frontUser.getPassword()));
+			ws.addCell(new Label(2,index+1,frontUser.getTypeName()));
+			ws.addCell(new Label(3,index+1,frontUser.getProvinceName()));
+			ws.addCell(new Label(4,index+1,frontUser.getCityName()));
+			ws.addCell(new Label(5,index+1,frontUser.getDistrictName()));
+			ws.addCell(new Label(6,index+1,frontUser.getDepartment()));
+			ws.addCell(new Label(7,index+1,frontUser.getRemark()));
+			ws.addCell(new Label(8,index+1,String.valueOf(frontUser.getCreateDate())));
+			ws.addCell(new Label(9,index+1,String.valueOf(frontUser.getModifyDate())));
+			index++;
 		}
-		fileInputStream.close();
-		outputStream.flush();
-		outputStream.close();
+		//开始执行写入操作
+		workbook.write();
+		workbook.close();
+		//下载
+		OutputStream out = null;
+		response.addHeader("content-disposition", "attachment;filename="+ java.net.URLEncoder.encode(fileName, "utf-8"));
+		out = response.getOutputStream();
+		// inputStream：读文件
+		InputStream is = new FileInputStream(filePath);
+		byte[] b = new byte[4096];
+		int size = is.read(b);
+		while (size > 0) {
+			out.write(b, 0, size);
+			size = is.read(b);
+		}
+		out.close();
+		is.close();
+
 	}
 
 
@@ -175,7 +220,7 @@ public class FrontUserController extends BladeController {
 	/**
 	 * 编辑
 	 */
-	@GetMapping("/updateFrontUser")
+	@PostMapping("/updateFrontUser")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "编辑", notes = "传入参数")
 	public  R updateFrontUser(
@@ -194,14 +239,14 @@ public class FrontUserController extends BladeController {
 		return R.status(frontUserService.updateFrontUser(userName,newUserName,passWord,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark));
 	}
 
-	@GetMapping("/deleteFrontUser")
+	@PostMapping("/deleteFrontUser")
 	@ApiOperationSupport(order = 8)
 	@ApiOperation(value = "删除", notes = "传入userName")
 	public  R deleteFrontUser(@ApiParam(value = "userName") @RequestParam(value = "userName")String userName) {
 		return R.status(frontUserService.deleteFrontUser(userName));
 	}
 
-	@GetMapping("/updateFunctionAuth")
+	@PostMapping("/updateFunctionAuth")
 	@ApiOperationSupport(order = 9)
 	@ApiOperation(value = "功能权限", notes = "传入参数")
 	public  R<FrontUserVO> updateFunctionAuth(
@@ -216,7 +261,7 @@ public class FrontUserController extends BladeController {
 		return R.status(frontUserService.updateFunctionAuth(userName,functionId,functionName,publisherId,publisherName,gradeId,gradeName));
 	}
 
-	@GetMapping("/deletedBatchFrontUser")
+	@PostMapping("/deletedBatchFrontUser")
 	@ApiOperationSupport(order = 10)
 	@ApiOperation(value = "批量删除", notes = "传入userName")
 	public  R<FrontUserVO> deletedBatchFrontUser(@ApiParam(value = "userNameList") @RequestParam(value = "userNameList")List<String> userNameList) {

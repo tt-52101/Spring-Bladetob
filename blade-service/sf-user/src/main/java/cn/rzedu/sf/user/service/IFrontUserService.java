@@ -50,7 +50,7 @@ public interface IFrontUserService extends IService<FrontUser> {
 	boolean userUpdatePassword(String userName,String oldPassWord,String newPassWord);
 
 	/**
-	 * 批量用户注册
+	 * 用户注册
 	 * @param username
 	 * @param password
 	 * @param typeId
@@ -85,7 +85,7 @@ public interface IFrontUserService extends IService<FrontUser> {
 	 * @throws IOException
 	 * @throws WriteException
 	 */
-	void frontUserBatchRegister(int batchSize, String password,int typeId,String typeName, String province_code, String province_name, String city_code, String city_name, String district_code, String district_name, String department, String remark) throws InterruptedException, IOException, WriteException;
+	List<FrontUserVO> frontUserBatchRegister(int batchSize, String password,int typeId,String typeName, String province_code, String province_name, String city_code, String city_name, String district_code, String district_name, String department, String remark) throws InterruptedException, IOException, WriteException;
 
 	/**
 	 *
