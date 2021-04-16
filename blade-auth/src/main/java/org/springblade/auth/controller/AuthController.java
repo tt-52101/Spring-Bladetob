@@ -36,8 +36,6 @@ import org.springblade.auth.granter.ITokenGranter;
 import org.springblade.auth.granter.TokenGranterBuilder;
 import org.springblade.auth.granter.TokenParameter;
 import org.springblade.auth.utils.HttpClient;
-import org.springblade.auth.utils.MessageUtil;
-import org.springblade.auth.utils.SignUtil;
 import org.springblade.auth.utils.TokenUtil;
 import org.springblade.auth.vo.Message;
 import org.springblade.common.cache.CacheNames;
@@ -224,45 +222,45 @@ public class AuthController {
 	}
 
 
-	@GetMapping("/getUserInfoByWxOAuth/sns")
-	@ApiOperation(value = "微信oauth-获取微信用户信息（少年说报名用）", notes = "传入code，微信oauth的code值")
-	public R<JSONObject> getUserInfoByWxOAuthSns(@ApiParam(value = "微信oauth-code", required = true) @RequestParam(defaultValue = "code", required = false) String code) {
-		JSONObject userInfo = extractOpenIdSns(code);
-		if (userInfo == null) {
-			return R.fail(TokenUtil.USER_NOT_FOUND);
-		}
-		return R.data(userInfo);
-	}
+//	@GetMapping("/getUserInfoByWxOAuth/sns")
+//	@ApiOperation(value = "微信oauth-获取微信用户信息（少年说报名用）", notes = "传入code，微信oauth的code值")
+//	public R<JSONObject> getUserInfoByWxOAuthSns(@ApiParam(value = "微信oauth-code", required = true) @RequestParam(defaultValue = "code", required = false) String code) {
+//		JSONObject userInfo = extractOpenIdSns(code);
+//		if (userInfo == null) {
+//			return R.fail(TokenUtil.USER_NOT_FOUND);
+//		}
+//		return R.data(userInfo);
+//	}
 
-	private JSONObject extractOpenIdSns(String code) {
-		OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
-		OAuthClientRequest accessTokenRequest = null;
-		try {
-			accessTokenRequest = OAuthClientRequest
-					.tokenLocation(weChatProperties.getAccessTokenUrl())
-					.setGrantType(GrantType.AUTHORIZATION_CODE)
-					.setParameter("appId", weChatProperties.getSnsAppId())
-					.setParameter("secret", weChatProperties.getSnsAppSecret())
-					.setCode(code)
-					.buildQueryMessage();
-			//获取access token
-			OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(accessTokenRequest, OAuth.HttpMethod.POST);
-			String openId = oAuthResponse.getParam("openid");
-			String accessToken = oAuthResponse.getAccessToken();
-			Long expiresIn = oAuthResponse.getExpiresIn();
-			Map<String, Object> param = new HashMap<String, Object>();
-			param.put("access_token", accessToken);
-			param.put("openid", openId);
-			param.put("lang", "zh_CN");
-			JSONObject result = HttpClient.httpGet(weChatProperties.getUserInfoUrl(), param);
-			result.put("access_token", accessToken);
-			result.put("openid", openId);
-			return result;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+//	private JSONObject extractOpenIdSns(String code) {
+//		OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+//		OAuthClientRequest accessTokenRequest = null;
+//		try {
+//			accessTokenRequest = OAuthClientRequest
+//					.tokenLocation(weChatProperties.getAccessTokenUrl())
+//					.setGrantType(GrantType.AUTHORIZATION_CODE)
+//					.setParameter("appId", weChatProperties.getSnsAppId())
+//					.setParameter("secret", weChatProperties.getSnsAppSecret())
+//					.setCode(code)
+//					.buildQueryMessage();
+//			//获取access token
+//			OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(accessTokenRequest, OAuth.HttpMethod.POST);
+//			String openId = oAuthResponse.getParam("openid");
+//			String accessToken = oAuthResponse.getAccessToken();
+//			Long expiresIn = oAuthResponse.getExpiresIn();
+//			Map<String, Object> param = new HashMap<String, Object>();
+//			param.put("access_token", accessToken);
+//			param.put("openid", openId);
+//			param.put("lang", "zh_CN");
+//			JSONObject result = HttpClient.httpGet(weChatProperties.getUserInfoUrl(), param);
+//			result.put("access_token", accessToken);
+//			result.put("openid", openId);
+//			return result;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
 	
 	
 }

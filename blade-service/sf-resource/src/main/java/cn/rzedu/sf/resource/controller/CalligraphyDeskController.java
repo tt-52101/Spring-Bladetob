@@ -1,10 +1,18 @@
 package cn.rzedu.sf.resource.controller;
 
+import cn.rzedu.sf.resource.bo.CharacterResourceBO;
+import cn.rzedu.sf.resource.bo.FileData;
+import cn.rzedu.sf.resource.entity.Character;
+import cn.rzedu.sf.resource.entity.CharacterResourceFile;
+import cn.rzedu.sf.resource.entity.Font;
 import cn.rzedu.sf.resource.entity.Textbook;
 import cn.rzedu.sf.resource.service.*;
+import cn.rzedu.sf.resource.vo.CharacterResourceVO;
 import cn.rzedu.sf.resource.vo.TextbookLessonVO;
 import cn.rzedu.sf.resource.vo.TextbookVO;
 import cn.rzedu.sf.resource.wrapper.TextbookWrapper;
+import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
@@ -13,11 +21,24 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.apache.poi.ss.formula.functions.T;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springblade.common.tool.WeChatUtil;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.api.ResultCode;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
+import sun.misc.BASE64Encoder;
 
-import java.sql.Wrapper;
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,9 +54,13 @@ import java.util.concurrent.TimeUnit;
 @Api(value = "书法B端接口 ", tags = "书法B端接口")
 public class CalligraphyDeskController {
 
+    private final static Logger logger = LoggerFactory.getLogger(CalligraphyDeskController.class);
+
     private ICharacterService characterService;
 
     private ICharacterResourceService characterResourceService;
+
+    private ICharacterResourceFileService characterResourceFileService;
 
     private ICharacterBrushworkService characterBrushworkService;
 
@@ -44,6 +69,8 @@ public class CalligraphyDeskController {
     private ITextbookLessonService textbookLessonService;
 
     private IPublisherService publisherService;
+
+    private IFontService fontService;
 
     private RedisTemplate<String, Object> redisTemplate;
 
@@ -157,6 +184,105 @@ public class CalligraphyDeskController {
         return R.success("删除缓存成功，characterId：" + characterId + "_" + subject + "#" + font);
     }
 
+    /**
+     * 新增或修改汉字资源文件
+     */
+    @PostMapping("/saveOrUpdate")
+    @ApiOperationSupport(order = 9)
+    @ApiOperation(value = "书法B端新增或修改汉字资源文件", notes = "参数都是必填")
+    public R saveOrUpdate(@Valid @RequestBody CharacterResourceBO characterResourceBO) {
+        System.out.println(characterResourceBO);
+        Integer characterId = characterResourceBO.getCharacterId();
+        String font = characterResourceBO.getFont();
+        Integer subject = characterResourceBO.getSubject();
+        List<FileData> fileDatas = characterResourceBO.getFileDatas();
+
+//        characterResourceService.saveOrUpdateBy()v
+
+        return R.status(true);
+    }
+
+    /**
+     * 生成并下载 小程序码
+     */
+    @GetMapping("/xcx/createQRCode")
+    @ApiOperationSupport(order = 11)
+    @ApiOperation(value = "生成并下载二维码", notes = "生成并下载二维码")
+    public byte[] createQRCode(@ApiIgnore HttpServletResponse response,
+                         @ApiParam(value = "资源学科  71=软笔书法 72=硬笔书法", required = true) @RequestParam(value = "subject") Integer subject,
+                         @ApiParam(value = "二维码类型  1=教材 2=课程 3=汉字", required = true) @RequestParam(value = "type") Integer type,
+                         @ApiParam(value = "字体 type=3:必填", required = true) @RequestParam(value = "font", required = false) String font,
+                         @ApiParam(value = "对应ID type=1:教材ID type=2:课程ID type=3:汉字ID ", required = true) @RequestParam(value = "objectId") Integer objectId) throws Exception {
+
+        byte[] image = null;
+        Integer sort = null;
+        Map<String,Object> map = new HashMap<String,Object>();
+
+        if(type == 1){ //教材
+            if(subject == 71){
+                sort = 1;
+            } else if(subject == 72){
+                sort = 2;
+            }
+            String scene = "type=" + sort + "&id=" + objectId;
+
+            map.put("scene", scene);
+            image = WeChatUtil.createQRCode(map);
+        } else if(type == 2){ //课程
+            if(subject == 71){
+                sort = 3;
+            } else if(subject == 72){
+                sort = 4;
+            }
+            String scene = "type=" + sort + "&id=" + objectId;
+            map.put("scene", scene);
+            image = WeChatUtil.createQRCode(map);
+        } else if(type == 3){ //汉字
+            if(font == null || "".equals(font)){
+                logger.error("生成并下载二维码异常：font不能为空");
+                return null;
+            }
+            if(subject == 71){
+                sort = 5;
+            } else if(subject == 72){
+                sort = 6;
+            }
+            Integer fontType = getFontType(font);
+            String scene = "type=" + sort + "&id=" + objectId + "&fontType=" + fontType;
+            System.out.println(scene);
+            map.put("scene", scene);
+            image = WeChatUtil.createQRCode(map);
+//            ByteToFile(image);
+        } else {
+            logger.error("生成并下载二维码异常：二维码类型错误");
+        }
+        return image;
+    }
+
+    private Integer getFontType(String name){
+        Integer fontType = null;
+        QueryWrapper<Font> fontWrapper = new QueryWrapper<Font>();
+        fontWrapper.eq("name", name);
+        fontWrapper.eq("is_deleted", 0);
+        Font font = fontService.getOne(fontWrapper);
+        if(font != null){
+            fontType = font.getId();
+        }
+        return fontType;
+    }
+
+    private static void ByteToFile(byte[] bytes)throws Exception{
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        BufferedImage bi1 =ImageIO.read(bais);
+        try {
+            File w2 = new File("C:\\Users\\80969\\Desktop\\test.jpg");//可以是jpg,png,gif格式
+            ImageIO.write(bi1, "jpg", w2);//不管输出什么格式图片，此处不需改动
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally{
+            bais.close();
+        }
+    }
 
     /**
      * 标准笔法和基本笔画

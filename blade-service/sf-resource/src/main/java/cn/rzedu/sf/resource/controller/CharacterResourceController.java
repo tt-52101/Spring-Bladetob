@@ -315,53 +315,18 @@ public class CharacterResourceController extends BladeController {
         return R.success("删除缓存成功，字体：#" + font);
     }
 
-
-//    /**
-//     * 软笔观察、分析、笔法资源
-//     */
-//    @ApiIgnore
-//    @GetMapping("/soft/{characterId}")
-//    @ApiOperationSupport(order = 9)
-//    @Cacheable(cacheNames = "soft-resource", key = "#characterId")
-//    @ApiOperation(value = "软笔观察、分析、笔法资源", notes = "软笔观察、分析、笔法资源")
-//    public R softResource(
-//            @ApiParam(value = "汉字id", required = true) @PathVariable(value = "characterId") Integer characterId) {
-//        Map<String, Object> map = characterResourceService.findSoftResource(characterId);
-//        return R.data(map);
-//    }
-//
-//    /**
-//     * 删除软笔资源缓存
-//     */
-//    @ApiIgnore
-//    @GetMapping("/remove-resource-cache/{characterId}")
-//    @ApiOperationSupport(order = 10)
-//    @CacheEvict(cacheNames = "soft-resource", key = "#characterId")
-//    @ApiOperation(value = "删除软笔资源缓存", notes = "删除软笔资源缓存")
-//    public R removeResourceCache(@ApiParam(value = "汉字id", required = true) @PathVariable(value = "characterId") Integer characterId) {
-//        return R.success("删除缓存成功，characterId：" + characterId);
-//    }
-//
-//    /**
-//     * 软笔观察、分析、笔法资源(整个课程所有汉字)
-//     */
-//    @ApiIgnore
-//    @GetMapping("/soft/list/{lessonId}")
-//    @ApiOperationSupport(order = 11)
-//    @ApiOperation(value = "软笔观察、分析、笔法资源(整个课程所有汉字)", notes = "软笔观察、分析、笔法资源(整个课程所有汉字)")
-//    public R softResourceList(
-//            @ApiParam(value = "课程id", required = true) @PathVariable(value = "lessonId") Integer lessonId) {
-//        List<Map<String, Object>> list = new ArrayList<>();
-//
-//        List<TextbookLessonCharacter> characterList = textbookLessonCharacterService.findByLessonId(lessonId);
-//        Map<String, Object> map = null;
-//        if (characterList != null && !characterList.isEmpty()) {
-//            for (TextbookLessonCharacter tlc : characterList) {
-//                map = characterResourceService.findSoftResource(tlc.getCharacterId());
-//                list.add(map);
-//            }
-//
-//        }
-//        return R.data(list);
-//    }
+    /**
+     * 根据 汉字和字体和软/硬 查询汉字全部资源
+     */
+    @GetMapping("/list/basic")
+    @ApiOperationSupport(order = 13)
+    @ApiOperation(value = "查询汉字全部资源", notes = "根据 汉字和字体和软/硬 查询汉字全部资源")
+    public R list(
+            @ApiParam(value = "源学科 71=软笔书法 72=硬笔书法", required = true) @PathVariable(value = "subject") Integer subject,
+            @ApiParam(value = "汉字id", required = true) @PathVariable(value = "characterId") Integer characterId,
+            @ApiParam(value = "字体") @RequestParam(value = "font", required = false, defaultValue = "") String font) {
+        String key = "resource-bag-basic-#" + font;
+        redisTemplate.delete(key);
+        return R.success("删除缓存成功，字体：#" + font);
+    }
 }

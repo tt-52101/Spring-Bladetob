@@ -67,7 +67,7 @@ public class FontController extends BladeController {
 	 * @return
 	 */
 	@GetMapping("/list/{subject}")
-	@ApiOperationSupport(order = 1)
+	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "软/硬笔 字体列表", notes = "软/硬笔 字体列表")
 	public R<IPage<FontVO>> list(
 			@ApiParam(value = "资源学科 71=软笔书法 72=硬笔书法", required = true) @PathVariable(value = "subject") Integer subject,
