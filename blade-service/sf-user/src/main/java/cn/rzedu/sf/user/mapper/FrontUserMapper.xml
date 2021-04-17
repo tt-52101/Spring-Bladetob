@@ -122,7 +122,7 @@
                                  publisher_id = #{publisherId},
                                  publisher_name = #{publisherName},
                                  grade_id = #{gradeId},
-                                 grade_name = #{grade_name}
+                                 grade_name = #{gradeName}
         where is_deleted = 0 and username = #{userName}
     </update>
     

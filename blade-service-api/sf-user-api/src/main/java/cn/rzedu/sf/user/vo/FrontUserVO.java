@@ -23,6 +23,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 
+import java.util.List;
+
 /**
  * 视图实体类
  *
@@ -34,5 +36,44 @@ import io.swagger.annotations.ApiModel;
 @ApiModel(value = "FrontUserVO对象", description = "FrontUserVO对象")
 public class FrontUserVO extends FrontUser {
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 新密码
+	 */
+	@ApiModelProperty(value = "新密码")
+	private String newPassword;
+
+	/**
+	 * 新用户名
+	 */
+	@ApiModelProperty(value = "新用户名")
+	private String newUserName;
+	/**
+	 * 生成帐号的数量
+	 */
+	@ApiModelProperty(value = "生成数量")
+	private Integer batchSize;
+
+	@ApiModelProperty(value = "批量删除")
+	private List<String> userNameList;
+
+	@ApiModelProperty(value = "functionId")
+	private List<String>  functionIds;
+
+	@ApiModelProperty(value = "functionName")
+	private List<String> functionNames;
+
+	@ApiModelProperty(value = "publisherId")
+	private List<String> publisherIds;
+
+	@ApiModelProperty(value = "publisherName")
+	private List<String> publisherNames;
+
+	@ApiModelProperty(value = "gradeId")
+	private List<String> gradeIds;
+
+	@ApiModelProperty(value = "批量删除")
+	private List<String> gradeNames;
+
 
 }

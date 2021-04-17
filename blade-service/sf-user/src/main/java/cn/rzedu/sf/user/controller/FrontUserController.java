@@ -16,6 +16,7 @@
 package cn.rzedu.sf.user.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import io.protostuff.Request;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
@@ -39,6 +40,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -65,10 +67,9 @@ public class FrontUserController extends BladeController {
 	@PostMapping("/userLogin")
     @ApiOperationSupport(order = 1)
 	@ApiOperation(value = "用户登录", notes = "传入userName,passWord")
-	public R<FrontUserVO> FrontUserLogin(
-		@ApiParam(value = "userName") @RequestParam(value = "userName")String userName,
-		@ApiParam(value = "passWord") @RequestParam(value = "passWord")String passWord
-	) {
+	public R<FrontUserVO> FrontUserLogin(@Valid @RequestBody FrontUserVO frontUserVO) {
+		String userName = frontUserVO.getUsername();
+		String passWord = frontUserVO.getPassword();
 		FrontUserVO userVO = frontUserService.FrontUserLogin(userName,passWord);
 		return R.data(userVO);
 	}
@@ -79,11 +80,10 @@ public class FrontUserController extends BladeController {
 	@PostMapping("/userUpdatePassWord")
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "修改密码", notes = "传入userName,oldPassWord,newPassWord")
-	public R FrontUserUpdatePassWord(
-		@ApiParam(value = "userName") @RequestParam(value = "userName")String userName,
-		@ApiParam(value = "oldPassWord") @RequestParam(value = "oldPassWord")String oldPassWord,
-		@ApiParam(value = "newPassWord") @RequestParam(value = "newPassWord")String newPassWord
-	) {
+	public R FrontUserUpdatePassWord(@Valid @RequestBody FrontUserVO frontUserVO) {
+		String userName = frontUserVO.getUsername();
+		String oldPassWord = frontUserVO.getPassword();
+		String newPassWord = frontUserVO.getNewPassword();
 		return R.status(frontUserService.userUpdatePassword(userName,oldPassWord,newPassWord));
 	}
 
@@ -93,14 +93,13 @@ public class FrontUserController extends BladeController {
 	@GetMapping("/selectFrontUserList")
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "USER条件查询", notes = "传入查询条件")
-	public R<IPage<FrontUserVO>> selectFrontUserList(Query query,
-													 @ApiParam(value = "userName") @RequestParam(value = "userName",required = false)String userName,
-													 @ApiParam(value = "provinceName") @RequestParam(value = "provinceName",required = false)String provinceName,
-													 @ApiParam(value = "cityName") @RequestParam(value = "cityName",required = false)String cityName,
-													 @ApiParam(value = "districtName") @RequestParam(value = "districtName",required = false)String districtName,
-													 @ApiParam(value = "department") @RequestParam(value = "department",required = false)String department,
-													 @ApiParam(value = "remark") @RequestParam(value = "remark",required = false)String remark
-													 ) {
+	public R<IPage<FrontUserVO>> selectFrontUserList(Query query, @Valid @RequestBody FrontUserVO frontUserVO) {
+		String userName = frontUserVO.getUsername();
+		String provinceName = frontUserVO.getProvinceName();
+		String cityName = frontUserVO.getCityName();
+		String districtName = frontUserVO.getDistrictName();
+		String department = frontUserVO.getDepartment();
+		String remark = frontUserVO.getRemark();
 		IPage<FrontUserVO> pages = frontUserService.selectFrontUserList(Condition.getPage(query),userName,provinceName,cityName,districtName,department,remark);
 		return R.data(pages);
 	}
@@ -112,41 +111,40 @@ public class FrontUserController extends BladeController {
 	@PostMapping("/frontUserRegister")
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "单用户注册", notes = "传入参数")
-	public R frontUserRegister(
-			@ApiParam(value = "用户名") @RequestParam(value = "userName")String userName,
-			@ApiParam(value = "密码") @RequestParam(value = "passWord")String passWord,
-			@ApiParam(value = "1=普及版，2=基础版，3=互动版") @RequestParam(value = "typeId",defaultValue = "1",required = false)Integer typeId,
-			@ApiParam(value = "用户类型") @RequestParam(value = "typeName",required = false)String typeName,
-			@ApiParam(value = "provinceCode") @RequestParam(value = "provinceCode",required = false)String provinceCode,
-			@ApiParam(value = "provinceName") @RequestParam(value = "provinceName",required = false)String provinceName,
-			@ApiParam(value = "cityCode") @RequestParam(value = "cityCode",required = false)String cityCode,
-			@ApiParam(value = "cityName") @RequestParam(value = "cityName",required = false)String cityName,
-			@ApiParam(value = "districtCode") @RequestParam(value = "districtCode",required = false)String districtCode,
-			@ApiParam(value = "districtName") @RequestParam(value = "districtName",required = false)String districtName,
-			@ApiParam(value = "备注") @RequestParam(value = "remark",required = false)String remark,
-			@ApiParam(value = "单位") @RequestParam(value = "department",required = false)String department
-	) {
+	public R frontUserRegister(@Valid @RequestBody FrontUserVO frontUserVO) {
+		String userName = frontUserVO.getUsername();
+		String passWord = frontUserVO.getPassword();
+		Integer typeId = frontUserVO.getTypeId();
+		String typeName = frontUserVO.getTypeName();
+		String provinceCode = frontUserVO.getProvinceCode();
+		String provinceName = frontUserVO.getProvinceName();
+		String cityCode = frontUserVO.getCityCode();
+		String cityName = frontUserVO.getCityName();
+		String districtCode = frontUserVO.getDistrictCode();
+		String districtName = frontUserVO.getDistrictName();
+		String department = frontUserVO.getDepartment();
+		String remark = frontUserVO.getRemark();
 		return R.status(frontUserService.frontUserRegister(userName,passWord,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark));
+
+
 	}
 
 	@PostMapping("/frontUserBatchRegister")
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "批量用户注册", notes = "传入参数")
-	public void frontUseBatchRegister(
-									  @ApiParam(value = "批量生成数量") @RequestParam(value = "batchSize")Integer batchSize,
-									  @ApiParam(value = "密码") @RequestParam(value = "passWord",required = false)String passWord,
-									  @ApiParam(value = "1=普及版，2=基础版，3=互动版") @RequestParam(value = "typeId",defaultValue = "1",required = false)Integer typeId,
-									  @ApiParam(value = "typeName") @RequestParam(value = "typeName",required = false)String typeName,
-									  @ApiParam(value = "provinceCode") @RequestParam(value = "provinceCode",required = false)String provinceCode,
-									  @ApiParam(value = "provinceName") @RequestParam(value = "provinceName",required = false)String provinceName,
-									  @ApiParam(value = "cityCode") @RequestParam(value = "cityCode",required = false)String cityCode,
-									  @ApiParam(value = "cityName") @RequestParam(value = "cityName",required = false)String cityName,
-									  @ApiParam(value = "districtCode") @RequestParam(value = "districtCode",required = false)String districtCode,
-									  @ApiParam(value = "districtName") @RequestParam(value = "districtName",required = false)String districtName,
-									  @ApiParam(value = "remark") @RequestParam(value = "remark",required = false)String remark,
-									  @ApiParam(value = "department") @RequestParam(value = "department",required = false)String department
-	) throws InterruptedException, IOException, WriteException {
-
+	public void frontUseBatchRegister(@Valid @RequestBody FrontUserVO frontUserVO) throws InterruptedException, IOException, WriteException {
+		Integer batchSize = frontUserVO.getBatchSize();
+		String passWord = frontUserVO.getPassword();
+		Integer typeId = frontUserVO.getTypeId();
+		String typeName = frontUserVO.getTypeName();
+		String provinceCode = frontUserVO.getProvinceCode();
+		String provinceName = frontUserVO.getProvinceName();
+		String cityCode = frontUserVO.getCityCode();
+		String cityName = frontUserVO.getCityName();
+		String districtCode = frontUserVO.getDistrictCode();
+		String districtName = frontUserVO.getDistrictName();
+		String department = frontUserVO.getDepartment();
+		String remark = frontUserVO.getRemark();
 		List<FrontUserVO> userVOList = frontUserService.frontUserBatchRegister(batchSize,passWord,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark);
 		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 		HttpServletResponse response = requestAttributes.getResponse();
@@ -203,7 +201,8 @@ public class FrontUserController extends BladeController {
 		}
 		out.close();
 		is.close();
-
+//		boolean r = frontUserService.CreateExcelForm(userVOList);
+//		return R.status(r);
 	}
 
 
@@ -223,48 +222,48 @@ public class FrontUserController extends BladeController {
 	@PostMapping("/updateFrontUser")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "编辑", notes = "传入参数")
-	public  R updateFrontUser(
-			@ApiParam(value = "userName") @RequestParam(value = "userName")String userName,
-			@ApiParam(value = "新用户名") @RequestParam(value = "newUserName",required = false)String newUserName,
-			@ApiParam(value = "password") @RequestParam(value = "passWord",required = false)String passWord,
-			@ApiParam(value = "provinceCode") @RequestParam(value = "provinceCode",required = false)String provinceCode,
-			@ApiParam(value = "provinceName") @RequestParam(value = "provinceName",required = false)String provinceName,
-			@ApiParam(value = "cityCode") @RequestParam(value = "cityCode",required = false)String cityCode,
-			@ApiParam(value = "cityName") @RequestParam(value = "cityName",required = false)String cityName,
-			@ApiParam(value = "districtCode") @RequestParam(value = "districtCode",required = false)String districtCode,
-			@ApiParam(value = "districtName") @RequestParam(value = "districtName",required = false)String districtName,
-			@ApiParam(value = "remark") @RequestParam(value = "remark",required = false)String remark,
-			@ApiParam(value = "department") @RequestParam(value = "department",required = false)String department
-			) {
+	public  R updateFrontUser(@Valid @RequestBody FrontUserVO frontUserVO) {
+		String userName = frontUserVO.getUsername();
+		String newUserName = frontUserVO.getNewUserName();
+		String passWord = frontUserVO.getPassword();
+		String provinceCode = frontUserVO.getProvinceCode();
+		String provinceName = frontUserVO.getProvinceName();
+		String cityCode = frontUserVO.getCityCode();
+		String cityName = frontUserVO.getCityName();
+		String districtCode = frontUserVO.getDistrictCode();
+		String districtName = frontUserVO.getDistrictName();
+		String department = frontUserVO.getDepartment();
+		String remark = frontUserVO.getRemark();
 		return R.status(frontUserService.updateFrontUser(userName,newUserName,passWord,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark));
 	}
 
 	@PostMapping("/deleteFrontUser")
 	@ApiOperationSupport(order = 8)
 	@ApiOperation(value = "删除", notes = "传入userName")
-	public  R deleteFrontUser(@ApiParam(value = "userName") @RequestParam(value = "userName")String userName) {
+	public  R deleteFrontUser(@Valid @RequestBody FrontUserVO frontUserVO) {
+		String userName = frontUserVO.getUsername();
 		return R.status(frontUserService.deleteFrontUser(userName));
 	}
 
 	@PostMapping("/updateFunctionAuth")
 	@ApiOperationSupport(order = 9)
 	@ApiOperation(value = "功能权限", notes = "传入参数")
-	public  R<FrontUserVO> updateFunctionAuth(
-			@ApiParam(value = "userName") @RequestParam(value = "userName")String userName,
-			@ApiParam(value = "functionId") @RequestParam(value = "functionId")List<String> functionId,
-			@ApiParam(value = "functionName") @RequestParam(value = "functionName")List<String> functionName,
-			@ApiParam(value = "publisherId") @RequestParam(value = "publisherId")List<String> publisherId,
-			@ApiParam(value = "publisherName") @RequestParam(value = "publisherName")List<String> publisherName,
-			@ApiParam(value = "gradeId") @RequestParam(value = "gradeId")List<String> gradeId,
-			@ApiParam(value = "gradeName") @RequestParam(value = "gradeName") List<String> gradeName
-			) {
-		return R.status(frontUserService.updateFunctionAuth(userName,functionId,functionName,publisherId,publisherName,gradeId,gradeName));
+	public  R<FrontUserVO> updateFunctionAuth(@Valid @RequestBody FrontUserVO frontUserVO) {
+		String userName = frontUserVO.getUsername();
+		List<String> functionIds = frontUserVO.getFunctionIds();
+		List<String> functionNames = frontUserVO.getFunctionNames();
+		List<String> publisherIds = frontUserVO.getPublisherIds();
+		List<String> publisherNames = frontUserVO.getPublisherNames();
+		List<String> gradeIds = frontUserVO.getGradeIds();
+		List<String> gradeNames = frontUserVO.getGradeNames();
+		return R.status(frontUserService.updateFunctionAuth(userName,functionIds,functionNames,publisherIds,publisherNames,gradeIds,gradeNames));
 	}
 
 	@PostMapping("/deletedBatchFrontUser")
 	@ApiOperationSupport(order = 10)
 	@ApiOperation(value = "批量删除", notes = "传入userName")
-	public  R<FrontUserVO> deletedBatchFrontUser(@ApiParam(value = "userNameList") @RequestParam(value = "userNameList")List<String> userNameList) {
+	public  R<FrontUserVO> deletedBatchFrontUser(@Valid @RequestBody FrontUserVO frontUserVO) {
+		List<String> userNameList = frontUserVO.getUserNameList();
 		return R.status(frontUserService.deletedBatchFrontUser(userNameList));
 	}
 }
