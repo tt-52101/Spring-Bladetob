@@ -236,7 +236,7 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 	}
 
 	@Override
-	public IPage<FrontUserVO> selectFrontUserList(IPage<FrontUserVO> page, String userName,int typeId, String provinceCode, String cityCode, String districtCode, String department, String remark) {
+	public IPage<FrontUserVO> selectFrontUserList(IPage<FrontUserVO> page, String userName,String typeId, String provinceCode, String cityCode, String districtCode, String department, String remark) {
 		RegionVO regionVO = baseMapper.selectRegion(provinceCode,cityCode,districtCode);
 		String provinceName = null;
 		String cityName = null ;

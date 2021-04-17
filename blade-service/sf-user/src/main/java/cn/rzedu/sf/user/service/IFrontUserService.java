@@ -113,7 +113,7 @@ public interface IFrontUserService extends IService<FrontUser> {
 	 * @param remark
 	 * @return
 	 */
-	IPage<FrontUserVO> selectFrontUserList(IPage<FrontUserVO> page,String userName,int typeId,String provinceCode,String cityCode,String districtCode,String department,String remark);
+	IPage<FrontUserVO> selectFrontUserList(IPage<FrontUserVO> page,String userName,String typeId,String provinceCode,String cityCode,String districtCode,String department,String remark);
 
 	/**
 	 * 查看

@@ -95,7 +95,7 @@ public class FrontUserController extends BladeController {
 	@ApiOperation(value = "USER条件查询", notes = "传入查询条件")
 	public R<IPage<FrontUserVO>> selectFrontUserList(Query query,
 													 @ApiParam(value = "userName") @RequestParam(value = "userName",required = false)String userName,
-													 @ApiParam(value = "typeId") @RequestParam(value = "typeId",required = false)Integer typeId,
+													 @ApiParam(value = "typeId") @RequestParam(value = "typeId",required = false)String typeId,
 													 @ApiParam(value = "provinceCode") @RequestParam(value = "provinceCode",required = false)String provinceCode,
 													 @ApiParam(value = "cityCode") @RequestParam(value = "cityCode",required = false)String cityCode,
 													 @ApiParam(value = "districtCode") @RequestParam(value = "districtCode",required = false)String districtCode,
