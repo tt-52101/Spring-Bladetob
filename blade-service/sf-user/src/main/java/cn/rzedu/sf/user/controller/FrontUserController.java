@@ -93,16 +93,18 @@ public class FrontUserController extends BladeController {
 	@GetMapping("/selectFrontUserList")
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "USER条件查询", notes = "传入查询条件")
-	public R<IPage<FrontUserVO>> selectFrontUserList(Query query, @Valid @RequestBody FrontUserVO frontUserVO) {
-		String userName = frontUserVO.getUsername();
-		String provinceName = frontUserVO.getProvinceName();
-		String cityName = frontUserVO.getCityName();
-		String districtName = frontUserVO.getDistrictName();
-		String department = frontUserVO.getDepartment();
-		String remark = frontUserVO.getRemark();
+	public R<IPage<FrontUserVO>> selectFrontUserList(Query query,
+													 @ApiParam(value = "userName") @RequestParam(value = "userName",required = false)String userName,
+													 @ApiParam(value = "provinceName") @RequestParam(value = "provinceName",required = false)String provinceName,
+													 @ApiParam(value = "cityName") @RequestParam(value = "cityName",required = false)String cityName,
+													 @ApiParam(value = "districtName") @RequestParam(value = "districtName",required = false)String districtName,
+													 @ApiParam(value = "单位") @RequestParam(value = "department",required = false)String department,
+													 @ApiParam(value = "备注") @RequestParam(value = "remark",required = false)String remark
+	) {
 		IPage<FrontUserVO> pages = frontUserService.selectFrontUserList(Condition.getPage(query),userName,provinceName,cityName,districtName,department,remark);
 		return R.data(pages);
 	}
+
 
 
 	/**
@@ -146,63 +148,7 @@ public class FrontUserController extends BladeController {
 		String department = frontUserVO.getDepartment();
 		String remark = frontUserVO.getRemark();
 		List<FrontUserVO> userVOList = frontUserService.frontUserBatchRegister(batchSize,passWord,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark);
-		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-		HttpServletResponse response = requestAttributes.getResponse();
-		HttpServletRequest request = requestAttributes.getRequest();
-		LocalDateTime localDateTime=LocalDateTime.now();
-		String year = localDateTime.toString().substring(0,4);
-		String month = localDateTime.toString().substring(5,7);
-		String day = localDateTime.toString().substring(8,10);
-		String fileName = "UserDetail("+year+month+day+")"+".xls";
-		String filePath = request.getSession().getServletContext().getRealPath("") + "/" +fileName;
-		File name = new File(filePath);
-		// 创建写工作簿对象
-		WritableWorkbook workbook = Workbook.createWorkbook(name);
-		// 工作表
-		WritableSheet ws = workbook.createSheet("userList", 0);
-		ws.addCell(new Label(0,0,"username"));
-		ws.addCell(new Label(1,0,"password"));
-		ws.addCell(new Label(2,0,"type_name"));
-		ws.addCell(new Label(3,0,"province_name"));
-		ws.addCell(new Label(4,0,"city_name"));
-		ws.addCell(new Label(5,0,"district_name"));
-		ws.addCell(new Label(6,0,"department"));
-		ws.addCell(new Label(7,0,"remark"));
-		ws.addCell(new Label(8,0,"create_date"));
-		ws.addCell(new Label(9,0,"modify_date"));
-		int index = 0;
-		for(FrontUserVO frontUser:userVOList){
-			ws.addCell(new Label(0,index+1,frontUser.getUsername()));
-			ws.addCell(new Label(1,index+1,frontUser.getPassword()));
-			ws.addCell(new Label(2,index+1,frontUser.getTypeName()));
-			ws.addCell(new Label(3,index+1,frontUser.getProvinceName()));
-			ws.addCell(new Label(4,index+1,frontUser.getCityName()));
-			ws.addCell(new Label(5,index+1,frontUser.getDistrictName()));
-			ws.addCell(new Label(6,index+1,frontUser.getDepartment()));
-			ws.addCell(new Label(7,index+1,frontUser.getRemark()));
-			ws.addCell(new Label(8,index+1,String.valueOf(frontUser.getCreateDate())));
-			ws.addCell(new Label(9,index+1,String.valueOf(frontUser.getModifyDate())));
-			index++;
-		}
-		//开始执行写入操作
-		workbook.write();
-		workbook.close();
-		//下载
-		OutputStream out = null;
-		response.addHeader("content-disposition", "attachment;filename="+ java.net.URLEncoder.encode(fileName, "utf-8"));
-		out = response.getOutputStream();
-		// inputStream：读文件
-		InputStream is = new FileInputStream(filePath);
-		byte[] b = new byte[4096];
-		int size = is.read(b);
-		while (size > 0) {
-			out.write(b, 0, size);
-			size = is.read(b);
-		}
-		out.close();
-		is.close();
-//		boolean r = frontUserService.CreateExcelForm(userVOList);
-//		return R.status(r);
+		frontUserService.CreateExcelForm(userVOList);
 	}
 
 

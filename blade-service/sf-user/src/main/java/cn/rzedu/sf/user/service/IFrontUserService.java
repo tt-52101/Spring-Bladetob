@@ -33,7 +33,7 @@ import java.util.List;
  */
 public interface IFrontUserService extends IService<FrontUser> {
 
-	boolean CreateExcelForm(List<FrontUserVO> frontUserVOList) throws IOException, WriteException;
+	void CreateExcelForm(List<FrontUserVO> frontUserVOList) throws IOException, WriteException;
 
 	/**
 	 *用户登录
@@ -137,12 +137,12 @@ public interface IFrontUserService extends IService<FrontUser> {
 	/**
 	 * 功能权限
 	 * @param userName
-	 * @param functionId
-	 * @param functionName
-	 * @param publisherId
-	 * @param publisherName
-	 * @param gradeId
-	 * @param gradeName
+	 * @param functionIds
+	 * @param functionNames
+	 * @param publisherIds
+	 * @param publisherNames
+	 * @param gradeIds
+	 * @param gradeNames
 	 * @return
 	 */
 	boolean updateFunctionAuth(String userName,List<String> functionIds,List<String> functionNames,List<String> publisherIds,List<String> publisherNames,List<String> gradeIds,List<String> gradeNames);

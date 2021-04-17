@@ -64,7 +64,7 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 
 
 	@Override
-	public boolean CreateExcelForm(List<FrontUserVO> userVOList) throws IOException, WriteException {
+	public void CreateExcelForm(List<FrontUserVO> userVOList) throws IOException, WriteException {
 		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 		HttpServletResponse response = requestAttributes.getResponse();
 		HttpServletRequest request = requestAttributes.getRequest();
@@ -121,8 +121,6 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 		out.close();
 		is.close();
 
-
-		return false;
 	}
 
 	@Override
