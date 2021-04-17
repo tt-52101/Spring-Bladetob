@@ -47,7 +47,7 @@ public interface IFrontUserService extends IService<FrontUser> {
 	 * @throws IOException
 	 * @throws WriteException
 	 */
-	void CreateExcelForm(List<FrontUserVO> frontUserVOList) throws IOException, WriteException;
+	void createExcelForm(List<FrontUserVO> frontUserVOList) throws IOException, WriteException;
 
 	/**
 	 *用户登录
@@ -175,5 +175,14 @@ public interface IFrontUserService extends IService<FrontUser> {
 	 * @return
 	 */
 	boolean updateBatchFunctionAuth(List<String> userNameList,List<String> functionIds,List<String> functionNames,List<String> publisherIds,List<String> publisherNames,List<String> gradeIds,List<String> gradeNames);
+
+	/**
+	 * 批量导出帐号
+	 * @param userNameList
+	 * @return
+	 */
+	List<FrontUserVO> selecttBatchUserList(List<String> userNameList);
+
+	void exportExcelForm(List<FrontUserVO> frontUserVOList) throws IOException, WriteException;
 }
 

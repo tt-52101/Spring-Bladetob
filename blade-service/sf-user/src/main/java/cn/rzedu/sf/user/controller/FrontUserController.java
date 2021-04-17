@@ -143,7 +143,7 @@ public class FrontUserController extends BladeController {
 		String department = frontUserVO.getDepartment();
 		String remark = frontUserVO.getRemark();
 		List<FrontUserVO> userVOList = frontUserService.frontUserBatchRegister(batchSize,passWord,typeId,typeName,provinceCode,cityCode,districtCode,department,remark);
-		frontUserService.CreateExcelForm(userVOList);
+		frontUserService.createExcelForm(userVOList);
 	}
 
 
@@ -224,8 +224,20 @@ public class FrontUserController extends BladeController {
 	 */
 	@GetMapping("/selectPublisher")
 	@ApiOperationSupport(order = 6)
-	@ApiOperation(value = "查询出版社", notes = "传入userName")
+	@ApiOperation(value = "查询出版社", notes = "无参数值")
 	public  R<List<PublisherVO>> selectPublisher() {
 		return R.data(frontUserService.selectPublisher());
+	}
+
+	/**
+	 * 批量导出帐号
+	 */
+	@GetMapping("/exportBatchFrontUserList")
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "批量导出帐号", notes = "传入userNames")
+	public void exportBatchFrontUserList(@ApiParam(required = true) @RequestParam List<String> userNameList) throws IOException, WriteException {
+		List<FrontUserVO> userVOList = frontUserService.selecttBatchUserList(userNameList);
+		frontUserService.exportExcelForm(userVOList);
+
 	}
 }
