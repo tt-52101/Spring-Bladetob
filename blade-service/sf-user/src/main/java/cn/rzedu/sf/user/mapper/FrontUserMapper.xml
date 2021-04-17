@@ -42,12 +42,18 @@
         <result column="district_name" property="districtName"/>
     </resultMap>
 
-    <select id="selectRegion" resultMap="regionResultMap">
-        select province_name,city_name,district_name from blade_region where
-            province_code = #{provinceCode} and
-            city_code = #{cityCode} and
-            district_code = #{districtCode}
+    <select id="selectRegionProvinceName" resultType="java.lang.String">
+        select province_name from blade_region where province_code = #{provinceCode} limit 0,1
     </select>
+
+    <select id="selectRegionCityName" resultType="java.lang.String">
+        select city_name from blade_region where city_code = #{cityCode} limit 0,1
+    </select>
+
+    <select id="selectRegionDistrictName" resultType="java.lang.String">
+        select district_name from blade_region where district_code = #{districtCode} limit 0,1
+    </select>
+
 
     <select id="selectPublisher" resultMap="publisherResultMap">
         select id,name,subject from sf_publisher where is_deleted = 0

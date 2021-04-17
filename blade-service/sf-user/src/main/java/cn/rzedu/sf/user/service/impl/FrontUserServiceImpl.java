@@ -155,15 +155,9 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 		LocalDateTime localDateTime=LocalDateTime.now();
 		String userName = baseMapper.selectUserName(username);
 
-		RegionVO regionVO = baseMapper.selectRegion(provinceCode,cityCode,districtCode);
-		String provinceName = null;
-		String cityName = null ;
-		String districtName = null;
-		if (regionVO != null){
-			provinceName = regionVO.getProvinceName();
-			cityName = regionVO.getCityName();
-			districtName = regionVO.getDistrictName();
-		}
+		String provinceName = baseMapper.selectRegionProvinceName(provinceCode);
+		String cityName = baseMapper.selectRegionCityName(cityCode); ;
+		String districtName = baseMapper.selectRegionDistrictName(districtCode);
 
 		if (userName == null || userName.equals(" ")){
 			return SqlHelper.retBool(baseMapper.frontUserRegister(username,password,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark,localDateTime,localDateTime));
@@ -178,15 +172,9 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 		String dfpassWord = "123456";
 		LocalDateTime localDateTime=LocalDateTime.now();
 
-		RegionVO regionVO = baseMapper.selectRegion(provinceCode,cityCode,districtCode);
-		String provinceName = null;
-		String cityName = null ;
-		String districtName = null;
-		if (regionVO != null){
-			provinceName = regionVO.getProvinceName();
-			cityName = regionVO.getCityName();
-			districtName = regionVO.getDistrictName();
-		}
+		String provinceName = baseMapper.selectRegionProvinceName(provinceCode);
+		String cityName = baseMapper.selectRegionCityName(cityCode); ;
+		String districtName = baseMapper.selectRegionDistrictName(districtCode);
 
 		for (int i = 0;i < batchSize;i++){
 			String username = this.userRandom();
@@ -237,18 +225,11 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 
 	@Override
 	public IPage<FrontUserVO> selectFrontUserList(IPage<FrontUserVO> page, String userName,String typeId, String provinceCode, String cityCode, String districtCode, String department, String remark) {
-		RegionVO regionVO = baseMapper.selectRegion(provinceCode,cityCode,districtCode);
-		String provinceName = null;
-		String cityName = null ;
-		String districtName = null;
-		if (regionVO != null){
-			 provinceName = regionVO.getProvinceName();
-			 cityName = regionVO.getCityName();
-			 districtName = regionVO.getDistrictName();
-		}
-			return page.setRecords(baseMapper.selectFrontUserList(page,userName,typeId,provinceName,cityName,districtName,department,remark)) ;
+		String provinceName = baseMapper.selectRegionProvinceName(provinceCode);
+		String cityName = baseMapper.selectRegionCityName(cityCode); ;
+		String districtName = baseMapper.selectRegionDistrictName(districtCode);
 
-
+		return page.setRecords(baseMapper.selectFrontUserList(page,userName,typeId,provinceName,cityName,districtName,department,remark)) ;
 	}
 
 	@Override
@@ -259,15 +240,9 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 	@Override
 	public boolean updateFrontUser(String userName, String newUserName, String passWord, String provinceCode, String cityCode, String districtCode,String department, String remark)
 	{
-		RegionVO regionVO = baseMapper.selectRegion(provinceCode,cityCode,districtCode);
-		String provinceName = null;
-		String cityName = null ;
-		String districtName = null;
-		if (regionVO != null){
-			provinceName = regionVO.getProvinceName();
-			cityName = regionVO.getCityName();
-			districtName = regionVO.getDistrictName();
-		}
+		String provinceName = baseMapper.selectRegionProvinceName(provinceCode);
+		String cityName = baseMapper.selectRegionCityName(cityCode); ;
+		String districtName = baseMapper.selectRegionDistrictName(districtCode);
 
 		String username = baseMapper.selectUserName(newUserName);
 		if (username == null || username.equals(" ")){

@@ -43,12 +43,11 @@ public interface FrontUserMapper extends BaseMapper<FrontUser> {
 
 	/**
 	 * 查询区域
-	 * @param provinceCode
-	 * @param cityCode
-	 * @param districtCode
 	 * @return
 	 */
-	RegionVO selectRegion(String provinceCode,String cityCode,String districtCode);
+	String selectRegionProvinceName(String provinceCode);
+	String selectRegionCityName(String cityCode);
+	String selectRegionDistrictName(String districtCode);
 
 	/**
 	 *
