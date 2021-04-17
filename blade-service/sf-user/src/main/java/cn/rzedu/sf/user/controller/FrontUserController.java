@@ -95,13 +95,14 @@ public class FrontUserController extends BladeController {
 	@ApiOperation(value = "USER条件查询", notes = "传入查询条件")
 	public R<IPage<FrontUserVO>> selectFrontUserList(Query query,
 													 @ApiParam(value = "userName") @RequestParam(value = "userName",required = false)String userName,
+													 @ApiParam(value = "typeId") @RequestParam(value = "typeId",required = false)Integer typeId,
 													 @ApiParam(value = "provinceCode") @RequestParam(value = "provinceCode",required = false)String provinceCode,
 													 @ApiParam(value = "cityCode") @RequestParam(value = "cityCode",required = false)String cityCode,
 													 @ApiParam(value = "districtCode") @RequestParam(value = "districtCode",required = false)String districtCode,
 													 @ApiParam(value = "单位") @RequestParam(value = "department",required = false)String department,
 													 @ApiParam(value = "备注") @RequestParam(value = "remark",required = false)String remark
 	) {
-		IPage<FrontUserVO> pages = frontUserService.selectFrontUserList(Condition.getPage(query),userName,provinceCode,cityCode,districtCode,department,remark);
+		IPage<FrontUserVO> pages = frontUserService.selectFrontUserList(Condition.getPage(query),userName,typeId,provinceCode,cityCode,districtCode,department,remark);
 		return R.data(pages);
 	}
 
@@ -194,6 +195,20 @@ public class FrontUserController extends BladeController {
 		List<String> gradeIds = frontUserVO.getGradeIds();
 		List<String> gradeNames = frontUserVO.getGradeNames();
 		return R.status(frontUserService.updateFunctionAuth(userName,functionIds,functionNames,publisherIds,publisherNames,gradeIds,gradeNames));
+	}
+
+	@PostMapping("/updatebatchFunctionAuth")
+	@ApiOperationSupport(order = 9)
+	@ApiOperation(value = "批量更改功能权限", notes = "传入参数")
+	public  R<FrontUserVO> updatebatchFunctionAuth(@Valid @RequestBody FrontUserVO frontUserVO) {
+		List<String> userNameList = frontUserVO.getUserNameList();
+		List<String> functionIds = frontUserVO.getFunctionIds();
+		List<String> functionNames = frontUserVO.getFunctionNames();
+		List<String> publisherIds = frontUserVO.getPublisherIds();
+		List<String> publisherNames = frontUserVO.getPublisherNames();
+		List<String> gradeIds = frontUserVO.getGradeIds();
+		List<String> gradeNames = frontUserVO.getGradeNames();
+		return R.status(frontUserService.updateBatchFunctionAuth(userNameList,functionIds,functionNames,publisherIds,publisherNames,gradeIds,gradeNames));
 	}
 
 	@PostMapping("/deletedBatchFrontUser")

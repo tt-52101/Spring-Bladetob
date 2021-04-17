@@ -59,7 +59,7 @@
     </select>
 
     <select id="selectFrontUserList" resultMap="frontUserResultMap">
-        select * from sf_front_user where is_deleted = 0
+        select * from sf_front_user where is_deleted = 0 and type_id = #{typeId}
         <if test = "userName != null and userName != ''">
             and username = #{userName}
         </if>

@@ -85,7 +85,7 @@ public interface FrontUserMapper extends BaseMapper<FrontUser> {
 	 * @param remark
 	 * @return
 	 */
-	List<FrontUserVO> selectFrontUserList(IPage page,String userName,String provinceName,String cityName,String districtName,String department,String remark);
+	List<FrontUserVO> selectFrontUserList(IPage page,String userName,int typeId, String provinceName,String cityName,String districtName,String department,String remark);
 
 	/**
 	 *用户注册

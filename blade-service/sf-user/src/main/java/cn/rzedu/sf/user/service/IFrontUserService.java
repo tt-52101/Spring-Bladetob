@@ -113,7 +113,7 @@ public interface IFrontUserService extends IService<FrontUser> {
 	 * @param remark
 	 * @return
 	 */
-	IPage<FrontUserVO> selectFrontUserList(IPage<FrontUserVO> page,String userName,String provinceCode,String cityCode,String districtCode,String department,String remark);
+	IPage<FrontUserVO> selectFrontUserList(IPage<FrontUserVO> page,String userName,int typeId,String provinceCode,String cityCode,String districtCode,String department,String remark);
 
 	/**
 	 * 查看
@@ -162,5 +162,18 @@ public interface IFrontUserService extends IService<FrontUser> {
 	 * @return
 	 */
 	boolean deletedBatchFrontUser(List<String> userNameList);
+
+	/**
+	 * 批量更改权限
+	 * @param userNameList
+	 * @param functionIds
+	 * @param functionNames
+	 * @param publisherIds
+	 * @param publisherNames
+	 * @param gradeIds
+	 * @param gradeNames
+	 * @return
+	 */
+	boolean updateBatchFunctionAuth(List<String> userNameList,List<String> functionIds,List<String> functionNames,List<String> publisherIds,List<String> publisherNames,List<String> gradeIds,List<String> gradeNames);
 }
 

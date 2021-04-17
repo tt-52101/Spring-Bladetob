@@ -236,7 +236,7 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 	}
 
 	@Override
-	public IPage<FrontUserVO> selectFrontUserList(IPage<FrontUserVO> page, String userName, String provinceCode, String cityCode, String districtCode, String department, String remark) {
+	public IPage<FrontUserVO> selectFrontUserList(IPage<FrontUserVO> page, String userName,int typeId, String provinceCode, String cityCode, String districtCode, String department, String remark) {
 		RegionVO regionVO = baseMapper.selectRegion(provinceCode,cityCode,districtCode);
 		String provinceName = null;
 		String cityName = null ;
@@ -246,7 +246,7 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 			 cityName = regionVO.getCityName();
 			 districtName = regionVO.getDistrictName();
 		}
-			return page.setRecords(baseMapper.selectFrontUserList(page,userName,provinceName,cityName,districtName,department,remark)) ;
+			return page.setRecords(baseMapper.selectFrontUserList(page,userName,typeId,provinceName,cityName,districtName,department,remark)) ;
 
 
 	}
@@ -303,6 +303,25 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 			return true;
 		}else
 		return false;
+	}
+
+	@Override
+	public boolean updateBatchFunctionAuth(List<String> userNameList, List<String> functionIds, List<String> functionNames, List<String> publisherIds, List<String> publisherNames, List<String> gradeIds, List<String> gradeNames) {
+		String functionId = functionIds.toString();
+		String functionName = functionNames.toString();
+		String publisherId = publisherIds.toString();
+		String publisherName = publisherNames.toString();
+		String gradeId = gradeIds.toString();
+		String gradeName = gradeNames.toString();
+		int count = 0;
+		for (String userName : userNameList){
+			int r =baseMapper.updateFunctionAuth(userName,functionId,functionName,publisherId,publisherName,gradeId,gradeName);
+			count+=r;
+		}
+		if (count>0){
+			return true;
+		}else
+			return false;
 	}
 
 
