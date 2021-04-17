@@ -23,7 +23,7 @@
         <result column="grade_name" property="gradeName"/>
         <result column="function_id" property="functionId"/>
         <result column="function_name" property="functionName"/>
-        <result column="create_date" property="functionName"/>
+        <result column="create_date" property="createDate"/>
         <result column="modify_date" property="modifyDate"/>
         <result column="status" property="status"/>
         <result column="last_use_time" property="lastUseTime"/>
