@@ -15,6 +15,7 @@
  */
 package cn.rzedu.sf.user.controller;
 
+import cn.rzedu.sf.user.vo.PublisherVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.protostuff.Request;
 import io.swagger.annotations.Api;
@@ -60,7 +61,6 @@ public class FrontUserController extends BladeController {
 
 	private IFrontUserService frontUserService;
 
-
 	/**
 	* 用户登录
 	*/
@@ -95,13 +95,13 @@ public class FrontUserController extends BladeController {
 	@ApiOperation(value = "USER条件查询", notes = "传入查询条件")
 	public R<IPage<FrontUserVO>> selectFrontUserList(Query query,
 													 @ApiParam(value = "userName") @RequestParam(value = "userName",required = false)String userName,
-													 @ApiParam(value = "provinceName") @RequestParam(value = "provinceName",required = false)String provinceName,
-													 @ApiParam(value = "cityName") @RequestParam(value = "cityName",required = false)String cityName,
-													 @ApiParam(value = "districtName") @RequestParam(value = "districtName",required = false)String districtName,
+													 @ApiParam(value = "provinceCode") @RequestParam(value = "provinceCode",required = false)String provinceCode,
+													 @ApiParam(value = "cityCode") @RequestParam(value = "cityCode",required = false)String cityCode,
+													 @ApiParam(value = "districtCode") @RequestParam(value = "districtCode",required = false)String districtCode,
 													 @ApiParam(value = "单位") @RequestParam(value = "department",required = false)String department,
 													 @ApiParam(value = "备注") @RequestParam(value = "remark",required = false)String remark
 	) {
-		IPage<FrontUserVO> pages = frontUserService.selectFrontUserList(Condition.getPage(query),userName,provinceName,cityName,districtName,department,remark);
+		IPage<FrontUserVO> pages = frontUserService.selectFrontUserList(Condition.getPage(query),userName,provinceCode,cityCode,districtCode,department,remark);
 		return R.data(pages);
 	}
 
@@ -119,14 +119,11 @@ public class FrontUserController extends BladeController {
 		Integer typeId = frontUserVO.getTypeId();
 		String typeName = frontUserVO.getTypeName();
 		String provinceCode = frontUserVO.getProvinceCode();
-		String provinceName = frontUserVO.getProvinceName();
 		String cityCode = frontUserVO.getCityCode();
-		String cityName = frontUserVO.getCityName();
 		String districtCode = frontUserVO.getDistrictCode();
-		String districtName = frontUserVO.getDistrictName();
 		String department = frontUserVO.getDepartment();
 		String remark = frontUserVO.getRemark();
-		return R.status(frontUserService.frontUserRegister(userName,passWord,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark));
+		return R.status(frontUserService.frontUserRegister(userName,passWord,typeId,typeName,provinceCode,cityCode,districtCode,department,remark));
 
 
 	}
@@ -140,14 +137,11 @@ public class FrontUserController extends BladeController {
 		Integer typeId = frontUserVO.getTypeId();
 		String typeName = frontUserVO.getTypeName();
 		String provinceCode = frontUserVO.getProvinceCode();
-		String provinceName = frontUserVO.getProvinceName();
 		String cityCode = frontUserVO.getCityCode();
-		String cityName = frontUserVO.getCityName();
 		String districtCode = frontUserVO.getDistrictCode();
-		String districtName = frontUserVO.getDistrictName();
 		String department = frontUserVO.getDepartment();
 		String remark = frontUserVO.getRemark();
-		List<FrontUserVO> userVOList = frontUserService.frontUserBatchRegister(batchSize,passWord,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark);
+		List<FrontUserVO> userVOList = frontUserService.frontUserBatchRegister(batchSize,passWord,typeId,typeName,provinceCode,cityCode,districtCode,department,remark);
 		frontUserService.CreateExcelForm(userVOList);
 	}
 
@@ -173,14 +167,11 @@ public class FrontUserController extends BladeController {
 		String newUserName = frontUserVO.getNewUserName();
 		String passWord = frontUserVO.getPassword();
 		String provinceCode = frontUserVO.getProvinceCode();
-		String provinceName = frontUserVO.getProvinceName();
 		String cityCode = frontUserVO.getCityCode();
-		String cityName = frontUserVO.getCityName();
 		String districtCode = frontUserVO.getDistrictCode();
-		String districtName = frontUserVO.getDistrictName();
 		String department = frontUserVO.getDepartment();
 		String remark = frontUserVO.getRemark();
-		return R.status(frontUserService.updateFrontUser(userName,newUserName,passWord,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark));
+		return R.status(frontUserService.updateFrontUser(userName,newUserName,passWord,provinceCode,cityCode,districtCode,department,remark));
 	}
 
 	@PostMapping("/deleteFrontUser")
@@ -211,5 +202,15 @@ public class FrontUserController extends BladeController {
 	public  R<FrontUserVO> deletedBatchFrontUser(@Valid @RequestBody FrontUserVO frontUserVO) {
 		List<String> userNameList = frontUserVO.getUserNameList();
 		return R.status(frontUserService.deletedBatchFrontUser(userNameList));
+	}
+
+	/**
+	 * 查询出版社
+	 */
+	@GetMapping("/selectPublisher")
+	@ApiOperationSupport(order = 6)
+	@ApiOperation(value = "查询出版社", notes = "传入userName")
+	public  R<List<PublisherVO>> selectPublisher() {
+		return R.data(frontUserService.selectPublisher());
 	}
 }

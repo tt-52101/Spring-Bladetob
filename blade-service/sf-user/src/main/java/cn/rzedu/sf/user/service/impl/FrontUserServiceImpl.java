@@ -19,6 +19,8 @@ import cn.rzedu.sf.user.entity.FrontUser;
 import cn.rzedu.sf.user.vo.FrontUserVO;
 import cn.rzedu.sf.user.mapper.FrontUserMapper;
 import cn.rzedu.sf.user.service.IFrontUserService;
+import cn.rzedu.sf.user.vo.PublisherVO;
+import cn.rzedu.sf.user.vo.RegionVO;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import jxl.Workbook;
@@ -62,6 +64,10 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 		return userName.toString();
 	}
 
+	@Override
+	public List<PublisherVO> selectPublisher() {
+		return baseMapper.selectPublisher();
+	}
 
 	@Override
 	public void CreateExcelForm(List<FrontUserVO> userVOList) throws IOException, WriteException {
@@ -145,55 +151,77 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 	}
 
 	@Override
-	public boolean frontUserRegister(String username, String password,int typeId,String typeName, String province_code, String province_name, String city_code, String city_name, String district_code, String district_name, String department, String remark) {
+	public boolean frontUserRegister(String username, String password,int typeId,String typeName, String provinceCode, String cityCode, String districtCode, String department, String remark) {
 		LocalDateTime localDateTime=LocalDateTime.now();
 		String userName = baseMapper.selectUserName(username);
+
+		RegionVO regionVO = baseMapper.selectRegion(provinceCode,cityCode,districtCode);
+		String provinceName = null;
+		String cityName = null ;
+		String districtName = null;
+		if (regionVO != null){
+			provinceName = regionVO.getProvinceName();
+			cityName = regionVO.getCityName();
+			districtName = regionVO.getDistrictName();
+		}
+
 		if (userName == null || userName.equals(" ")){
-			return SqlHelper.retBool(baseMapper.frontUserRegister(username,password,typeId,typeName,province_code,province_name,city_code,city_name,district_code,district_name,department,remark,localDateTime,localDateTime));
+			return SqlHelper.retBool(baseMapper.frontUserRegister(username,password,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark,localDateTime,localDateTime));
 		}else
 			return false;
 	}
 
 	@Override
-	public List<FrontUserVO> frontUserBatchRegister(int batchSize, String passWord, int typeId, String typeName, String province_code, String province_name, String city_code, String city_name, String district_code, String district_name, String department, String remark) throws InterruptedException, IOException, WriteException {
+	public List<FrontUserVO> frontUserBatchRegister(int batchSize, String passWord, int typeId, String typeName, String provinceCode, String cityCode, String districtCode, String department, String remark) throws InterruptedException, IOException, WriteException {
 		List<FrontUserVO> userVOList = new ArrayList<>();
 		FrontUserVO frontUserVO;
 		String dfpassWord = "123456";
 		LocalDateTime localDateTime=LocalDateTime.now();
+
+		RegionVO regionVO = baseMapper.selectRegion(provinceCode,cityCode,districtCode);
+		String provinceName = null;
+		String cityName = null ;
+		String districtName = null;
+		if (regionVO != null){
+			provinceName = regionVO.getProvinceName();
+			cityName = regionVO.getCityName();
+			districtName = regionVO.getDistrictName();
+		}
+
 		for (int i = 0;i < batchSize;i++){
 			String username = this.userRandom();
 			if(baseMapper.selectUserName(username) == null || baseMapper.selectUserName(username).equals(" ")){
 				if(passWord == null || passWord.equals("")){
-					baseMapper.frontUserRegister(username,dfpassWord,typeId,typeName,province_code,province_name,city_code,city_name,district_code,district_name,department,remark,localDateTime,localDateTime);
+					baseMapper.frontUserRegister(username,dfpassWord,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark,localDateTime,localDateTime);
 					frontUserVO = new FrontUserVO();
 					frontUserVO.setUsername(username);
 					frontUserVO.setPassword(dfpassWord);
 					frontUserVO.setTypeId(typeId);
 					frontUserVO.setTypeName(typeName);
-					frontUserVO.setProvinceCode(province_code);
-					frontUserVO.setProvinceName(province_name);
-					frontUserVO.setCityCode(city_code);
-					frontUserVO.setCityName(city_name);
-					frontUserVO.setDistrictCode(district_code);
-					frontUserVO.setDistrictName(district_name);
+					frontUserVO.setProvinceCode(provinceCode);
+					frontUserVO.setProvinceName(provinceName);
+					frontUserVO.setCityCode(cityCode);
+					frontUserVO.setCityName(cityName);
+					frontUserVO.setDistrictCode(districtCode);
+					frontUserVO.setDistrictName(districtName);
 					frontUserVO.setDepartment(department);
 					frontUserVO.setRemark(remark);
 					frontUserVO.setCreateDate(localDateTime);
 					frontUserVO.setModifyDate(localDateTime);
 					userVOList.add(frontUserVO);
 				}else {
-					baseMapper.frontUserRegister(username,passWord,typeId,typeName,province_code,province_name,city_code,city_name,district_code,district_name,department,remark,localDateTime,localDateTime);
+					baseMapper.frontUserRegister(username,passWord,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark,localDateTime,localDateTime);
 					frontUserVO = new FrontUserVO();
 					frontUserVO.setUsername(username);
 					frontUserVO.setPassword(passWord);
 					frontUserVO.setTypeId(typeId);
 					frontUserVO.setTypeName(typeName);
-					frontUserVO.setProvinceCode(province_code);
-					frontUserVO.setProvinceName(province_name);
-					frontUserVO.setCityCode(city_code);
-					frontUserVO.setCityName(city_name);
-					frontUserVO.setDistrictCode(district_code);
-					frontUserVO.setDistrictName(district_name);
+					frontUserVO.setProvinceCode(provinceCode);
+					frontUserVO.setProvinceName(provinceName);
+					frontUserVO.setCityCode(cityCode);
+					frontUserVO.setCityName(cityName);
+					frontUserVO.setDistrictCode(districtCode);
+					frontUserVO.setDistrictName(districtName);
 					frontUserVO.setDepartment(department);
 					frontUserVO.setRemark(remark);
 					frontUserVO.setCreateDate(localDateTime);
@@ -208,9 +236,19 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 	}
 
 	@Override
-	public IPage<FrontUserVO> selectFrontUserList(IPage<FrontUserVO> page, String userName, String provinceName, String cityName, String districtName, String department, String remark) {
+	public IPage<FrontUserVO> selectFrontUserList(IPage<FrontUserVO> page, String userName, String provinceCode, String cityCode, String districtCode, String department, String remark) {
+		RegionVO regionVO = baseMapper.selectRegion(provinceCode,cityCode,districtCode);
+		String provinceName = null;
+		String cityName = null ;
+		String districtName = null;
+		if (regionVO != null){
+			 provinceName = regionVO.getProvinceName();
+			 cityName = regionVO.getCityName();
+			 districtName = regionVO.getDistrictName();
+		}
+			return page.setRecords(baseMapper.selectFrontUserList(page,userName,provinceName,cityName,districtName,department,remark)) ;
 
-		return page.setRecords(baseMapper.selectFrontUserList(page,userName,provinceName,cityName,districtName,department,remark)) ;
+
 	}
 
 	@Override
@@ -219,11 +257,21 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 	}
 
 	@Override
-	public boolean updateFrontUser(String userName, String newUserName, String passWord, String provinceCode, String provinceName, String cityCode, String cityName, String districtCode, String districtName,String department, String remark)
+	public boolean updateFrontUser(String userName, String newUserName, String passWord, String provinceCode, String cityCode, String districtCode,String department, String remark)
 	{
+		RegionVO regionVO = baseMapper.selectRegion(provinceCode,cityCode,districtCode);
+		String provinceName = null;
+		String cityName = null ;
+		String districtName = null;
+		if (regionVO != null){
+			provinceName = regionVO.getProvinceName();
+			cityName = regionVO.getCityName();
+			districtName = regionVO.getDistrictName();
+		}
+
 		String username = baseMapper.selectUserName(newUserName);
 		if (username == null || username.equals(" ")){
-			return SqlHelper.retBool(baseMapper.updateFrontUser(userName,newUserName,passWord,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,remark,department));
+			return SqlHelper.retBool(baseMapper.updateFrontUser(userName,newUserName,passWord,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark));
 		}else
 			return false;
 	}
