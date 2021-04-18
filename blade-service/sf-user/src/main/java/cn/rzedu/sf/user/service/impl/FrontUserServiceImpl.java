@@ -115,6 +115,7 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 		//下载
 		OutputStream out = null;
 		response.addHeader("content-disposition", "attachment;filename="+ java.net.URLEncoder.encode(fileName, "utf-8"));
+		response.setHeader("content-type","text/csv;charset=UTF-8");
 		out = response.getOutputStream();
 		// inputStream：读文件
 		InputStream is = new FileInputStream(filePath);

@@ -71,7 +71,10 @@ public class FrontUserController extends BladeController {
 		String userName = frontUserVO.getUsername();
 		String passWord = frontUserVO.getPassword();
 		FrontUserVO userVO = frontUserService.FrontUserLogin(userName,passWord);
-		return R.data(userVO);
+		if (userVO!=null){
+			return R.data(userVO);
+		}else
+			return R.fail(400,"用户名或密码不正确");
 	}
 
 	/**
