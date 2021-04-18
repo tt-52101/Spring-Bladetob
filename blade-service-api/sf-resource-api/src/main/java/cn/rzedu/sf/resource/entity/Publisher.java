@@ -37,6 +37,11 @@ public class Publisher implements Serializable {
     @ApiModelProperty(value = "学科   71=软笔书法 72=硬笔书法")
     private Integer subject;
     /**
+     * 适用学段   71=软笔书法 72=硬笔书法
+     */
+    @ApiModelProperty(value = "适用学段 2=小学 3=初中 4=高中")
+    private String stageCode;
+    /**
      * 商标
      */
     @ApiModelProperty(value = "商标")
