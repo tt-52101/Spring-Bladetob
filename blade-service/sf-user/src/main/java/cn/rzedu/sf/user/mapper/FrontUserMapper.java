@@ -17,6 +17,8 @@ package cn.rzedu.sf.user.mapper;
 
 import cn.rzedu.sf.user.entity.FrontUser;
 import cn.rzedu.sf.user.vo.FrontUserVO;
+import cn.rzedu.sf.user.vo.PublisherVO;
+import cn.rzedu.sf.user.vo.RegionVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
@@ -31,6 +33,21 @@ import java.util.List;
  * @since 2021-04-12
  */
 public interface FrontUserMapper extends BaseMapper<FrontUser> {
+
+
+	/**
+	 * 查询出版社
+	 * @return
+	 */
+	List<PublisherVO> selectPublisher();
+
+	/**
+	 * 查询区域
+	 * @return
+	 */
+	String selectRegionProvinceName(String provinceCode);
+	String selectRegionCityName(String cityCode);
+	String selectRegionDistrictName(String districtCode);
 
 	/**
 	 *
@@ -67,26 +84,26 @@ public interface FrontUserMapper extends BaseMapper<FrontUser> {
 	 * @param remark
 	 * @return
 	 */
-	List<FrontUserVO> selectFrontUserList(IPage page,String userName,String provinceName,String cityName,String districtName,String department,String remark);
+	List<FrontUserVO> selectFrontUserList(IPage page,String userName,String typeId, String provinceName,String cityName,String districtName,String department,String remark);
 
 	/**
 	 *用户注册
 	 * @param username
 	 * @param password
-	 * @param province_code
-	 * @param province_name
-	 * @param city_code
-	 * @param city_name
-	 * @param district_code
-	 * @param district_name
+	 * @param provinceCode
+	 * @param provinceName
+	 * @param cityCode
+	 * @param cityName
+	 * @param districtCode
+	 * @param districtName
 	 * @param remark
 	 * @param department
-	 * @param create_date
-	 * @param modify_date
+	 * @param createDate
+	 * @param modifyDate
 	 * @return
 	 */
-	int frontUserRegister(String username, String password,int typeId,String typeName, String province_code, String province_name, String city_code, String city_name, String district_code, String district_name,String department, String remark,
-						  LocalDateTime create_date,LocalDateTime modify_date);
+	int frontUserRegister(String username, String password,int typeId,String typeName, String provinceCode, String provinceName, String cityCode, String cityName, String districtCode, String districtName,String department, String remark,
+						  LocalDateTime createDate,LocalDateTime modifyDate);
 
 	/**
 	 * 查询用户是否存在

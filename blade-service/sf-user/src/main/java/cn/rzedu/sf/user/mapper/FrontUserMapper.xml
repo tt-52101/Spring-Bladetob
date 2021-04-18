@@ -21,14 +21,43 @@
         <result column="publisher_id" property="publisherId"/>
         <result column="grade_id" property="gradeId"/>
         <result column="grade_name" property="gradeName"/>
-        <result column="function_id" property="gradeId"/>
-        <result column="function_name" property="functionId"/>
-        <result column="create_date" property="functionName"/>
+        <result column="function_id" property="functionId"/>
+        <result column="function_name" property="functionName"/>
+        <result column="create_date" property="createDate"/>
         <result column="modify_date" property="modifyDate"/>
         <result column="status" property="status"/>
         <result column="last_use_time" property="lastUseTime"/>
         <result column="is_deleted" property="isDeleted"/>
     </resultMap>
+
+    <resultMap id="publisherResultMap" type="cn.rzedu.sf.user.vo.PublisherVO">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="subject" property="subject"/>
+    </resultMap>
+
+    <resultMap id="regionResultMap" type="cn.rzedu.sf.user.vo.RegionVO">
+        <result column="province_name" property="provinceName"/>
+        <result column="city_name" property="cityName"/>
+        <result column="district_name" property="districtName"/>
+    </resultMap>
+
+    <select id="selectRegionProvinceName" resultType="java.lang.String">
+        select province_name from blade_region where province_code = #{provinceCode} limit 0,1
+    </select>
+
+    <select id="selectRegionCityName" resultType="java.lang.String">
+        select city_name from blade_region where city_code = #{cityCode} limit 0,1
+    </select>
+
+    <select id="selectRegionDistrictName" resultType="java.lang.String">
+        select district_name from blade_region where district_code = #{districtCode} limit 0,1
+    </select>
+
+
+    <select id="selectPublisher" resultMap="publisherResultMap">
+        select id,name,subject from sf_publisher where is_deleted = 0
+    </select>
 
 
     <select id="selectFrontUserDetail" resultMap="frontUserResultMap">
@@ -36,7 +65,7 @@
     </select>
 
     <select id="selectFrontUserList" resultMap="frontUserResultMap">
-        select * from sf_front_user where is_deleted = 0
+        select * from sf_front_user where is_deleted = 0 and type_id = #{typeId}
         <if test = "userName != null and userName != ''">
             and username = #{userName}
         </if>
@@ -72,8 +101,8 @@
     <insert id="frontUserRegister">
         insert into sf_front_user (username,password,type_id,type_name,province_code,province_name,city_code,city_name,district_code,district_name,department,remark,
                                    create_date,modify_date)
-        values (#{username},#{password},#{typeId},#{typeName},#{province_code},#{province_name},#{city_code},#{city_name},#{district_code},#{district_name},#{department},#{remark},
-                #{create_date},#{modify_date})
+        values (#{username},#{password},#{typeId},#{typeName},#{provinceCode},#{provinceName},#{cityCode},#{cityName},#{districtCode},#{districtName},#{department},#{remark},
+                #{createDate},#{modifyDate})
     </insert>
 
     <update id="updateFrontUser">
@@ -122,7 +151,7 @@
                                  publisher_id = #{publisherId},
                                  publisher_name = #{publisherName},
                                  grade_id = #{gradeId},
-                                 grade_name = #{grade_name}
+                                 grade_name = #{gradeName}
         where is_deleted = 0 and username = #{userName}
     </update>
     

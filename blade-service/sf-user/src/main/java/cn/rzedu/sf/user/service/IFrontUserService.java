@@ -18,6 +18,7 @@ package cn.rzedu.sf.user.service;
 
 import cn.rzedu.sf.user.entity.FrontUser;
 import cn.rzedu.sf.user.vo.FrontUserVO;
+import cn.rzedu.sf.user.vo.PublisherVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import jxl.write.WriteException;
@@ -32,6 +33,21 @@ import java.util.List;
  * @since 2021-04-12
  */
 public interface IFrontUserService extends IService<FrontUser> {
+
+
+	/**
+	 * 查询出版社
+	 * @return
+	 */
+	List<PublisherVO> selectPublisher();
+
+	/**
+	 * 生成excel表单
+	 * @param frontUserVOList
+	 * @throws IOException
+	 * @throws WriteException
+	 */
+	void createExcelForm(List<FrontUserVO> frontUserVOList) throws IOException, WriteException;
 
 	/**
 	 *用户登录
@@ -55,17 +71,16 @@ public interface IFrontUserService extends IService<FrontUser> {
 	 * @param password
 	 * @param typeId
 	 * @param typeName
-	 * @param province_code
-	 * @param province_name
-	 * @param city_code
-	 * @param city_name
-	 * @param district_code
-	 * @param district_name
+	 * @param provinceCode
+	 * @param cityCode
+	 * @param districtCode
+	 * @param remark
+	 * @param department
 	 * @param remark
 	 * @param department
 	 * @return
 	 */
-	boolean frontUserRegister(String username, String password,int typeId,String typeName, String province_code, String province_name, String city_code, String city_name, String district_code, String district_name,String department, String remark);
+	boolean frontUserRegister(String username, String password,int typeId,String typeName, String provinceCode,  String cityCode, String districtCode, String department, String remark);
 
 	/**
 	 * 批量生成用户
@@ -73,33 +88,32 @@ public interface IFrontUserService extends IService<FrontUser> {
 	 * @param password
 	 * @param typeId
 	 * @param typeName
-	 * @param province_code
-	 * @param province_name
-	 * @param city_code
-	 * @param city_name
-	 * @param district_code
-	 * @param district_name
+	 * @param provinceCode
+	 * @param cityCode
+	 * @param districtCode
+	 * @param remark
+	 * @param department
 	 * @param department
 	 * @param remark
 	 * @throws InterruptedException
 	 * @throws IOException
 	 * @throws WriteException
 	 */
-	List<FrontUserVO> frontUserBatchRegister(int batchSize, String password,int typeId,String typeName, String province_code, String province_name, String city_code, String city_name, String district_code, String district_name, String department, String remark) throws InterruptedException, IOException, WriteException;
+	List<FrontUserVO> frontUserBatchRegister(int batchSize, String password,int typeId,String typeName, String provinceCode, String cityCode, String districtCode, String department, String remark) throws InterruptedException, IOException, WriteException;
 
 	/**
 	 *
 	 * 用户管理查询
 	 * @param page
 	 * @param userName
-	 * @param provinceName
-	 * @param cityName
-	 * @param districtName
+	 * @param provinceCode
+	 * @param cityCode
+	 * @param districtCode
 	 * @param department
 	 * @param remark
 	 * @return
 	 */
-	IPage<FrontUserVO> selectFrontUserList(IPage<FrontUserVO> page,String userName,String provinceName,String cityName,String districtName,String department,String remark);
+	IPage<FrontUserVO> selectFrontUserList(IPage<FrontUserVO> page,String userName,String typeId,String provinceCode,String cityCode,String districtCode,String department,String remark);
 
 	/**
 	 * 查看
@@ -114,16 +128,13 @@ public interface IFrontUserService extends IService<FrontUser> {
 	 * @param newUserName
 	 * @param passWord
 	 * @param provinceCode
-	 * @param provinceName
 	 * @param cityCode
-	 * @param cityName
 	 * @param districtCode
-	 * @param districtName
 	 * @param department
 	 * @param remark
 	 * @return
 	 */
-	boolean updateFrontUser(String userName,String newUserName,String passWord,String provinceCode, String provinceName, String cityCode, String cityName, String districtCode, String districtName,String department, String remark);
+	boolean updateFrontUser(String userName,String newUserName,String passWord,String provinceCode, String cityCode, String districtCode,String department, String remark);
 
 	/**
 	 * 删除
@@ -135,15 +146,15 @@ public interface IFrontUserService extends IService<FrontUser> {
 	/**
 	 * 功能权限
 	 * @param userName
-	 * @param functionId
-	 * @param functionName
-	 * @param publisherId
-	 * @param publisherName
-	 * @param gradeId
-	 * @param gradeName
+	 * @param functionIds
+	 * @param functionNames
+	 * @param publisherIds
+	 * @param publisherNames
+	 * @param gradeIds
+	 * @param gradeNames
 	 * @return
 	 */
-	boolean updateFunctionAuth(String userName,List<String> functionId,List<String> functionName,List<String> publisherId,List<String> publisherName,List<String> gradeId,List<String> gradeName);
+	boolean updateFunctionAuth(String userName,List<String> functionIds,List<String> functionNames,List<String> publisherIds,List<String> publisherNames,List<String> gradeIds,List<String> gradeNames);
 
 	/**
 	 * 批量删除
@@ -151,5 +162,27 @@ public interface IFrontUserService extends IService<FrontUser> {
 	 * @return
 	 */
 	boolean deletedBatchFrontUser(List<String> userNameList);
+
+	/**
+	 * 批量更改权限
+	 * @param userNameList
+	 * @param functionIds
+	 * @param functionNames
+	 * @param publisherIds
+	 * @param publisherNames
+	 * @param gradeIds
+	 * @param gradeNames
+	 * @return
+	 */
+	boolean updateBatchFunctionAuth(List<String> userNameList,List<String> functionIds,List<String> functionNames,List<String> publisherIds,List<String> publisherNames,List<String> gradeIds,List<String> gradeNames);
+
+	/**
+	 * 批量导出帐号
+	 * @param userNameList
+	 * @return
+	 */
+	List<FrontUserVO> selecttBatchUserList(List<String> userNameList);
+
+	void exportExcelForm(List<FrontUserVO> frontUserVOList) throws IOException, WriteException;
 }
 
