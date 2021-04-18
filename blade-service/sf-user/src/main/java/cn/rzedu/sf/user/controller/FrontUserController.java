@@ -94,7 +94,7 @@ public class FrontUserController extends BladeController {
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "USER条件查询", notes = "传入查询条件")
 	public R<IPage<FrontUserVO>> selectFrontUserList(Query query,
-													 @ApiParam(value = "userName") @RequestParam(value = "userName",required = false)String userName,
+													 @ApiParam(value = "username") @RequestParam(value = "username",required = false)String username,
 													 @ApiParam(value = "typeId") @RequestParam(value = "typeId",required = false)String typeId,
 													 @ApiParam(value = "provinceCode") @RequestParam(value = "provinceCode",required = false)String provinceCode,
 													 @ApiParam(value = "cityCode") @RequestParam(value = "cityCode",required = false)String cityCode,
@@ -102,7 +102,7 @@ public class FrontUserController extends BladeController {
 													 @ApiParam(value = "单位") @RequestParam(value = "department",required = false)String department,
 													 @ApiParam(value = "备注") @RequestParam(value = "remark",required = false)String remark
 	) {
-		IPage<FrontUserVO> pages = frontUserService.selectFrontUserList(Condition.getPage(query),userName,typeId,provinceCode,cityCode,districtCode,department,remark);
+		IPage<FrontUserVO> pages = frontUserService.selectFrontUserList(Condition.getPage(query),username,typeId,provinceCode,cityCode,districtCode,department,remark);
 		return R.data(pages);
 	}
 
