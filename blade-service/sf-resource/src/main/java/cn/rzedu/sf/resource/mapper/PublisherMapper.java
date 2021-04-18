@@ -29,4 +29,6 @@ public interface PublisherMapper extends BaseMapper<Publisher> {
 	 * @return
 	 */
 	List<Publisher> findBySubject(Integer subject);
+
+	List<Publisher> findBySubjectAndStageCode(Integer subject, String stageCode);
 }

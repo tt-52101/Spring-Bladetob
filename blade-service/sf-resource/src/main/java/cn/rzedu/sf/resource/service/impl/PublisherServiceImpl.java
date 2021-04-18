@@ -46,6 +46,24 @@ public class PublisherServiceImpl extends ServiceImpl<PublisherMapper, Publisher
 	}
 
 	@Override
+	public List<Map<String, Object>> findBySubjectAndStageCode(Integer subject, String stageCode) {
+		List<Publisher> publisherList = baseMapper.findBySubjectAndStageCode(subject, stageCode);
+		if (publisherList == null || publisherList.isEmpty()) {
+			return null;
+		}
+		List<Map<String, Object>> list = new ArrayList<>(publisherList.size());
+		Map<String, Object> map = null;
+		for (Publisher publisher : publisherList) {
+			map = new HashMap<>(3);
+			map.put("name", publisher.getName());
+			map.put("logo", publisher.getLogo());
+			map.put("coverImage", publisher.getCoverImage());
+			list.add(map);
+		}
+		return list;
+	}
+
+	@Override
 	public List<Publisher> findPublisherBySubject(Integer subject) {
 		return baseMapper.findBySubject(subject);
 	}

@@ -25,4 +25,7 @@
         SELECT * FROM sf_publisher WHERE is_deleted = 0 AND `subject` = #{subject}
     </select>
 
+    <select id="findBySubjectAndStageCode" resultMap="publisherResultMap">
+        SELECT * FROM sf_publisher WHERE is_deleted = 0 AND `subject` = #{subject} AND `stage_code` = #{stageCode}
+    </select>
 </mapper>
