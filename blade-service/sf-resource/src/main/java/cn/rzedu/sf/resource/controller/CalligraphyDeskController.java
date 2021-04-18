@@ -83,9 +83,10 @@ public class CalligraphyDeskController {
     @ApiOperationSupport(order = 1)
     @ApiOperation(value = "出版社列表", notes = "根据科目显示出版社")
     public R publisherList(@ApiParam(value = "资源学科 71=软笔书法 72=硬笔书法", required = true)
-                              @PathVariable(value = "subject") Integer subject
+                              @PathVariable(value = "subject") Integer subject,
+                           @ApiParam(value = "适合学段", required = false, defaultValue = "2") @RequestParam(value = "stageCode", required = false, defaultValue = "2") String stageCode
     ) {
-        List<Map<String, Object>> list = publisherService.findBySubject(subject);
+        List<Map<String, Object>> list = publisherService.findBySubjectAndStageCode(subject, stageCode);
         return R.data(list);
     }
 
