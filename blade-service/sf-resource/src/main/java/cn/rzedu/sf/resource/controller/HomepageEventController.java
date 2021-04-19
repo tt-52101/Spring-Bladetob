@@ -11,6 +11,8 @@ import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.resource.feign.EntityFileClient;
+import org.springblade.resource.vo.FileResult;
 import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import cn.rzedu.sf.resource.entity.HomepageEvent;
@@ -19,6 +21,7 @@ import cn.rzedu.sf.resource.wrapper.HomepageEventWrapper;
 import cn.rzedu.sf.resource.service.IHomepageEventService;
 import org.springblade.core.boot.ctrl.BladeController;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,18 +39,38 @@ public class HomepageEventController extends BladeController {
 
 	private IHomepageEventService homepageEventService;
 
+	private EntityFileClient entityFileClient;
+
 	/**
 	 * 列表
 	 */
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "列表", notes = "根据类型获取")
-	public R<List<HomepageEvent>> list(
+	public R<List<HomepageEventVO>> list(
 			@ApiParam(value = "类型 1=轮播，2=导航", required = true) @RequestParam(defaultValue = "1") Integer type,
-			@ApiParam(value = "是否展示全部") @RequestParam(required = false, defaultValue = "0") Integer isAll
+			@ApiParam(value = "是否展示全部") @RequestParam(required = false, defaultValue = "0") Integer isAll,
+			@ApiParam(value = "是否含图片完成路径") @RequestParam(required = false, defaultValue = "1") Integer needUrl
 			) {
-		List<HomepageEvent> list = homepageEventService.findByType(type, isAll);
+		List<HomepageEventVO> list = homepageEventService.findByType(type, isAll);
+		addImgUrl(list, needUrl);
 		return R.data(list);
+	}
+
+	private void addImgUrl(List<HomepageEventVO> list, Integer needUrl) {
+		if (needUrl == 0 || list == null || list.isEmpty()) {
+			return;
+		}
+		for (HomepageEventVO vo : list) {
+			try {
+				FileResult fileResult = entityFileClient.findImageByUuid(vo.getPicture());
+				if (fileResult != null) {
+					vo.setPictureUrl(fileResult.getLink());
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
