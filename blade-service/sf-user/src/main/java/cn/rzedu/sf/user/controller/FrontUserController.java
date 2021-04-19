@@ -111,32 +111,30 @@ public class FrontUserController extends BladeController {
 		String userName = frontUserVO.getUsername();
 		String passWord = frontUserVO.getPassword();
 		Integer typeId = frontUserVO.getTypeId();
-		String typeName = frontUserVO.getTypeName();
 		String provinceCode = frontUserVO.getProvinceCode();
 		String cityCode = frontUserVO.getCityCode();
 		String districtCode = frontUserVO.getDistrictCode();
 		String department = frontUserVO.getDepartment();
 		String remark = frontUserVO.getRemark();
-		return R.status(frontUserService.frontUserRegister(userName,passWord,typeId,typeName,provinceCode,cityCode,districtCode,department,remark));
+		return R.status(frontUserService.frontUserRegister(userName,passWord,typeId,provinceCode,cityCode,districtCode,department,remark));
 
 
 	}
 
 	@PostMapping("/frontUserBatchRegister")
 	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "批量用户注册", notes = "传入参数",produces = MediaType.TEXT_PLAIN_VALUE+";charset=utf-8")
-	public void frontUseBatchRegister(@Valid @RequestBody FrontUserVO frontUserVO) throws InterruptedException, IOException, WriteException {
+	@ApiOperation(value = "批量用户注册", notes = "传入参数")
+	public R<List<String>> frontUseBatchRegister(@Valid @RequestBody FrontUserVO frontUserVO) throws InterruptedException, IOException, WriteException {
 		Integer batchSize = frontUserVO.getBatchSize();
 		String passWord = frontUserVO.getPassword();
 		Integer typeId = frontUserVO.getTypeId();
-		String typeName = frontUserVO.getTypeName();
 		String provinceCode = frontUserVO.getProvinceCode();
 		String cityCode = frontUserVO.getCityCode();
 		String districtCode = frontUserVO.getDistrictCode();
 		String department = frontUserVO.getDepartment();
 		String remark = frontUserVO.getRemark();
-		List<FrontUserVO> userVOList = frontUserService.frontUserBatchRegister(batchSize,passWord,typeId,typeName,provinceCode,cityCode,districtCode,department,remark);
-		frontUserService.createExcelForm(userVOList);
+		List<String> userNameList = frontUserService.frontUserBatchRegister(batchSize,passWord,typeId,provinceCode,cityCode,districtCode,department,remark);
+		return R.data(userNameList);
 	}
 
 
@@ -231,6 +229,5 @@ public class FrontUserController extends BladeController {
 	public void exportBatchFrontUserList(@ApiParam(required = true) @RequestParam List<String> userNameList) throws IOException, WriteException {
 		List<FrontUserVO> userVOList = frontUserService.selecttBatchUserList(userNameList);
 		frontUserService.exportExcelForm(userVOList);
-
 	}
 }
