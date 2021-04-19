@@ -16,12 +16,16 @@
         <result column="is_deleted" property="isDeleted"/>
     </resultMap>
 
+    <resultMap id="homepageEventVOResultMap" type="cn.rzedu.sf.resource.vo.HomepageEventVO"
+               extends="homepageEventResultMap">
+
+    </resultMap>
 
     <select id="selectHomepageEventPage" resultMap="homepageEventResultMap">
         select * from sf_homepage_event where is_deleted = 0
     </select>
 
-    <select id="findByType" resultMap="homepageEventResultMap">
+    <select id="findByType" resultMap="homepageEventVOResultMap">
         SELECT * FROM sf_homepage_event WHERE is_deleted = 0
         AND `type` = #{type}
         <if test="isAll != null and isAll == 0">

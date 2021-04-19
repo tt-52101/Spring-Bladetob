@@ -32,6 +32,7 @@
         <result column="star_count" property="starCount"/>
         <result column="finished_star_count" property="finishedStarCount"/>
         <result column="active_lesson_name" property="activeLessonName"/>
+        <result column="font" property="font"/>
     </resultMap>
 
 
@@ -55,13 +56,13 @@
         SELECT
         ut.id, ut.user_id, ut.textbook_id, ut.finished_lesson_count, ut.finished_char_count, ut.finished_percent,
         t.textbook_name, t.`subject`, t.cover_image, t.lesson_count, t.char_count,
-        t.bought_count, ut.active_lesson_id, tl.name AS active_lesson_name
+        t.bought_count, ut.active_lesson_id, tl.name AS active_lesson_name, t.font
         FROM sf_user_textbook ut
         LEFT JOIN
         (
             SELECT
             t1.id, t1.`name` AS textbook_name, t1.`subject`, t1.cover_image, t1.lesson_count, t1.char_count,
-            COUNT(*) AS bought_count, t1.is_deleted
+            COUNT(*) AS bought_count, t1.is_deleted, t1.font
             FROM sf_textbook t1
             LEFT JOIN sf_user_textbook t2 ON t1.id = t2.textbook_id AND t2.is_deleted = 0
             WHERE 1=1

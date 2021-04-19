@@ -29,5 +29,5 @@ public interface HomepageEventMapper extends BaseMapper<HomepageEvent> {
 	 * @param isAll
 	 * @return
 	 */
-	List<HomepageEvent> findByType(Integer type, Integer isAll);
+	List<HomepageEventVO> findByType(Integer type, Integer isAll);
 }

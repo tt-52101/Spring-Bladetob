@@ -65,7 +65,8 @@
             tl.section,
             t.`name` AS textbookName,
             t.`subject`,
-            t.lesson_count AS lessonCount
+            t.lesson_count AS lessonCount,
+            t.font
         FROM
             sf_textbook_lesson tl
             LEFT JOIN sf_textbook t ON tl.textbook_id = t.id

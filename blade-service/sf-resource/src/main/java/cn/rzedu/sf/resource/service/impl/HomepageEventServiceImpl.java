@@ -25,7 +25,7 @@ public class HomepageEventServiceImpl extends ServiceImpl<HomepageEventMapper, H
 	}
 
 	@Override
-	public List<HomepageEvent> findByType(Integer type, Integer isAll) {
+	public List<HomepageEventVO> findByType(Integer type, Integer isAll) {
 		return baseMapper.findByType(type, isAll);
 	}
 }

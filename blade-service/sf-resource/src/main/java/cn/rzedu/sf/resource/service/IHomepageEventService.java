@@ -29,5 +29,5 @@ public interface IHomepageEventService extends IService<HomepageEvent> {
 	 * @param type
 	 * @return
 	 */
-	List<HomepageEvent> findByType(Integer type, Integer isAll);
+	List<HomepageEventVO> findByType(Integer type, Integer isAll);
 }
