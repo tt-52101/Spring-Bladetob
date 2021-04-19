@@ -442,6 +442,7 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		return createResourceFile(characterId, 71, resourceType, font, objectCode, objectType, value);
 	}
 
+
 	private boolean createResourceFile(Integer characterId, Integer subject, Integer resourceType, String font,
 										String objectId, String objectType, String value){
 		Character character = characterService.getById(characterId);
