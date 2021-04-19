@@ -17,14 +17,10 @@ package cn.rzedu.sf.user.controller;
 
 import cn.rzedu.sf.user.vo.PublisherVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import io.protostuff.Request;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.ApiParam;
-import jxl.Workbook;
-import jxl.format.Colour;
-import jxl.format.UnderlineStyle;
 import jxl.write.*;
 import lombok.AllArgsConstructor;
 
@@ -32,19 +28,13 @@ import lombok.AllArgsConstructor;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import cn.rzedu.sf.user.vo.FrontUserVO;
 import cn.rzedu.sf.user.service.IFrontUserService;
 import org.springblade.core.boot.ctrl.BladeController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -121,13 +111,12 @@ public class FrontUserController extends BladeController {
 		String userName = frontUserVO.getUsername();
 		String passWord = frontUserVO.getPassword();
 		Integer typeId = frontUserVO.getTypeId();
-		String typeName = frontUserVO.getTypeName();
 		String provinceCode = frontUserVO.getProvinceCode();
 		String cityCode = frontUserVO.getCityCode();
 		String districtCode = frontUserVO.getDistrictCode();
 		String department = frontUserVO.getDepartment();
 		String remark = frontUserVO.getRemark();
-		return R.status(frontUserService.frontUserRegister(userName,passWord,typeId,typeName,provinceCode,cityCode,districtCode,department,remark));
+		return R.status(frontUserService.frontUserRegister(userName,passWord,typeId,provinceCode,cityCode,districtCode,department,remark));
 
 
 	}
@@ -135,18 +124,17 @@ public class FrontUserController extends BladeController {
 	@PostMapping("/frontUserBatchRegister")
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "批量用户注册", notes = "传入参数")
-	public void frontUseBatchRegister(@Valid @RequestBody FrontUserVO frontUserVO) throws InterruptedException, IOException, WriteException {
+	public R<List<String>> frontUseBatchRegister(@Valid @RequestBody FrontUserVO frontUserVO) throws InterruptedException, IOException, WriteException {
 		Integer batchSize = frontUserVO.getBatchSize();
 		String passWord = frontUserVO.getPassword();
 		Integer typeId = frontUserVO.getTypeId();
-		String typeName = frontUserVO.getTypeName();
 		String provinceCode = frontUserVO.getProvinceCode();
 		String cityCode = frontUserVO.getCityCode();
 		String districtCode = frontUserVO.getDistrictCode();
 		String department = frontUserVO.getDepartment();
 		String remark = frontUserVO.getRemark();
-		List<FrontUserVO> userVOList = frontUserService.frontUserBatchRegister(batchSize,passWord,typeId,typeName,provinceCode,cityCode,districtCode,department,remark);
-		frontUserService.createExcelForm(userVOList);
+		List<String> userNameList = frontUserService.frontUserBatchRegister(batchSize,passWord,typeId,provinceCode,cityCode,districtCode,department,remark);
+		return R.data(userNameList);
 	}
 
 
@@ -241,6 +229,5 @@ public class FrontUserController extends BladeController {
 	public void exportBatchFrontUserList(@ApiParam(required = true) @RequestParam List<String> userNameList) throws IOException, WriteException {
 		List<FrontUserVO> userVOList = frontUserService.selecttBatchUserList(userNameList);
 		frontUserService.exportExcelForm(userVOList);
-
 	}
 }

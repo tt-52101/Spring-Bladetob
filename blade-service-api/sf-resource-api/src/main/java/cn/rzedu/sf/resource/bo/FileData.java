@@ -18,9 +18,9 @@ public class FileData {
 	@ApiModelProperty(value = "对应模板中的对象", required = true)
 	private String objectId;
 
-	@NotNull(message = "objectType不能为空")
-	@ApiModelProperty(value = "文件类型  video，audio，image，text", required = true)
-	private String objectType;
+	@NotNull(message = "resourceType不能为空")
+	@ApiModelProperty(value = "resourceType数据规则为 subject + 模块序号，例：软笔71 认读模块recognition_1 71+1=711 ", required = true)
+	private Integer resourceType;
 
 	@NotNull(message = "objectValue不能为空")
 	@ApiModelProperty(value = "文件对应的uuid 或者 content", required = true)

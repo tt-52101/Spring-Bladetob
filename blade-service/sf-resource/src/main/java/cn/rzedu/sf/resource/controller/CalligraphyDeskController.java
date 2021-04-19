@@ -20,6 +20,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.apache.poi.ss.formula.functions.T;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import org.springblade.common.tool.WeChatUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.api.ResultCode;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import sun.misc.BASE64Encoder;
@@ -188,17 +190,41 @@ public class CalligraphyDeskController {
     /**
      * 新增或修改汉字资源文件
      */
+    @SneakyThrows
     @PostMapping("/saveOrUpdate")
     @ApiOperationSupport(order = 9)
     @ApiOperation(value = "书法B端新增或修改汉字资源文件", notes = "参数都是必填")
+    @Transactional(rollbackFor=Exception.class)
     public R saveOrUpdate(@Valid @RequestBody CharacterResourceBO characterResourceBO) {
         System.out.println(characterResourceBO);
         Integer characterId = characterResourceBO.getCharacterId();
         String font = characterResourceBO.getFont();
         Integer subject = characterResourceBO.getSubject();
         List<FileData> fileDatas = characterResourceBO.getFileDatas();
+        
+        if(fileDatas != null){
+            for (FileData fileData : fileDatas) {
+                boolean result = false;
 
-//        characterResourceService.saveOrUpdateBy()v
+                String objectId = fileData.getObjectId();
+                Integer resourceType = fileData.getResourceType();
+                String objectValue = fileData.getObjectValue();
+
+                if(objectId == null || "".equals(objectId) || objectValue == null || "".equals(objectValue) || resourceType == null || resourceType == 0){
+                    return R.fail("数据错误：" + fileData);
+                }
+
+                if(subject == 71){
+                    result = characterResourceService.createSoftResourceFile(characterId, resourceType, font, objectId, objectValue);
+                } else if(subject == 72){
+                    result = characterResourceService.createHardResourceFile(characterId, resourceType, font, objectId, objectValue);
+                }
+
+                if(!result){
+                    throw new Exception("资源编辑错误");
+                }
+            }
+        }
 
         return R.status(true);
     }

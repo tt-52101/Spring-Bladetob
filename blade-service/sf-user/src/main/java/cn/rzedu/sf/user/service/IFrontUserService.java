@@ -42,14 +42,6 @@ public interface IFrontUserService extends IService<FrontUser> {
 	List<PublisherVO> selectPublisher();
 
 	/**
-	 * 生成excel表单
-	 * @param frontUserVOList
-	 * @throws IOException
-	 * @throws WriteException
-	 */
-	void createExcelForm(List<FrontUserVO> frontUserVOList) throws IOException, WriteException;
-
-	/**
 	 *用户登录
 	 * @param userName
 	 * @return
@@ -70,7 +62,6 @@ public interface IFrontUserService extends IService<FrontUser> {
 	 * @param username
 	 * @param password
 	 * @param typeId
-	 * @param typeName
 	 * @param provinceCode
 	 * @param cityCode
 	 * @param districtCode
@@ -80,14 +71,13 @@ public interface IFrontUserService extends IService<FrontUser> {
 	 * @param department
 	 * @return
 	 */
-	boolean frontUserRegister(String username, String password,int typeId,String typeName, String provinceCode,  String cityCode, String districtCode, String department, String remark);
+	boolean frontUserRegister(String username, String password,int typeId, String provinceCode,  String cityCode, String districtCode, String department, String remark);
 
 	/**
 	 * 批量生成用户
 	 * @param batchSize
 	 * @param password
 	 * @param typeId
-	 * @param typeName
 	 * @param provinceCode
 	 * @param cityCode
 	 * @param districtCode
@@ -99,7 +89,7 @@ public interface IFrontUserService extends IService<FrontUser> {
 	 * @throws IOException
 	 * @throws WriteException
 	 */
-	List<FrontUserVO> frontUserBatchRegister(int batchSize, String password,int typeId,String typeName, String provinceCode, String cityCode, String districtCode, String department, String remark) throws InterruptedException, IOException, WriteException;
+	List<String> frontUserBatchRegister(int batchSize, String password,int typeId, String provinceCode, String cityCode, String districtCode, String department, String remark) throws InterruptedException;
 
 	/**
 	 *
@@ -177,12 +167,18 @@ public interface IFrontUserService extends IService<FrontUser> {
 	boolean updateBatchFunctionAuth(List<String> userNameList,List<String> functionIds,List<String> functionNames,List<String> publisherIds,List<String> publisherNames,List<String> gradeIds,List<String> gradeNames);
 
 	/**
-	 * 批量导出帐号
+	 * 查询批量帐号
 	 * @param userNameList
 	 * @return
 	 */
 	List<FrontUserVO> selecttBatchUserList(List<String> userNameList);
 
+	/**
+	 * 批量导出帐号
+	 * @param frontUserVOList
+	 * @throws IOException
+	 * @throws WriteException
+	 */
 	void exportExcelForm(List<FrontUserVO> frontUserVOList) throws IOException, WriteException;
 }
 
