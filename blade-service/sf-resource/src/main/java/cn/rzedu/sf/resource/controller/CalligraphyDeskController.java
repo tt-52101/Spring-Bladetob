@@ -217,7 +217,7 @@ public class CalligraphyDeskController {
                 if(subject == 71){
                     result = characterResourceService.createSoftResourceFile(characterId, resourceType, font, objectId, objectValue);
                 } else if(subject == 72){
-                    result = characterResourceService.createHardResourceFile(characterId, resourceType, objectId, objectValue);
+                    result = characterResourceService.createHardResourceFile(characterId, resourceType, font, objectId, objectValue);
                 }
 
                 if(!result){
