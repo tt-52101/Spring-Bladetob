@@ -197,8 +197,22 @@ public class CalligraphyDeskController {
         String font = characterResourceBO.getFont();
         Integer subject = characterResourceBO.getSubject();
         List<FileData> fileDatas = characterResourceBO.getFileDatas();
+        
+        if(fileDatas != null){
+            for (FileData fileData : fileDatas) {
+                String objectId = fileData.getObjectId();
+                Integer resourceType = fileData.getResourceType();
+                String objectValue = fileData.getObjectValue();
 
-//        characterResourceService.saveOrUpdateBy()v
+                if(subject == 71){
+                    characterResourceService.createSoftResourceFile(characterId, resourceType, font, objectId, objectValue);
+                } else if(subject == 72){
+                    characterResourceService.createHardResourceFile(characterId, resourceType, objectId, objectValue);
+                }
+
+            }
+        }
+
 
         return R.status(true);
     }

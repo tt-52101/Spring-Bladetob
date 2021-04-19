@@ -139,4 +139,16 @@ public interface ICharacterResourceService extends IService<CharacterResource> {
 	 * @return
 	 */
 	boolean createSoftResourceFile(String charS, Integer resourceType, String font, String objectCode, String value);
+
+	/**
+	 * 创建硬笔资源 by characterId
+	 * @return
+	 */
+	boolean createHardResourceFile(Integer characterId, Integer resourceType, String objectCode, String value);
+
+	/**
+	 * 创建软笔资源 by characterId
+	 * @return
+	 */
+	boolean createSoftResourceFile(Integer characterId, Integer resourceType, String font, String objectCode, String value);
 }

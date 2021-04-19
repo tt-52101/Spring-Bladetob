@@ -362,6 +362,90 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 			return false;
 		}
 
+		return createResourceFile(characterId, subject, resourceType, font, objectId, objectType, value);
+	}
+
+	@Override
+	public boolean createHardResourceFile(String charS, Integer resourceType, String objectCode, String value) {
+		String objectType = null;
+		if ("character".equals(objectCode)) {
+			objectType = "image";
+		} else if ("chalk_video".equals(objectCode) || "pen_video".equals(objectCode) || "learn_video".equals(objectCode)) {
+			objectType = "video";
+		} else if ("paraphrase_video".equals(objectCode)) {
+			objectType = "audio";
+		} else {
+			objectType = "text";
+		}
+		return createResourceFile(charS, 72, resourceType, null, objectCode, objectType, value);
+	}
+
+	@Override
+	public boolean createSoftResourceFile(String charS, Integer resourceType, String font, String objectCode,
+										  String value) {
+		String objectType = null;
+		if ("white_character".equals(objectCode) || "tablet".equals(objectCode)
+				|| "matts".equals(objectCode) || "evolve_image".equals(objectCode)
+				|| "observe_dot".equals(objectCode) || "observe_arrow".equals(objectCode)
+				|| "observe_triangle".equals(objectCode) || "observe_image".equals(objectCode)
+				|| "analyse_image".equals(objectCode)) {
+			objectType = "image";
+		} else if ("technique_line".equals(objectCode) || "technique_gesture".equals(objectCode)
+				|| "learn_video".equals(objectCode)) {
+			objectType = "video";
+		} else if ("usage_audio".equals(objectCode) || "observe_audio".equals(objectCode)
+				|| "stroke_audio".equals(objectCode) || "space_audio".equals(objectCode)) {
+			objectType = "audio";
+		} else {
+			objectType = "text";
+		}
+
+		return createResourceFile(charS, 71, resourceType, font, objectCode, objectType, value);
+	}
+
+	@Override
+	public boolean createHardResourceFile(Integer characterId, Integer resourceType, String objectCode, String value) {
+		String objectType = null;
+		if ("character".equals(objectCode)) {
+			objectType = "image";
+		} else if ("chalk_video".equals(objectCode) || "pen_video".equals(objectCode) || "learn_video".equals(objectCode)) {
+			objectType = "video";
+		} else if ("paraphrase_video".equals(objectCode)) {
+			objectType = "audio";
+		} else {
+			objectType = "text";
+		}
+		return createResourceFile(characterId, 72, resourceType, null, objectCode, objectType, value);
+	}
+
+	@Override
+	public boolean createSoftResourceFile(Integer characterId, Integer resourceType, String font, String objectCode,
+										  String value) {
+		String objectType = null;
+		if ("white_character".equals(objectCode) || "tablet".equals(objectCode)
+				|| "matts".equals(objectCode) || "evolve_image".equals(objectCode)
+				|| "observe_dot".equals(objectCode) || "observe_arrow".equals(objectCode)
+				|| "observe_triangle".equals(objectCode) || "observe_image".equals(objectCode)
+				|| "analyse_image".equals(objectCode) || "compare_image".equals(objectCode)
+				|| "practice_images".equals(objectCode)) {
+			objectType = "image";
+		} else if ("technique_line".equals(objectCode) || "technique_gesture".equals(objectCode)
+				|| "learn_video".equals(objectCode)) {
+			objectType = "video";
+		} else if ("usage_audio".equals(objectCode) || "observe_audio".equals(objectCode)
+				|| "stroke_audio".equals(objectCode) || "space_audio".equals(objectCode)) {
+			objectType = "audio";
+		} else {
+			objectType = "text";
+		}
+
+		return createResourceFile(characterId, 71, resourceType, font, objectCode, objectType, value);
+	}
+
+	private boolean createResourceFile(Integer characterId, Integer subject, Integer resourceType, String font,
+										String objectId, String objectType, String value){
+		Character character = characterService.getById(characterId);
+
 		Integer resourceId = null;
 		CharacterResource cr = baseMapper.findUnion(characterId, subject, resourceType);
 		if (cr != null) {
@@ -369,10 +453,10 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		} else {
 			cr = new CharacterResource();
 			cr.setCharacterId(characterId);
-			cr.setNameTr(charS);
-			cr.setKeyword(charS);
-			cr.setCharS(charS);
-			cr.setCharT(charS);
+			cr.setNameTr(character.getCharS());
+			cr.setKeyword(character.getKeyword());
+			cr.setCharS(character.getCharS());
+			cr.setCharT(character.getCharT());
 			cr.setEnabled(true);
 			cr.setSubject(subject);
 			cr.setResourceType(resourceType);
@@ -415,44 +499,5 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 			return false;
 		}
 		return true;
-	}
-
-	@Override
-	public boolean createHardResourceFile(String charS, Integer resourceType, String objectCode, String value) {
-		String objectType = null;
-		if ("character".equals(objectCode)) {
-			objectType = "image";
-		} else if ("chalk_video".equals(objectCode) || "pen_video".equals(objectCode) || "learn_video".equals(objectCode)) {
-			objectType = "video";
-		} else if ("paraphrase_video".equals(objectCode)) {
-			objectType = "audio";
-		} else {
-			objectType = "text";
-		}
-		return createResourceFile(charS, 72, resourceType, null, objectCode, objectType, value);
-	}
-
-	@Override
-	public boolean createSoftResourceFile(String charS, Integer resourceType, String font, String objectCode,
-										  String value) {
-		String objectType = null;
-		if ("white_character".equals(objectCode) || "tablet".equals(objectCode)
-				|| "matts".equals(objectCode) || "evolve_image".equals(objectCode)
-				|| "observe_dot".equals(objectCode) || "observe_arrow".equals(objectCode)
-				|| "observe_triangle".equals(objectCode) || "observe_image".equals(objectCode)
-				|| "analyse_image".equals(objectCode)) {
-			objectType = "image";
-		} else if ("technique_line".equals(objectCode) || "technique_gesture".equals(objectCode)
-				|| "learn_video".equals(objectCode)) {
-			objectType = "video";
-		} else if ("usage_audio".equals(objectCode) || "observe_audio".equals(objectCode)
-				|| "stroke_audio".equals(objectCode) || "space_audio".equals(objectCode)) {
-			objectType = "audio";
-		} else {
-			objectType = "text";
-		}
-
-
-		return createResourceFile(charS, 71, resourceType, font, objectCode, objectType, value);
 	}
 }
