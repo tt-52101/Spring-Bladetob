@@ -31,6 +31,7 @@
         <result column="finished_count" property="finishedCount"/>
         <result column="star_count" property="starCount"/>
         <result column="finished_star_count" property="finishedStarCount"/>
+        <result column="active_lesson_name" property="activeLessonName"/>
     </resultMap>
 
 
@@ -54,7 +55,7 @@
         SELECT
         ut.id, ut.user_id, ut.textbook_id, ut.finished_lesson_count, ut.finished_char_count, ut.finished_percent,
         t.textbook_name, t.`subject`, t.cover_image, t.lesson_count, t.char_count,
-        t.bought_count
+        t.bought_count, ut.active_lesson_id, tl.name AS active_lesson_name
         FROM sf_user_textbook ut
         LEFT JOIN
         (
@@ -68,6 +69,7 @@
             GROUP BY t1.id
         ) AS t
         ON ut.textbook_id = t.id
+        LEFT JOIN sf_textbook_lesson tl ON ut.active_lesson_id = tl.id
         WHERE 1=1
         AND t.is_deleted = 0
         AND ut.is_deleted = 0

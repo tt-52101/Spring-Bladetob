@@ -44,6 +44,7 @@ import java.util.Map;
  * @author Blade
  * @since 2020-09-08
  */
+@ApiIgnore
 @RestController
 @AllArgsConstructor
 @RequestMapping("/user/course")

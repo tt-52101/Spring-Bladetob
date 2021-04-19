@@ -78,4 +78,11 @@ public interface ITextbookLessonCharacterService extends IService<TextbookLesson
 	 * @return
 	 */
 	boolean removeByTextbookIds(List<Integer> textbookIds);
+
+	/**
+	 * 获取课程相关汉字
+	 * @param textbookId
+	 * @return
+	 */
+	List<TextbookLessonCharacter> findByTextbookId(Integer textbookId);
 }

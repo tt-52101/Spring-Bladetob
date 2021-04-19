@@ -64,6 +64,12 @@ public class TextbookClient implements ITextbookClient {
     }
 
     @Override
+    public R<List<TextbookLessonCharacter>> allTextbookCharacters(Integer textbookId) {
+        List<TextbookLessonCharacter> list = textbookLessonCharacterService.findByTextbookId(textbookId);
+        return R.data(list);
+    }
+
+    @Override
     public R<List<TextbookLessonCharacter>> allLessonCharacters(Integer lessonId) {
         List<TextbookLessonCharacter> list = textbookLessonCharacterService.findByLessonId(lessonId);
         return R.data(list);

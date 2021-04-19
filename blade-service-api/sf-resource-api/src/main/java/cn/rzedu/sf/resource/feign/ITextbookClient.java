@@ -59,6 +59,14 @@ public interface ITextbookClient {
 
     /**
      * 获取课程所有汉字
+     * @param textbookId
+     * @return
+     */
+    @GetMapping(API_PREFIX + "/textbook/chars")
+    R<List<TextbookLessonCharacter>> allTextbookCharacters(@RequestParam("textbookId") Integer textbookId);
+
+    /**
+     * 获取课程所有汉字
      * @param lessonId
      * @return
      */
