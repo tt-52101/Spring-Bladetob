@@ -329,4 +329,42 @@ public class CharacterResourceController extends BladeController {
         redisTemplate.delete(key);
         return R.success("删除缓存成功，字体：#" + font);
     }
+
+    /**
+     * 软笔观察、分析、笔法资源
+     */
+    @GetMapping("/softBag")
+    @ApiOperationSupport(order = 14)
+    @ApiOperation(value = "软笔观察、分析、笔法资源", notes = "软笔观察、分析、笔法资源" +
+            "<br/>observation_1:观察; analysis_2:分析; writing_3:笔法;" +
+            "<br/>spell:拼音; white_character:黑底白字图; tablet:源碑文; observe_dot:点-米字图; observe_arrow:箭头-米字图; observe_triangle:三角-米字图; " +
+            "<br/>analyse_image:字体分析图; stroke_text:笔画特征文字; stroke_audio:笔画特征音频; space_text:空间特征文字; space_audio:空间特征音频; " +
+            "<br/>technique_line:行笔路线视频; technique_gesture:提案笔势视频;")
+    public R softResource(
+            @ApiParam(value = "汉字id", required = true) @RequestParam(value = "characterId") Integer characterId,
+            @ApiParam(value = "字体") @RequestParam(value = "font") String font
+    ) {
+        String key = "soft-bag-#" + characterId + "#" + font;
+        Object result = redisTemplate.opsForValue().get(key);
+        if (result == null) {
+            Map<String, Object> map = characterResourceService.findSoftResource(characterId, font);
+            redisTemplate.opsForValue().set(key, map, 2, TimeUnit.HOURS);
+            result = map;
+        }
+        return R.data(result);
+    }
+
+    /**
+     * 删除软笔观察、分析、笔法资源缓存
+     */
+    @GetMapping("/remove-softBag-cache")
+    @ApiOperationSupport(order = 15)
+    @ApiOperation(value = "删除软笔观察、分析、笔法资源缓存", notes = "删除软笔资源缓存")
+    public R removeResourceCache(
+            @ApiParam(value = "汉字id", required = true) @RequestParam(value = "characterId") Integer characterId,
+            @ApiParam(value = "字体") @RequestParam(value = "font") String font) {
+        String key = "soft-bag-#" + characterId + "#" + font;
+        redisTemplate.delete(key);
+        return R.success("删除缓存成功，characterId：" + characterId + "#" + font);
+    }
 }

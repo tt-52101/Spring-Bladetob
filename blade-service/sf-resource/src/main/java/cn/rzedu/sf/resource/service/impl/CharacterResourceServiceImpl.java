@@ -110,51 +110,59 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 	}
 
 	@Override
-	public Map<String, Object> findSoftResource(Integer characterId) {
+	public Map<String, Object> findSoftResource(Integer characterId, String font) {
 		Integer subject = 71;
 		//设置默认值
 		String name = "";
 		String videoId = "";
+		List<CharResFileVO> type1 = new ArrayList<>();
+		type1.add(new CharResFileVO("spell", "text"));
+		type1.add(new CharResFileVO("white_character", "image"));
+		type1.add(new CharResFileVO("tablet", "image"));
+		type1.add(new CharResFileVO("observe_dot", "image"));
+		type1.add(new CharResFileVO("observe_arrow", "image"));
+		type1.add(new CharResFileVO("observe_triangle", "image"));
+
 		List<CharResFileVO> type2 = new ArrayList<>();
-		type2.add(new CharResFileVO("spell", "text"));
-		type2.add(new CharResFileVO("character", "image"));
-		type2.add(new CharResFileVO("tablet", "image"));
-		type2.add(new CharResFileVO("stroke_dot", "image"));
-		type2.add(new CharResFileVO("stroke_arrow", "image"));
-		type2.add(new CharResFileVO("stroke_triangle", "image"));
+		type2.add(new CharResFileVO("analyse_image", "image"));
+		type2.add(new CharResFileVO("stroke_text", "text"));
+		type2.add(new CharResFileVO("stroke_audio", "audio"));
+		type2.add(new CharResFileVO("space_text", "text"));
+		type2.add(new CharResFileVO("space_audio", "audio"));
+
 		List<CharResFileVO> type3 = new ArrayList<>();
-		type3.add(new CharResFileVO("analyse", "image"));
-		type3.add(new CharResFileVO("stroke_text", "text"));
-		type3.add(new CharResFileVO("stroke_audio", "audio"));
-		type3.add(new CharResFileVO("space_text", "text"));
-		type3.add(new CharResFileVO("space_audio", "audio"));
-		List<CharResFileVO> type4 = new ArrayList<>();
-		type4.add(new CharResFileVO("line", "video"));
-		type4.add(new CharResFileVO("gesture", "video"));
+		type3.add(new CharResFileVO("technique_line", "video"));
+		type3.add(new CharResFileVO("technique_gesture", "video"));
 
 		//视频
-		CharacterResource cr1 = baseMapper.findUnion(characterId, subject, 1);
+		CharacterResource cr1 = baseMapper.findUnion(characterId, subject, 716);
 		if (cr1 != null) {
 			name = cr1.getCharS();
-			List<CharacterResourceFile> list1 = characterResourceFileService.findByResourceId(cr1.getId());
+			List<CharacterResourceFile> list1 = characterResourceFileService.findByResourceAndFont(cr1.getId(), font);
 			if (list1 != null && !list1.isEmpty()) {
-				videoId = list1.get(0).getUuid();
+				for (CharacterResourceFile file : list1) {
+					if ("learn_video".equals(file.getObjectId())) {
+						videoId = file.getUuid();
+					}
+				}
 			}
 		}
 		//观察
-		addValueByType(type2, characterId, subject, 2);
+		addValueByTypeAndFont(type1, characterId, subject, 711, font);
+		//观察
+		addValueByTypeAndFont(type1, characterId, subject, 713, font);
 		//分析
-		addValueByType(type3, characterId, subject, 3);
+		addValueByTypeAndFont(type2, characterId, subject, 714, font);
 		//笔法
-		addValueByType(type4, characterId, subject, 4);
+		addValueByTypeAndFont(type3, characterId, subject, 715, font);
 
 		Map<String, Object> map = new HashMap<>(6);
 		map.put("characterId", characterId);
 		map.put("name", name);
 		map.put("videoId", videoId);
-		map.put("type2", type2);
-		map.put("type3", type3);
-		map.put("type4", type4);
+		map.put("observation_1", type1);
+		map.put("analysis_2", type2);
+		map.put("writing_3", type3);
 		return map;
 	}
 

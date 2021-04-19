@@ -99,9 +99,10 @@ public interface ICharacterResourceService extends IService<CharacterResource> {
 	/**
 	 * 获取软笔相关资源：观察、分析、笔法
 	 * @param characterId
+	 * @param font
 	 * @return
 	 */
-	Map<String, Object> findSoftResource(Integer characterId);
+	Map<String, Object> findSoftResource(Integer characterId, String font);
 
 	/**
 	 * 获取资源包数据
