@@ -324,6 +324,7 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 		String fileName = "UserDetail("+year+month+day+")"+".xls";
 		String filePath = request.getSession().getServletContext().getRealPath("") + "/" +fileName;
 		File name = new File(filePath);
+		String status;
 		// 创建写工作簿对象
 		WritableWorkbook workbook = Workbook.createWorkbook(name);
 		// 工作表
@@ -346,6 +347,10 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 		ws.addCell(new Label(15,0,"last_use_time"));
 		int index = 0;
 		for(FrontUserVO frontUser:userVOList){
+			if (frontUser.getStatus() == 0){
+				status = "未登录";
+			}else
+				status = "已登录";
 			ws.addCell(new Label(0,index+1,String.valueOf(frontUser.getId())));
 			ws.addCell(new Label(1,index+1,frontUser.getUsername()));
 			ws.addCell(new Label(2,index+1,frontUser.getPassword()));
@@ -360,7 +365,7 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 			ws.addCell(new Label(11,index+1,frontUser.getGradeName()));
 			ws.addCell(new Label(12,index+1,String.valueOf(frontUser.getCreateDate())));
 			ws.addCell(new Label(13,index+1,String.valueOf(frontUser.getModifyDate())));
-			ws.addCell(new Label(14,index+1,String.valueOf(frontUser.getStatus())));
+			ws.addCell(new Label(14,index+1,status));
 			ws.addCell(new Label(15,index+1,String.valueOf(frontUser.getLastUseTime())));
 			index++;
 		}
