@@ -67,4 +67,9 @@ public class TextbookLessonCharacterServiceImpl extends ServiceImpl<TextbookLess
 	public boolean removeByTextbookIds(List<Integer> textbookIds) {
 		return SqlHelper.retBool(baseMapper.removeByTextbookIds(textbookIds));
 	}
+
+	@Override
+	public List<TextbookLessonCharacter> findByTextbookId(Integer textbookId) {
+		return baseMapper.findByTextbookId(textbookId);
+	}
 }

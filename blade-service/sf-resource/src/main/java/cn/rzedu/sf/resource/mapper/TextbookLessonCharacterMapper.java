@@ -81,4 +81,11 @@ public interface TextbookLessonCharacterMapper extends BaseMapper<TextbookLesson
 	 * 判断汉字 是否存在硬笔资源
 	 */
 	List<TextbookLessonCharacter> isExistHardResourceByCharacterId(Integer id);
+
+	/**
+	 * 获取课程相关汉字
+	 * @param textbookId
+	 * @return
+	 */
+	List<TextbookLessonCharacter> findByTextbookId(Integer textbookId);
 }

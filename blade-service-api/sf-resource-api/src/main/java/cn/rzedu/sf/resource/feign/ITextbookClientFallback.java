@@ -33,6 +33,11 @@ public class ITextbookClientFallback implements ITextbookClient {
     }
 
     @Override
+    public R<List<TextbookLessonCharacter>> allTextbookCharacters(Integer textbookId) {
+        return R.fail("调用失败");
+    }
+
+    @Override
     public R<List<TextbookLessonCharacter>> allLessonCharacters(Integer lessonId) {
         return R.fail("调用失败");
     }

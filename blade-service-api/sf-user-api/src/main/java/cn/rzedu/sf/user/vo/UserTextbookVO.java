@@ -63,4 +63,9 @@ public class UserTextbookVO extends UserTextbook {
      */
     @ApiModelProperty(value = "获得的星星总数")
     private Integer finishedStarCount;
+    /**
+     * 当前正在学习的课程名
+     */
+    @ApiModelProperty(value = "当前正在学习的课程名")
+    private String activeLessonName;
 }

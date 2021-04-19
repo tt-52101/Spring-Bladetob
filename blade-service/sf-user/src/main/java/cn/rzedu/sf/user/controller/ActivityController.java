@@ -34,6 +34,7 @@ import java.util.List;
  * @author Blade
  * @since 2020-09-15
  */
+@ApiIgnore
 @RestController
 @AllArgsConstructor
 @RequestMapping("/activity")
