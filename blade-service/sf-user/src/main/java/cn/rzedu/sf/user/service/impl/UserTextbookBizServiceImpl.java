@@ -151,9 +151,11 @@ public class UserTextbookBizServiceImpl implements IUserTextbookBizService {
             map.put("textbookId", vo.getTextbookId());
             map.put("textbookName", vo.getTextbookName());
             map.put("coverImage", vo.getCoverImage());
+            map.put("subject", vo.getSubject());
             map.put("lessonId", vo.getActiveLessonId());
             map.put("lessonName", vo.getActiveLessonName());
             map.put("learnCount", vo.getBoughtCount());
+            map.put("font", vo.getFont());
             list.add(map);
         }
         return list;
@@ -177,6 +179,8 @@ public class UserTextbookBizServiceImpl implements IUserTextbookBizService {
         map.put("textbookName", vo.getTextbookName());
         map.put("lessonId", activeLessonId);
         map.put("lessonName", vo.getActiveLessonName());
+        map.put("subject", vo.getSubject());
+        map.put("font", vo.getFont());
 
         int listOrder = 1;
         R<List<TextbookLessonVO>> allLessons = textbookClient.allLessons(textbookId);

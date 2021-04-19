@@ -68,4 +68,9 @@ public class UserTextbookVO extends UserTextbook {
      */
     @ApiModelProperty(value = "当前正在学习的课程名")
     private String activeLessonName;
+    /**
+     * 字体
+     */
+    @ApiModelProperty(value = "字体")
+    private String font;
 }

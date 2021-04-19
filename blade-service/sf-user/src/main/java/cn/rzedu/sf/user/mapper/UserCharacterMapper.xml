@@ -34,55 +34,35 @@
 
     <select id="findAllCharsByLessonId" resultMap="userCharacterVOResultMap">
         SELECT
-            tlc.lesson_id,
-            tlc.character_id,
-            tlc.`subject`,
-            c.char_s,
-            c.char_t,
---             cr.video_id,
-            GROUP_CONCAT(IF(crf.resource_type = 1, crf.uuid, NULL)) AS video_id,
-			GROUP_CONCAT(IF(crf.resource_type = 5, crf.uuid, NULL)) AS cartoon_id,
-			GROUP_CONCAT(IF(crf.resource_type = 6, crf.uuid, NULL)) AS extension_id,
-            IFNULL( uc.finished_percent, 0 ) AS finished_percent,
-            IFNULL( uc.watch_progress, 0) AS watch_progress,
-            IFNULL( tab.learn_count, 0) AS learn_count
-        FROM
-            sf_textbook_lesson_character tlc
-            LEFT JOIN sf_character c ON tlc.character_id = c.id
-            LEFT JOIN sf_character_resource cr ON c.id = cr.character_id
-                AND tlc.`subject` = cr.`subject`
-                AND cr.is_deleted = 0
-                AND cr.enabled = 1
-                -- 1是软硬笔视频 5是硬笔识字动画 6是硬笔知识拓展
-                AND cr.resource_type IN (1,5,6)
-            LEFT JOIN sf_character_resource_file crf ON cr.id = crf.resource_id
-				AND crf.is_deleted = 0
-            LEFT JOIN sf_user_character uc ON tlc.lesson_id = uc.lesson_id AND tlc.character_id = uc.character_id
-                AND uc.is_deleted = 0
-                AND uc.user_id = #{userId}
-            LEFT JOIN (
-                SELECT
-                    t1.character_id,
-                    COUNT( t2.id ) AS learn_count
-                FROM
-                    sf_textbook_lesson_character t1
-                    LEFT JOIN sf_user_character t2 ON t1.character_id = t2.character_id
-                    AND t1.lesson_id = t2.lesson_id
-                    AND t2.is_deleted = 0
-                    AND (t2.finished_percent > 0 OR t2.watch_progress > 0)
-                WHERE
-                    1 = 1
-                    AND t1.is_deleted = 0
-                    AND t1.lesson_id = #{lessonId}
-                GROUP BY
-                    t1.character_id
-            ) tab ON tab.character_id = tlc.character_id
+			t1.lesson_id,
+            t1.character_id,
+            t1.`subject`,
+            t2.char_s,
+            t2.char_t,
+			t4.uuid AS video_id,
+			IFNULL(t5.finished_percent, 0) AS finished_percent
+        FROM sf_textbook_lesson_character t1
+        LEFT JOIN sf_textbook_lesson t6 ON t1.lesson_id = t6.id
+        LEFT JOIN sf_textbook t7 ON t6.textbook_id = t7.id
+        LEFT JOIN sf_character t2 ON t1.character_id = t2.id
+        LEFT JOIN sf_character_resource t3 ON t2.id = t3.character_id
+            AND t1.`subject` = t3.`subject`
+            AND t3.is_deleted = 0
+            AND t3.resource_type IN (723, 716)
+        LEFT JOIN sf_character_resource_file t4 ON t3.id = t4.resource_id
+            AND t4.font = t7.font
+            AND t4.is_deleted = 0
+            AND t4.object_id IN ("pen_video", "learn_video")
+        LEFT JOIN sf_user_character t5 ON t1.lesson_id = t5.lesson_id
+          AND t1.character_id = t5.character_id
+            AND t5.is_deleted = 0
+            AND t5.user_id = #{userId}
         WHERE
             1 = 1
-            AND tlc.is_deleted = 0
-            AND c.is_deleted = 0
-            AND tlc.lesson_id = #{lessonId}
-            GROUP BY tlc.character_id
+            AND t1.is_deleted = 0
+            AND t2.is_deleted = 0
+            AND t1.lesson_id = #{lessonId}
+            GROUP BY t1.character_id
     </select>
 
     <select id="findUnionByCharacterId" resultMap="userCharacterResultMap">
