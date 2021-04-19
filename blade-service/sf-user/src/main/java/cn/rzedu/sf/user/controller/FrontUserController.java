@@ -17,14 +17,10 @@ package cn.rzedu.sf.user.controller;
 
 import cn.rzedu.sf.user.vo.PublisherVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import io.protostuff.Request;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.ApiParam;
-import jxl.Workbook;
-import jxl.format.Colour;
-import jxl.format.UnderlineStyle;
 import jxl.write.*;
 import lombok.AllArgsConstructor;
 
@@ -32,19 +28,13 @@ import lombok.AllArgsConstructor;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import cn.rzedu.sf.user.vo.FrontUserVO;
 import cn.rzedu.sf.user.service.IFrontUserService;
 import org.springblade.core.boot.ctrl.BladeController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -134,7 +124,7 @@ public class FrontUserController extends BladeController {
 
 	@PostMapping("/frontUserBatchRegister")
 	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "批量用户注册", notes = "传入参数")
+	@ApiOperation(value = "批量用户注册", notes = "传入参数",produces = MediaType.TEXT_PLAIN_VALUE+";charset=utf-8")
 	public void frontUseBatchRegister(@Valid @RequestBody FrontUserVO frontUserVO) throws InterruptedException, IOException, WriteException {
 		Integer batchSize = frontUserVO.getBatchSize();
 		String passWord = frontUserVO.getPassword();
