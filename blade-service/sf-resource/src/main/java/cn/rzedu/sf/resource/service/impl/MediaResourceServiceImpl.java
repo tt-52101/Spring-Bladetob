@@ -41,9 +41,6 @@ public class MediaResourceServiceImpl extends ServiceImpl<MediaResourceMapper, M
 
 	@Override
 	public IPage<MediaResourceVO> selectMediaResourcePage(IPage<MediaResourceVO> page,Integer mediaType,Integer subject) {
-
-
-
 		return page.setRecords(baseMapper.selectMediaResourcePage(page,mediaType,subject));
 	}
 
@@ -98,8 +95,8 @@ public class MediaResourceServiceImpl extends ServiceImpl<MediaResourceMapper, M
 	@Override
 	public boolean saveSearchHistory(String keyword, Integer userId, String userName, Integer subject) {
 		LocalDateTime localDateTime = LocalDateTime.now();
-		int r = baseMapper.saveSearchHistory(keyword,userId,userName,subject,localDateTime,localDateTime);
-		if (r > 0){
+		if (keyword != null && keyword != ""){
+			int r = baseMapper.saveSearchHistory(keyword,userId,userName,subject,localDateTime,localDateTime);
 			return true;
 		}else
 			return false;
