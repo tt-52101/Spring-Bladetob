@@ -29,6 +29,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.commons.lang.StringUtils;
 import org.springblade.resource.feign.EntityFileClient;
 import org.springblade.resource.vo.FileResult;
 import org.springframework.stereotype.Service;
@@ -160,9 +161,24 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		map.put("characterId", characterId);
 		map.put("name", name);
 		map.put("videoId", videoId);
-		map.put("observation_1", type1);
-		map.put("analysis_2", type2);
-		map.put("writing_3", type3);
+		map.put("observation_1", transferCharResFileVO(type1));
+		map.put("analysis_2", transferCharResFileVO(type2));
+		map.put("writing_3", transferCharResFileVO(type3));
+		return map;
+	}
+
+	private Map<String, Object> transferCharResFileVO(List<CharResFileVO> list) {
+		if (list == null || list.isEmpty()) {
+			return null;
+		}
+		Map<String, Object> map = new HashMap<>();
+		for (CharResFileVO vo : list) {
+			if ("image".equals(vo.getObjectType()) && StringUtils.isNotBlank(vo.getImageUrl())) {
+				map.put(vo.getObjectId(), vo.getImageUrl());
+			} else {
+				map.put(vo.getObjectId(), vo.getObjectValue());
+			}
+		}
 		return map;
 	}
 
