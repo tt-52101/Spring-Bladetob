@@ -17,6 +17,12 @@
         <result column="modify_date" property="modifyDate"/>
     </resultMap>
 
+    <insert id="saveBrowsingHistory">
+        insert into sf_media_resource_recently(user_id,user_name,resource_id,subject,media_type,create_date,modify_date)
+        values (#{userId},#{userName},#{resourceId},#{subject},#{mediaType},#{createDate},#{modifyDate})
+    </insert>
+
+
 
     <select id="selectEntityFilePage" resultMap="entityFileResultMap">
         select * from sf_entity_file where is_deleted = 0

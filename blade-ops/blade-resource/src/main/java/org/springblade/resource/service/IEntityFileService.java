@@ -50,4 +50,16 @@ public interface IEntityFileService extends IService<EntityFile> {
 	 * @return
 	 */
 	EntityFile findFileByUuid(String md5);
+
+	/**
+	 * 保存浏览记录
+	 * @param userId
+	 * @param userName
+	 * @param resourceId
+	 * @param subject
+	 * @param mediaType
+	 * @return
+	 */
+	boolean saveBrowsingHistory(Integer userId, String userName, Integer resourceId, Integer subject, Integer mediaType);
+
 }
