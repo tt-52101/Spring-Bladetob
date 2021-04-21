@@ -143,9 +143,31 @@ public class MediaResourceController extends BladeController {
 	@GetMapping("/recentBrowsing")
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "最近浏览", notes = "根据传入资源ids返回资源列表")
-	public R<List<MediaResourceVO>> recentBrowsing(@ApiParam(value = "resourceIds",required = true)@RequestParam(value = "resourceIds") List<Integer> resourceIds) {
+	public R<List<MediaResourceVO>> recentBrowsing(@ApiParam(value = "subject 71=软笔 72=硬笔",required = true)@RequestParam(value = "subject") Integer subject,
+												   @ApiParam(value = "mediaType",required = true)@RequestParam(value = "mediaType") Integer mediaType) {
+
+		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		HttpServletRequest request = requestAttributes.getRequest();
+		String userName = request.getHeader("username");
+		List<Integer> resourceIds = mediaResourceService.selectResourceId(userName,subject,mediaType);
 		return R.data(mediaResourceService.selectMediaResourceByID(resourceIds));
 	}
+
+	/**
+	 * 字库检索记录列表
+	 */
+	@GetMapping("/searchKeywordHistory")
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "字库检索记录")
+	public R<List<String>> selectResourceId(@ApiParam(value = "subject 71=软笔 72=硬笔",required = true)@RequestParam(value = "subject") Integer subject
+	) {
+		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		HttpServletRequest request = requestAttributes.getRequest();
+		String userName = request.getHeader("username");
+		return R.data(mediaResourceService.selectKeyword(userName,subject));
+	}
+
+
 
 //
 //	/**
@@ -163,36 +185,21 @@ public class MediaResourceController extends BladeController {
 //		return R.status(mediaResourceService.saveBrowsingHistory(userId,userName,resourceId,subject,mediaType));
 //	}
 
-	/**
-	 * 查询资源ID
-	 */
-	@GetMapping("/selectResourceId")
-	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "查询资源ID")
-	public R<List<Integer>> selectResourceId(@ApiParam(value = "subject 71=软笔 72=硬笔",required = true)@RequestParam(value = "subject") Integer subject,
-											 @ApiParam(value = "mediaType",required = true)@RequestParam(value = "mediaType") Integer mediaType
-	) {
-		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-		HttpServletRequest request = requestAttributes.getRequest();
-		String userName = request.getHeader("username");
-		return R.data(mediaResourceService.selectResourceId(userName,subject,mediaType));
-	}
+//	/**
+//	 * 查询资源ID
+//	 */
+//	@GetMapping("/selectResourceId")
+//	@ApiOperationSupport(order = 3)
+//	@ApiOperation(value = "查询资源ID")
+//	public R<List<Integer>> selectResourceId(@ApiParam(value = "subject 71=软笔 72=硬笔",required = true)@RequestParam(value = "subject") Integer subject,
+//											 @ApiParam(value = "mediaType",required = true)@RequestParam(value = "mediaType") Integer mediaType
+//	) {
+//		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+//		HttpServletRequest request = requestAttributes.getRequest();
+//		String userName = request.getHeader("username");
+//		return R.data(mediaResourceService.selectResourceId(userName,subject,mediaType));
+//	}
 
-
-
-	/**
-	 * 字库检索记录列表
-	 */
-	@GetMapping("/searchKeywordHistory")
-	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "字库检索记录")
-	public R<List<String>> selectResourceId(@ApiParam(value = "subject 71=软笔 72=硬笔",required = true)@RequestParam(value = "subject") Integer subject
-	) {
-		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-		HttpServletRequest request = requestAttributes.getRequest();
-		String userName = request.getHeader("username");
-		return R.data(mediaResourceService.selectKeyword(userName,subject));
-	}
 
 	/**
 	 * 硬笔查询
