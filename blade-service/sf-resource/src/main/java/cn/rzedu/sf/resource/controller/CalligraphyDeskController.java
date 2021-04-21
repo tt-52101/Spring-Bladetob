@@ -2,17 +2,12 @@ package cn.rzedu.sf.resource.controller;
 
 import cn.rzedu.sf.resource.bo.CharacterResourceBO;
 import cn.rzedu.sf.resource.bo.FileData;
-import cn.rzedu.sf.resource.entity.Character;
-import cn.rzedu.sf.resource.entity.CharacterResourceFile;
 import cn.rzedu.sf.resource.entity.Font;
 import cn.rzedu.sf.resource.entity.Textbook;
 import cn.rzedu.sf.resource.service.*;
-import cn.rzedu.sf.resource.vo.CharacterResourceVO;
 import cn.rzedu.sf.resource.vo.TextbookLessonVO;
 import cn.rzedu.sf.resource.vo.TextbookVO;
 import cn.rzedu.sf.resource.wrapper.TextbookWrapper;
-import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
@@ -21,17 +16,14 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.poi.ss.formula.functions.T;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springblade.common.tool.WeChatUtil;
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.api.ResultCode;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-import sun.misc.BASE64Encoder;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
@@ -40,7 +32,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -232,7 +223,7 @@ public class CalligraphyDeskController {
     /**
      * 生成并下载 小程序码
      */
-    @GetMapping("/xcx/createQRCode")
+    @PostMapping("/xcx/createQRCode")
     @ApiOperationSupport(order = 11)
     @ApiOperation(value = "生成并下载二维码", notes = "生成并下载二维码")
     public byte[] createQRCode(@ApiIgnore HttpServletResponse response,
@@ -278,6 +269,7 @@ public class CalligraphyDeskController {
             String scene = "type=" + sort + "&id=" + objectId + "&fontType=" + fontType;
             System.out.println(scene);
             map.put("scene", scene);
+//            map.put("page", "pages/index/index");
             image = WeChatUtil.createQRCode(map);
 //            ByteToFile(image);
         } else {
