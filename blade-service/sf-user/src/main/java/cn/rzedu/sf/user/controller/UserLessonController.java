@@ -96,7 +96,14 @@ public class UserLessonController extends BladeController {
         List<String> iconList = userService.getRandomIcons();
         String[] icons = new String[]{};
         if (iconList != null && !iconList.isEmpty()) {
-            icons = iconList.toArray(icons);
+            if (iconList.size() <= 5) {
+                icons = iconList.toArray(icons);
+            } else {
+                icons = new String[5];
+                for (int i = 0; i < 5; i++) {
+                    icons[i] = iconList.get(i);
+                }
+            }
         }
         Map<String, Object> result = new HashMap<>(2);
         result.put("icons", icons);
@@ -131,7 +138,7 @@ public class UserLessonController extends BladeController {
             map = new HashedMap();
             map.put("lessonId", vo.getLessonId());
             map.put("characterId", vo.getCharacterId());
-            map.put("chars", vo.getCharS());
+            map.put("charS", vo.getCharS());
             map.put("videoId", vo.getVideoId());
             int isFinished = 0;
             if(vo.getFinishedPercent() != 0) {
