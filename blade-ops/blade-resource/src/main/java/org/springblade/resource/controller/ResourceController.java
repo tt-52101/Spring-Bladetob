@@ -173,14 +173,12 @@ public class ResourceController {
     @PostMapping("/find-file-by-uuid")
     @ApiOperation(value = "根据videoId返回视频数据", notes = "根据videoId返回视频数据", position = 2)
     public R<GetVideoInfoResponse> findFileByUuid(@ApiParam(value = "videoId", required = true) @RequestParam(value = "uuid") String uuid,
+                                                  @ApiParam(value = "userId") @RequestParam(value = "userId",required = false) Integer userId,
+                                                  @ApiParam(value = "username") @RequestParam(value = "username",required = false) String username,
                                                   @ApiParam(value = "资源ID") @RequestParam(value = "resourceId",required = false) Integer resourceId,
                                                   @ApiParam(value = "subject,71 = 软笔,72=硬笔") @RequestParam(value = "subject",required = false) Integer subject,
                                                   @ApiParam(value = "mediaType") @RequestParam(value = "mediaType",required = false) Integer mediaType
                                                   ) {
-        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = requestAttributes.getRequest();
-        Integer userId =Integer.parseInt(request.getHeader("userId")) ;
-        String username = request.getHeader("username");
         if (resourceId != null && subject!=null && mediaType != null){
             entityFileService.saveBrowsingHistory(userId,username,resourceId,subject,mediaType);
         }
@@ -228,14 +226,11 @@ public class ResourceController {
     @PostMapping("/find-video-by-uuid")
     @ApiOperation(value = "根据videoId返回视频数据及playauth", notes = "根据videoId返回视频数据及playauth", position = 3)
     public R<GetVideoPlayAuthResponse> findVideoByUuid(@ApiParam(value = "videoId", required = true) @RequestParam(value = "videoId") String videoId,
+                                                       @ApiParam(value = "userId") @RequestParam(value = "userId",required = false) Integer userId,
+                                                       @ApiParam(value = "username") @RequestParam(value = "username",required = false) String username,
                                                        @ApiParam(value = "资源ID") @RequestParam(value = "resourceId",required = false) Integer resourceId,
                                                        @ApiParam(value = "subject,71 = 软笔,72=硬笔") @RequestParam(value = "subject",required = false) Integer subject,
                                                        @ApiParam(value = "mediaType") @RequestParam(value = "mediaType",required = false) Integer mediaType) {
-
-        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = requestAttributes.getRequest();
-        Integer userId =Integer.parseInt(request.getHeader("userId")) ;
-        String username = request.getHeader("username");
         if (resourceId != null && subject!=null && mediaType != null){
             entityFileService.saveBrowsingHistory(userId,username,resourceId,subject,mediaType);
         }
