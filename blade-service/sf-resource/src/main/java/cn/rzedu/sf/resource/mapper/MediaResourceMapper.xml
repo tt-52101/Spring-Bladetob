@@ -28,11 +28,59 @@
         <result column="sort_media_type" property="sortMediaType"/>
     </resultMap>
 
+    <resultMap id="browsingHistoryResultMap" type="cn.rzedu.sf.resource.vo.BrowsingHistoryVO">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="resource_id" property="resourceId"/>
+        <result column="subject" property="subject"/>
+        <result column="media_type" property="mediaType"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+    </resultMap>
+
+    <resultMap id="searchHistoryResultMap" type="cn.rzedu.sf.resource.vo.SearchHistoryVO">
+        <result column="id" property="id"/>
+        <result column="keyword" property="keyword"/>
+        <result column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="subject" property="subject"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+    </resultMap>
+
+    <insert id="saveSearchHistory">
+        insert into sf_user_resource_log(keyword,user_id,user_name,subject,create_date,modify_date)
+        values (#{keyword},#{userId},#{userName},#{subject},#{createDate},#{modifyDate})
+    </insert>
+
+    <select id="selectSearchHistory" resultType="java.lang.String">
+        select distinct keyword from sf_user_resource_log where   user_name = #{userName}
+                                                   and subject = #{subject}
+        order by create_date desc limit 0,6
+    </select>
+
+    <insert id="saveBrowsingHistory">
+        insert into sf_media_resource_recently(user_id,user_name,resource_id,subject,media_type,create_date,modify_date)
+        values (#{userId},#{userName},#{resourceId},#{subject},#{mediaType},#{createDate},#{modifyDate})
+    </insert>
+
+    <select id="selectResourceId" resultType="java.lang.Integer">
+        select distinct resource_id from sf_media_resource_recently where user_name = #{userName}
+                                                             and subject = #{subject}
+                                                             and media_type = #{mediaType}
+        order by create_date desc limit 0,15
+    </select>
+
 
 
 
     <select id="selectMediaResourcePage" resultMap="mediaResourceResultMap">
         select * from sf_media_resource where is_deleted = 0 and media_type = #{mediaType} and subject = #{subject} order by create_date
+    </select>
+
+    <select id="selectMediaResourceByID" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource where is_deleted = 0 and  id = #{resourceId}
     </select>
 
     <select id="selectMediaResourceSortList" resultMap="mediaResourceSortResultMap">

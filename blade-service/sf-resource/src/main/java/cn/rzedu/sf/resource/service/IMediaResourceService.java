@@ -21,6 +21,7 @@ import cn.rzedu.sf.resource.vo.MediaResourceVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -47,6 +48,13 @@ public interface IMediaResourceService extends IService<MediaResource> {
 	 * @return
 	 */
 	List<MediaResourceSortVO> selectMediaResourceSortList(Integer mediaType,Integer subject);
+
+	/**
+	 * 最近浏览记录
+	 * @param resourceIds
+	 * @return
+	 */
+	List<MediaResourceVO> selectMediaResourceByID(List<Integer> resourceIds);
 
 	/**
 	 * 一级分类资源列表
@@ -77,5 +85,43 @@ public interface IMediaResourceService extends IService<MediaResource> {
 	 * @return
 	 */
 	IPage<MediaResourceVO> selectMediaResourceQuery(IPage<MediaResourceVO> page,Integer subject,String title);
+
+	/**
+	 * 保存浏览记录
+	 * @param userId
+	 * @param userName
+	 * @param resourceId
+	 * @param subject
+	 * @param mediaType
+	 * @return
+	 */
+	boolean saveBrowsingHistory(Integer userId, String userName, Integer resourceId, Integer subject, Integer mediaType);
+
+	/**
+	 * 查询资源id
+	 * @param userName
+	 * @param subject
+	 * @param mediaType
+	 * @return
+	 */
+	List<Integer> selectResourceId(String userName,Integer subject,Integer mediaType);
+
+	/**
+	 * 保存字库检索记录
+	 * @param keyword
+	 * @param userId
+	 * @param userName
+	 * @param subject
+	 * @return
+	 */
+	boolean saveSearchHistory(String keyword,Integer userId, String userName,Integer subject);
+
+	/**
+	 * 字库检索记录列表
+	 * @param userName
+	 * @param subject
+	 * @return
+	 */
+	List<String> selectKeyword(String userName,Integer subject);
 
 }

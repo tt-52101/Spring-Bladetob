@@ -16,11 +16,14 @@
 package cn.rzedu.sf.resource.mapper;
 
 import cn.rzedu.sf.resource.entity.MediaResource;
+import cn.rzedu.sf.resource.vo.BrowsingHistoryVO;
 import cn.rzedu.sf.resource.vo.MediaResourceSortVO;
 import cn.rzedu.sf.resource.vo.MediaResourceVO;
+import cn.rzedu.sf.resource.vo.SearchHistoryVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -39,6 +42,13 @@ public interface MediaResourceMapper extends BaseMapper<MediaResource> {
 	 * @return
 	 */
 	List<MediaResourceVO> selectMediaResourcePage(IPage page,Integer mediaType,Integer subject);
+
+	/**
+	 * 根据id获取资源
+	 * @param resourceId
+	 * @return
+	 */
+	MediaResourceVO selectMediaResourceByID(Integer resourceId);
 
 	/**
 	 * 分类列表
@@ -78,5 +88,47 @@ public interface MediaResourceMapper extends BaseMapper<MediaResource> {
 	 * @return
 	 */
 	List<MediaResourceVO> selectMediaResourceQuery(IPage page,Integer subject,String title);
+
+	/**
+	 * 保存浏览记录
+	 * @param userId
+	 * @param userName
+	 * @param resourceId
+	 * @param subject
+	 * @param mediaType
+	 * @param createDate
+	 * @param modifyDate
+	 * @return
+	 */
+	int saveBrowsingHistory(Integer userId, String userName, Integer resourceId, Integer subject, Integer mediaType, LocalDateTime createDate, LocalDateTime modifyDate);
+
+	/**
+	 * 查询资源id
+	 * @param userName
+	 * @param subject
+	 * @param mediaType
+	 * @return
+	 */
+	List<Integer> selectResourceId(String userName, Integer subject, Integer mediaType);
+
+	/**
+	 * 保存搜索记录
+	 * @param keyword
+	 * @param userId
+	 * @param userName
+	 * @param subject
+	 * @param createDate
+	 * @param modifyDate
+	 * @return
+	 */
+	int saveSearchHistory(String keyword,Integer userId, String userName,Integer subject,LocalDateTime createDate, LocalDateTime modifyDate);
+
+	/**
+	 * 搜索记录列表
+	 * @param userName
+	 * @param subject
+	 * @return
+	 */
+	List<String>  selectSearchHistory(String userName,Integer subject);
 
 }

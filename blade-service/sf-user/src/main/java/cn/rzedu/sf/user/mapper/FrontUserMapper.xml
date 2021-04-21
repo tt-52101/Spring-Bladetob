@@ -42,6 +42,7 @@
         <result column="district_name" property="districtName"/>
     </resultMap>
 
+
     <select id="selectRegionProvinceName" resultType="java.lang.String">
         select province_name from blade_region where province_code = #{provinceCode} limit 0,1
     </select>
