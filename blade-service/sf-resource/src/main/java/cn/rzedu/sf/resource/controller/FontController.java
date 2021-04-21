@@ -34,6 +34,9 @@ import cn.rzedu.sf.resource.vo.FontVO;
 import cn.rzedu.sf.resource.wrapper.FontWrapper;
 import cn.rzedu.sf.resource.service.IFontService;
 import org.springblade.core.boot.ctrl.BladeController;
+
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -83,41 +86,45 @@ public class FontController extends BladeController {
 	*/
 	@PostMapping("/save")
     @ApiOperationSupport(order = 4)
-	@ApiOperation(value = "新增", notes = "传入font")
+	@ApiOperation(value = "新增", notes = "传入font(name、subject、type) ")
 	public R save(@Valid @RequestBody Font font) {
+		LocalDateTime now = LocalDateTime.now();
+		font.setCreateDate(now);
+		font.setModifyDate(now);
+		font.setIsDeleted(0);
 		return R.status(fontService.save(font));
 	}
 
 	/**
 	* 修改 书法字体表
 	*/
-	@PostMapping("/update")
-    @ApiOperationSupport(order = 5)
-	@ApiOperation(value = "修改", notes = "传入font")
-	public R update(@Valid @RequestBody Font font) {
-		return R.status(fontService.updateById(font));
-	}
+//	@PostMapping("/update")
+//    @ApiOperationSupport(order = 5)
+//	@ApiOperation(value = "修改", notes = "传入font")
+//	public R update(@Valid @RequestBody Font font) {
+//		return R.status(fontService.updateById(font));
+//	}
 
 	/**
 	* 新增或修改 书法字体表
 	*/
-	@PostMapping("/submit")
-    @ApiOperationSupport(order = 6)
-	@ApiOperation(value = "新增或修改", notes = "传入font")
-	public R submit(@Valid @RequestBody Font font) {
-		return R.status(fontService.saveOrUpdate(font));
-	}
+//	@PostMapping("/submit")
+//    @ApiOperationSupport(order = 6)
+//	@ApiOperation(value = "新增或修改", notes = "传入font")
+//	public R submit(@Valid @RequestBody Font font) {
+//		return R.status(fontService.saveOrUpdate(font));
+//	}
 
 	
 	/**
 	* 删除 书法字体表
 	*/
-	@PostMapping("/remove")
-    @ApiOperationSupport(order = 7)
-	@ApiOperation(value = "删除", notes = "传入ids")
-	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
-		return R.status(fontService.removeByIds(Func.toLongList(ids)));
-	}
+//	@PostMapping("/remove")
+//    @ApiOperationSupport(order = 7)
+//	@ApiOperation(value = "删除", notes = "传入ids")
+//	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
+//		return R.status(fontService.removeByIds(Func.toLongList(ids)));
+//	}
 
 	
 }
