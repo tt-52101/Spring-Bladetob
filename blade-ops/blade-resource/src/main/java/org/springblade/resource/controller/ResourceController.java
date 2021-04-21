@@ -32,6 +32,8 @@ import org.springblade.resource.utils.FileMd5Util;
 import org.springblade.resource.utils.VodUploadUtil;
 import org.springblade.resource.vo.VodResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
@@ -55,6 +57,8 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 对象存储端点
  *
@@ -71,6 +75,7 @@ public class ResourceController {
 
     private IEntityFileService entityFileService;
     private OssProperties ossProperties;
+
     
 //    private ICharacterService characterService;
 
@@ -167,7 +172,18 @@ public class ResourceController {
     @SneakyThrows
     @PostMapping("/find-file-by-uuid")
     @ApiOperation(value = "根据videoId返回视频数据", notes = "根据videoId返回视频数据", position = 2)
-    public R<GetVideoInfoResponse> findFileByUuid(@ApiParam(value = "videoId", required = true) @RequestParam(value = "uuid") String uuid) {
+    public R<GetVideoInfoResponse> findFileByUuid(@ApiParam(value = "videoId", required = true) @RequestParam(value = "uuid") String uuid,
+                                                  @ApiParam(value = "资源ID") @RequestParam(value = "resourceId") Integer resourceId,
+                                                  @ApiParam(value = "subject,71 = 软笔,72=硬笔") @RequestParam(value = "subject") Integer subject,
+                                                  @ApiParam(value = "mediaType") @RequestParam(value = "mediaType") Integer mediaType
+                                                  ) {
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = requestAttributes.getRequest();
+        Integer userId =Integer.parseInt(request.getHeader("userId")) ;
+        String username = request.getHeader("username");
+        if (resourceId != null && subject!=null && mediaType != null){
+            entityFileService.saveBrowsingHistory(userId,username,resourceId,subject,mediaType);
+        }
 
         DefaultAcsClient client = initVodClient(ossProperties.getAccessKey(), ossProperties.getSecretKey());
         GetVideoInfoResponse response = new GetVideoInfoResponse();
