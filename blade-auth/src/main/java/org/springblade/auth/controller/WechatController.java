@@ -1,75 +1,27 @@
-/**
- * Copyright (c) 2018-2028, Chill Zhuang 庄骞 (smallchill@163.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.springblade.auth.controller;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import cn.rzedu.sc.goods.feign.IGrouponClient;
-import org.apache.commons.lang.StringUtils;
-import org.apache.oltu.oauth2.client.OAuthClient;
-import org.apache.oltu.oauth2.client.URLConnectionClient;
-import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
-import org.apache.oltu.oauth2.client.response.OAuthAccessTokenResponse;
-import org.apache.oltu.oauth2.common.OAuth;
-import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.jsoup.Connection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springblade.auth.utils.*;
 import org.springblade.common.tool.WeChatUtil;
-import org.springblade.common.vo.EventVo;
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.utils.RedisUtil;
-import org.springblade.producer.feign.TopicClient;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
-import cn.rzedu.sf.activity.feign.ActivityClient;
-import cn.rzedu.sf.resource.feign.ITextbookClient;
-import cn.rzedu.sf.resource.vo.CharLinkVO;
-import cn.rzedu.sf.user.feign.IActivityClient;
 import cn.rzedu.sf.user.feign.ISFUserClient;
-import cn.rzedu.sf.user.feign.IUserCourseClient;
 import cn.rzedu.sf.user.vo.UserVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 /**
