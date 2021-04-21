@@ -194,6 +194,24 @@ public class UserLessonController extends BladeController {
 
         //修改完成汉字数
         UserLesson userLesson = userLessonService.findUnionByLessonIdAndUserId(lessonId, userId);
+        if (userLesson == null) {
+            R<List<TextbookLessonCharacter>> result = textbookClient.allLessonCharacters(lessonId);
+            Integer charCount = 0;
+            if (result.getData() != null) {
+                charCount = result.getData().size();
+            }
+            userLesson = new UserLesson();
+            userLesson.setUserId(userId);
+            userLesson.setTextbookId(textbookId);
+            userLesson.setLessonId(lessonId);
+            userLesson.setCharCount(charCount);
+            userLesson.setFinishedCharCount(0);
+            userLesson.setLocked(false);
+            userLesson.setStarCount(0);
+            userLesson.setCreateDate(now);
+            userLesson.setModifyDate(now);
+            userLessonService.save(userLesson);
+        }
         Integer charCount = userLesson.getCharCount();
         Integer finishedCharCount = userCharacterService.findFinishedCharCountOfLesson(lessonId, userId);
         userLesson.setFinishedCharCount(finishedCharCount);
@@ -201,9 +219,19 @@ public class UserLessonController extends BladeController {
         userLessonService.updateById(userLesson);
 
         //修改完成汉字数，当前课程
-        UserTextbook ut = new UserTextbook();
-        ut.setUserId(userId);
-        ut.setTextbookId(textbookId);
+
+        UserTextbook ut = userTextbookService.findUnionByTextbookIdAndUserId(textbookId, userId);
+        if (ut == null) {
+            ut = new UserTextbook();
+            ut.setUserId(userId);
+            ut.setTextbookId(textbookId);
+            ut.setOwnedTime(now);
+            ut.setActiveTime(now);
+            ut.setStartTime(now);
+            ut.setCreateDate(now);
+            ut.setModifyDate(now);
+            userTextbookService.save(ut);
+        }
         ut.setActiveLessonId(lessonId);
 
         int textbookCharCount = getTextbookCharCount(textbookId);
