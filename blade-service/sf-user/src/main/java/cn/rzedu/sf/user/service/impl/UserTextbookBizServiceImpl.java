@@ -221,4 +221,17 @@ public class UserTextbookBizServiceImpl implements IUserTextbookBizService {
         map.put("listOrder", listOrder);
         return map;
     }
+
+    @Override
+    public List<Map<String, Object>> findRecentlyLesson(Integer userId) {
+        List<Map<String, Object>> list = userLessonService.findRecentlyLesson(userId, 5);
+        if (list == null || list.isEmpty()) {
+            return list;
+        }
+        List<String> icons = userService.getRandomIcons();
+        for (Map<String, Object> map : list) {
+            map.put("icons", getRandomIcon(icons));
+        }
+        return list;
+    }
 }

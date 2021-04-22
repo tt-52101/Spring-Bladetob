@@ -73,4 +73,12 @@ public interface UserLessonMapper extends BaseMapper<UserLesson> {
      * @return
      */
     Integer findFinishedLessonCountOfTextbook(Integer textbookId, Integer userId);
+
+    /**
+     * 最近学习的课程
+     * @param userId
+     * @param number
+     * @return
+     */
+    List<Map<String,Object>> findRecentlyLesson(Integer userId, Integer number);
 }

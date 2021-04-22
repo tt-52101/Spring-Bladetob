@@ -56,4 +56,9 @@ public class UserLessonServiceImpl extends ServiceImpl<UserLessonMapper, UserLes
     public int findFinishedLessonCountOfTextbook(Integer textbookId, Integer userId) {
         return baseMapper.findFinishedLessonCountOfTextbook(textbookId, userId);
     }
+
+    @Override
+    public List<Map<String, Object>> findRecentlyLesson(Integer userId, Integer number) {
+        return baseMapper.findRecentlyLesson(userId, number);
+    }
 }

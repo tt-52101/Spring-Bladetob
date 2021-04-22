@@ -142,4 +142,35 @@
         AND ul.char_count = ul.finished_char_count
     </select>
 
+    <select id="findRecentlyLesson" resultType="java.util.Map">
+        SELECT
+            t4.id AS textbookId,
+            t4.`name` AS textbookName,
+            t4.`subject`,
+            t4.cover_image AS coverImage,
+            t4.font,
+            t3.id AS lessonId,
+            t3.`name` AS lessonName,
+            t3.learnCount
+        FROM sf_user_lesson t1
+        LEFT JOIN sf_user_textbook t2 ON t1.textbook_id = t2.textbook_id AND t1.user_id = t2.user_id
+        LEFT JOIN
+            (
+                SELECT t1.*, COUNT(t2.id) AS learnCount
+                FROM sf_textbook_lesson t1
+                LEFT JOIN sf_user_lesson t2 ON t1.id = t2.lesson_id AND t2.is_deleted = 0
+                WHERE t1.is_deleted = 0
+                GROUP BY t1.id
+            ) AS t3
+            ON t1.lesson_id = t3.id
+        LEFT JOIN sf_textbook t4 ON t1.textbook_id = t4.id
+        WHERE t1.is_deleted = 0
+        AND t2.is_deleted = 0
+        AND t3.is_deleted = 0
+        AND t4.is_deleted = 0
+        AND t1.user_id = #{userId}
+        ORDER BY t1.modify_date DESC
+        LIMIT #{number}
+    </select>
+
 </mapper>

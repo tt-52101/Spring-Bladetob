@@ -34,4 +34,11 @@ public interface IUserTextbookBizService {
      * @return
      */
     Map getLearningLesson(Integer userId);
+
+    /**
+     * 最近学习的课程
+     * @param userId
+     * @return
+     */
+    List<Map<String, Object>> findRecentlyLesson(Integer userId);
 }
