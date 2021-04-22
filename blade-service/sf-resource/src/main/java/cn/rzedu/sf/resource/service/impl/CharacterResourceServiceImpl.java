@@ -297,7 +297,7 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		addValueByTypeAndFont(analysis, characterId, subject, 714, font);
 		//笔法
 		List<CharResFileVO> writing = new ArrayList<>();
-		writing.add(new CharResFileVO("writing_text", "text"));
+//		writing.add(new CharResFileVO("writing_text", "text"));
 		writing.add(new CharResFileVO("technique_line", "video"));
 		writing.add(new CharResFileVO("technique_gesture", "video"));
 		addValueByTypeAndFont(writing, characterId, subject, 715, font);
