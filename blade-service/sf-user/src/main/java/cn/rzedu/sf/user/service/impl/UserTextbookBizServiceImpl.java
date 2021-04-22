@@ -102,35 +102,39 @@ public class UserTextbookBizServiceImpl implements IUserTextbookBizService {
                 charCount = lessonCharacterList.size();
             }
 
-            UserLesson userLesson = new UserLesson();
-            userLesson.setUserId(userId);
-            userLesson.setTextbookId(textbookId);
-            userLesson.setLessonId(lessonId);
-            userLesson.setCharCount(charCount);
-            userLesson.setFinishedCharCount(0);
-            userLesson.setLocked(false);
-            userLesson.setStarCount(0);
-            userLesson.setCreateDate(now);
-            userLesson.setModifyDate(now);
-            userLessonService.save(userLesson);
+            try {
+                UserLesson userLesson = new UserLesson();
+                userLesson.setUserId(userId);
+                userLesson.setTextbookId(textbookId);
+                userLesson.setLessonId(lessonId);
+                userLesson.setCharCount(charCount);
+                userLesson.setFinishedCharCount(0);
+                userLesson.setLocked(false);
+                userLesson.setStarCount(0);
+                userLesson.setCreateDate(now);
+                userLesson.setModifyDate(now);
+                userLessonService.save(userLesson);
 
-            if (charCount != 0) {
-                List<UserCharacter> ucList = new ArrayList<>(charCount);
-                UserCharacter uc = null;
-                for (TextbookLessonCharacter lessonCharacter : lessonCharacterList) {
-                    uc = new UserCharacter();
-                    uc.setUserId(userId);
-                    uc.setLessonId(lessonId);
-                    uc.setCharacterLessonId(lessonCharacter.getId());
-                    uc.setCharacterId(lessonCharacter.getCharacterId());
-                    uc.setFinishedPercent(0);
-                    uc.setWatchProgress(0);
-                    uc.setLastVisitedTime(now);
-                    uc.setCreateDate(now);
-                    uc.setModifyDate(now);
-                    ucList.add(uc);
+                if (charCount != 0) {
+                    List<UserCharacter> ucList = new ArrayList<>(charCount);
+                    UserCharacter uc = null;
+                    for (TextbookLessonCharacter lessonCharacter : lessonCharacterList) {
+                        uc = new UserCharacter();
+                        uc.setUserId(userId);
+                        uc.setLessonId(lessonId);
+                        uc.setCharacterLessonId(lessonCharacter.getId());
+                        uc.setCharacterId(lessonCharacter.getCharacterId());
+                        uc.setFinishedPercent(0);
+                        uc.setWatchProgress(0);
+                        uc.setLastVisitedTime(now);
+                        uc.setCreateDate(now);
+                        uc.setModifyDate(now);
+                        ucList.add(uc);
+                    }
+                    userCharacterService.saveBatch(ucList);
                 }
-                userCharacterService.saveBatch(ucList);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
