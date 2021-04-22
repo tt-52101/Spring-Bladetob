@@ -17,6 +17,7 @@ package org.springblade.resource.endpoint;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springblade.core.oss.AliossTemplate;
@@ -179,7 +180,18 @@ public class OssEndpoint {
 	@SneakyThrows
 	@PostMapping("/find-file-by-uuid")
 	@ApiOperation(value = "查找文件", notes = "查找文件通过uuid" , position = 2)
-	public R<FileResult> findFileByUuid(@RequestParam String uuid) {
+	public R<FileResult> findFileByUuid(@RequestParam String uuid,
+										@ApiParam(value = "userId") @RequestParam(value = "userId",required = false) Integer userId,
+										@ApiParam(value = "username") @RequestParam(value = "username",required = false) String username,
+										@ApiParam(value = "资源ID") @RequestParam(value = "resourceId",required = false) Integer resourceId,
+										@ApiParam(value = "subject,71 = 软笔,72=硬笔") @RequestParam(value = "subject",required = false) Integer subject,
+										@ApiParam(value = "mediaType") @RequestParam(value = "mediaType",required = false) Integer mediaType) {
+
+		if (resourceId != null && subject!=null && mediaType != null){
+			entityFileService.saveBrowsingHistory(userId,username,resourceId,subject,mediaType);
+		}
+
+
 		FileResult fileResult = new FileResult();
 
 		EntityFile entityFile = entityFileService.findFileByUuid(uuid);

@@ -109,7 +109,6 @@ public class MediaResourceController extends BladeController {
 		@ApiParam(value = "一级分类")@RequestParam(value = "sortId",required = false) Integer sortId,
 		@ApiParam(value = "subject 71=软笔 72=硬笔",required = true)@RequestParam(value = "subject") Integer subject,
 		@ApiParam(value = "title")@RequestParam(value = "title",required = false) String title) {
-
 			IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceSortSearch(Condition.getPage(query),mediaType,sortId,subject,title);
 			return R.data(pages);
 		}
@@ -132,7 +131,9 @@ public class MediaResourceController extends BladeController {
 		HttpServletRequest request = requestAttributes.getRequest();
 		Integer userId =Integer.parseInt(request.getHeader("userId")) ;
 		String username = request.getHeader("username");
-		mediaResourceService.saveSearchHistory(title,userId,username,subject);
+		if (!title.isEmpty() && !title.equals(" ")){
+			mediaResourceService.saveSearchHistory(title,userId,username,subject);
+		}
 		IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceQuery(Condition.getPage(query),subject,title);
 		return R.data(pages);
 	}
