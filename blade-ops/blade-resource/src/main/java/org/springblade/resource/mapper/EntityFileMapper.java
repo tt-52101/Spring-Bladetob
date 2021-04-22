@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.resource.entity.EntityFile;
 import org.springblade.resource.vo.EntityFileVO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -42,4 +43,19 @@ public interface EntityFileMapper extends BaseMapper<EntityFile> {
 	EntityFile findByMD5(String md5);
 
 	EntityFile findFileByUuid(String uuid);
+
+	/**
+	 * 保存浏览记录
+	 * @param userId
+	 * @param userName
+	 * @param resourceId
+	 * @param subject
+	 * @param mediaType
+	 * @param createDate
+	 * @param modifyDate
+	 * @return
+	 */
+	int saveBrowsingHistory(Integer userId, String userName, Integer resourceId, Integer subject, Integer mediaType, LocalDateTime createDate, LocalDateTime modifyDate);
+
+
 }

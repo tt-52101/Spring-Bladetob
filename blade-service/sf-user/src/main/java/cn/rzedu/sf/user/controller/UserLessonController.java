@@ -96,7 +96,14 @@ public class UserLessonController extends BladeController {
         List<String> iconList = userService.getRandomIcons();
         String[] icons = new String[]{};
         if (iconList != null && !iconList.isEmpty()) {
-            icons = iconList.toArray(icons);
+            if (iconList.size() <= 5) {
+                icons = iconList.toArray(icons);
+            } else {
+                icons = new String[5];
+                for (int i = 0; i < 5; i++) {
+                    icons[i] = iconList.get(i);
+                }
+            }
         }
         Map<String, Object> result = new HashMap<>(2);
         result.put("icons", icons);
@@ -131,7 +138,7 @@ public class UserLessonController extends BladeController {
             map = new HashedMap();
             map.put("lessonId", vo.getLessonId());
             map.put("characterId", vo.getCharacterId());
-            map.put("chars", vo.getCharS());
+            map.put("charS", vo.getCharS());
             map.put("videoId", vo.getVideoId());
             int isFinished = 0;
             if(vo.getFinishedPercent() != 0) {
@@ -187,6 +194,24 @@ public class UserLessonController extends BladeController {
 
         //修改完成汉字数
         UserLesson userLesson = userLessonService.findUnionByLessonIdAndUserId(lessonId, userId);
+        if (userLesson == null) {
+            R<List<TextbookLessonCharacter>> result = textbookClient.allLessonCharacters(lessonId);
+            Integer charCount = 0;
+            if (result.getData() != null) {
+                charCount = result.getData().size();
+            }
+            userLesson = new UserLesson();
+            userLesson.setUserId(userId);
+            userLesson.setTextbookId(textbookId);
+            userLesson.setLessonId(lessonId);
+            userLesson.setCharCount(charCount);
+            userLesson.setFinishedCharCount(0);
+            userLesson.setLocked(false);
+            userLesson.setStarCount(0);
+            userLesson.setCreateDate(now);
+            userLesson.setModifyDate(now);
+            userLessonService.save(userLesson);
+        }
         Integer charCount = userLesson.getCharCount();
         Integer finishedCharCount = userCharacterService.findFinishedCharCountOfLesson(lessonId, userId);
         userLesson.setFinishedCharCount(finishedCharCount);
@@ -194,9 +219,19 @@ public class UserLessonController extends BladeController {
         userLessonService.updateById(userLesson);
 
         //修改完成汉字数，当前课程
-        UserTextbook ut = new UserTextbook();
-        ut.setUserId(userId);
-        ut.setTextbookId(textbookId);
+
+        UserTextbook ut = userTextbookService.findUnionByTextbookIdAndUserId(textbookId, userId);
+        if (ut == null) {
+            ut = new UserTextbook();
+            ut.setUserId(userId);
+            ut.setTextbookId(textbookId);
+            ut.setOwnedTime(now);
+            ut.setActiveTime(now);
+            ut.setStartTime(now);
+            ut.setCreateDate(now);
+            ut.setModifyDate(now);
+            userTextbookService.save(ut);
+        }
         ut.setActiveLessonId(lessonId);
 
         int textbookCharCount = getTextbookCharCount(textbookId);

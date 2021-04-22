@@ -15,24 +15,11 @@
  */
 package org.springblade.resource.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.aliyun.vod.upload.resp.UploadStreamResponse;
-import com.aliyuncs.DefaultAcsClient;
-import com.aliyuncs.IAcsClient;
-import com.aliyuncs.exceptions.ClientException;
-import com.aliyuncs.exceptions.ServerException;
-import com.aliyuncs.profile.DefaultProfile;
-import com.aliyuncs.vod.model.v20170321.GetPlayInfoResponse;
-import com.aliyuncs.vod.model.v20170321.GetVideoInfoResponse;
-import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthRequest;
-import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthResponse;
-import com.google.gson.Gson;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
+import static org.springblade.resource.utils.VodUploadUtil.initVodClient;
+
+import java.time.ZoneId;
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springblade.core.oss.props.OssProperties;
@@ -44,16 +31,33 @@ import org.springblade.resource.service.IEntityFileService;
 import org.springblade.resource.utils.FileMd5Util;
 import org.springblade.resource.utils.VodUploadUtil;
 import org.springblade.resource.vo.VodResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.ZoneId;
-import java.util.Date;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.aliyun.vod.upload.resp.UploadImageResponse;
+import com.aliyun.vod.upload.resp.UploadStreamResponse;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.IAcsClient;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.exceptions.ServerException;
+import com.aliyuncs.profile.DefaultProfile;
+import com.aliyuncs.vod.model.v20170321.GetPlayInfoResponse;
+import com.aliyuncs.vod.model.v20170321.GetVideoInfoResponse;
+import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthRequest;
+import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthResponse;
+import com.google.gson.Gson;
 
-import static org.springblade.resource.utils.VodUploadUtil.initVodClient;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 对象存储端点
@@ -71,6 +75,7 @@ public class ResourceController {
 
     private IEntityFileService entityFileService;
     private OssProperties ossProperties;
+
     
 //    private ICharacterService characterService;
 
@@ -167,7 +172,16 @@ public class ResourceController {
     @SneakyThrows
     @PostMapping("/find-file-by-uuid")
     @ApiOperation(value = "根据videoId返回视频数据", notes = "根据videoId返回视频数据", position = 2)
-    public R<GetVideoInfoResponse> findFileByUuid(@ApiParam(value = "videoId", required = true) @RequestParam(value = "uuid") String uuid) {
+    public R<GetVideoInfoResponse> findFileByUuid(@ApiParam(value = "videoId", required = true) @RequestParam(value = "uuid") String uuid,
+                                                  @ApiParam(value = "userId") @RequestParam(value = "userId",required = false) Integer userId,
+                                                  @ApiParam(value = "username") @RequestParam(value = "username",required = false) String username,
+                                                  @ApiParam(value = "资源ID") @RequestParam(value = "resourceId",required = false) Integer resourceId,
+                                                  @ApiParam(value = "subject,71 = 软笔,72=硬笔") @RequestParam(value = "subject",required = false) Integer subject,
+                                                  @ApiParam(value = "mediaType") @RequestParam(value = "mediaType",required = false) Integer mediaType
+                                                  ) {
+        if (resourceId != null && subject!=null && mediaType != null){
+            entityFileService.saveBrowsingHistory(userId,username,resourceId,subject,mediaType);
+        }
 
         DefaultAcsClient client = initVodClient(ossProperties.getAccessKey(), ossProperties.getSecretKey());
         GetVideoInfoResponse response = new GetVideoInfoResponse();
@@ -183,24 +197,24 @@ public class ResourceController {
         return R.data(response);
     }
 
-//    /**
-//     * 根据videoId返回视频数据
-//     *
-//     * @param videoId
-//     * @return
-//     */
-//    @SneakyThrows
-//    @GetMapping("/find-playinfo-by-videoid")
-//    @ApiOperation(value = "根据videoId返回视频数据", notes = "根据videoId返回视频数据", position = 4)
-//    public R<GetPlayInfoResponse> getPlayInfo(@ApiParam(value = "videoId", required = true) @RequestParam(value = "videoId") String videoId) {
-//        GetPlayInfoResponse response = new GetPlayInfoResponse();
-//        try {
-//            response = VodUploadUtil.getPlayInfo(ossProperties.getAccessKey(), ossProperties.getSecretKey(), videoId);
-//        } catch (Exception e) {
-//            System.out.print("ErrorMessage = " + e.getLocalizedMessage());
-//        }
-//        return R.data(response);
-//    }
+    /**
+     * 根据videoId返回视频数据
+     *
+     * @param videoId
+     * @return
+     */
+    @SneakyThrows
+    @GetMapping("/find-playinfo-by-videoid")
+    @ApiOperation(value = "根据videoId返回视频数据", notes = "根据videoId返回视频数据", position = 4)
+    public R<GetPlayInfoResponse> getPlayInfo(@ApiParam(value = "videoId", required = true) @RequestParam(value = "videoId") String videoId) {
+        GetPlayInfoResponse response = new GetPlayInfoResponse();
+        try {
+            response = VodUploadUtil.getPlayInfo(ossProperties.getAccessKey(), ossProperties.getSecretKey(), videoId);
+        } catch (Exception e) {
+            System.out.print("ErrorMessage = " + e.getLocalizedMessage());
+        }
+        return R.data(response);
+    }
 
     /**
      * 根据videoId返回视频数据
@@ -211,8 +225,17 @@ public class ResourceController {
     @SneakyThrows
     @PostMapping("/find-video-by-uuid")
     @ApiOperation(value = "根据videoId返回视频数据及playauth", notes = "根据videoId返回视频数据及playauth", position = 3)
-    public R<GetVideoPlayAuthResponse> findVideoByUuid(@ApiParam(value = "videoId", required = true) @RequestParam(value = "videoId") String videoId) {
-    	GetVideoPlayAuthResponse response = new GetVideoPlayAuthResponse();
+    public R<GetVideoPlayAuthResponse> findVideoByUuid(@ApiParam(value = "videoId", required = true) @RequestParam(value = "videoId") String videoId,
+                                                       @ApiParam(value = "userId") @RequestParam(value = "userId",required = false) Integer userId,
+                                                       @ApiParam(value = "username") @RequestParam(value = "username",required = false) String username,
+                                                       @ApiParam(value = "资源ID") @RequestParam(value = "resourceId",required = false) Integer resourceId,
+                                                       @ApiParam(value = "subject,71 = 软笔,72=硬笔") @RequestParam(value = "subject",required = false) Integer subject,
+                                                       @ApiParam(value = "mediaType") @RequestParam(value = "mediaType",required = false) Integer mediaType) {
+        if (resourceId != null && subject!=null && mediaType != null){
+            entityFileService.saveBrowsingHistory(userId,username,resourceId,subject,mediaType);
+        }
+
+        GetVideoPlayAuthResponse response = new GetVideoPlayAuthResponse();
         try {
         	Object object = redisUtil.get("video_"+videoId);
         	//logger.info("缓存内容："+JSON.toJSONString(object));

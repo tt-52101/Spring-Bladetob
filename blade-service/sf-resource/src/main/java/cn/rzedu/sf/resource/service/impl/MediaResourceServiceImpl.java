@@ -18,12 +18,16 @@ package cn.rzedu.sf.resource.service.impl;
 import cn.rzedu.sf.resource.entity.MediaResource;
 import cn.rzedu.sf.resource.mapper.MediaResourceMapper;
 import cn.rzedu.sf.resource.service.IMediaResourceService;
+import cn.rzedu.sf.resource.vo.BrowsingHistoryVO;
 import cn.rzedu.sf.resource.vo.MediaResourceSortVO;
 import cn.rzedu.sf.resource.vo.MediaResourceVO;
+import cn.rzedu.sf.resource.vo.SearchHistoryVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,9 +41,6 @@ public class MediaResourceServiceImpl extends ServiceImpl<MediaResourceMapper, M
 
 	@Override
 	public IPage<MediaResourceVO> selectMediaResourcePage(IPage<MediaResourceVO> page,Integer mediaType,Integer subject) {
-
-
-
 		return page.setRecords(baseMapper.selectMediaResourcePage(page,mediaType,subject));
 	}
 
@@ -47,6 +48,18 @@ public class MediaResourceServiceImpl extends ServiceImpl<MediaResourceMapper, M
 	public List<MediaResourceSortVO> selectMediaResourceSortList(Integer mediaType,Integer subject) {
 
 		return baseMapper.selectMediaResourceSortList(mediaType,subject);
+	}
+
+	@Override
+	public List<MediaResourceVO> selectMediaResourceByID(List<Integer> resourceIds) {
+		List<MediaResourceVO> MediaResourceVOs = new ArrayList<>();
+		if (!resourceIds.isEmpty()){
+			for(Integer resourceId : resourceIds){
+				MediaResourceVOs.add(baseMapper.selectMediaResourceByID(resourceId));
+			}
+			return MediaResourceVOs;
+		}else
+		return null;
 	}
 
 	@Override
@@ -62,5 +75,35 @@ public class MediaResourceServiceImpl extends ServiceImpl<MediaResourceMapper, M
 	@Override
 	public IPage<MediaResourceVO> selectMediaResourceQuery(IPage<MediaResourceVO> page,Integer subject, String title) {
 		return page.setRecords(baseMapper.selectMediaResourceQuery(page,subject,title));
+	}
+
+	@Override
+	public boolean saveBrowsingHistory(Integer userId, String userName, Integer resourceId, Integer subject, Integer mediaType) {
+		LocalDateTime localDateTime=LocalDateTime.now();
+		int r = baseMapper.saveBrowsingHistory(userId,userName,resourceId,subject,mediaType,localDateTime,localDateTime);
+		if (r>0){
+			return true;
+		}else
+			return false;
+	}
+
+	@Override
+	public List<Integer> selectResourceId(String userName, Integer subject, Integer mediaType) {
+		return baseMapper.selectResourceId(userName,subject,mediaType);
+	}
+
+	@Override
+	public boolean saveSearchHistory(String keyword, Integer userId, String userName, Integer subject) {
+		LocalDateTime localDateTime = LocalDateTime.now();
+		if (keyword != null && keyword != ""){
+			int r = baseMapper.saveSearchHistory(keyword,userId,userName,subject,localDateTime,localDateTime);
+			return true;
+		}else
+			return false;
+	}
+
+	@Override
+	public List<String> selectKeyword(String userName, Integer subject) {
+		return baseMapper.selectSearchHistory(userName,subject);
 	}
 }

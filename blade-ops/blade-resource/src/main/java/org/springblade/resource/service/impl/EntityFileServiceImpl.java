@@ -23,6 +23,8 @@ import org.springblade.resource.service.IEntityFileService;
 import org.springblade.resource.vo.EntityFileVO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 /**
  * 书法上传文件记录表 服务实现类
  *
@@ -45,6 +47,16 @@ public class EntityFileServiceImpl extends ServiceImpl<EntityFileMapper, EntityF
 	@Override
 	public EntityFile findFileByUuid(String uuid) {
 		return this.baseMapper.findFileByUuid(uuid);
+	}
+
+	@Override
+	public boolean saveBrowsingHistory(Integer userId, String userName, Integer resourceId, Integer subject, Integer mediaType) {
+		LocalDateTime localDateTime=LocalDateTime.now();
+		int r = baseMapper.saveBrowsingHistory(userId,userName,resourceId,subject,mediaType,localDateTime,localDateTime);
+		if (r>0){
+			return true;
+		}else
+			return false;
 	}
 
 }

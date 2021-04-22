@@ -2,7 +2,6 @@ package cn.rzedu.sf.activity.feign;
 
 import cn.rzedu.sc.goods.feign.IGrouponClient;
 import cn.rzedu.sf.activity.utils.PushMessage;
-import cn.rzedu.sf.user.feign.IActivityClient;
 import cn.rzedu.sf.user.feign.ISFUserClient;
 import cn.rzedu.sf.user.vo.UserVO;
 import com.alibaba.fastjson.JSON;
@@ -16,7 +15,6 @@ import org.springblade.common.vo.EventVo;
 import org.springblade.core.tool.api.R;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -28,7 +26,6 @@ import java.util.Date;
 public class ActivityClientImpl implements ActivityClient {
 	private final static Logger logger = LoggerFactory.getLogger(ActivityClientImpl.class);
 	private final ISFUserClient userClient;
-	private final IActivityClient activityClient;
 	private final IGrouponClient grouponClient;
 
 	@Value("${activity.endTime}")
@@ -62,14 +59,11 @@ public class ActivityClientImpl implements ActivityClient {
 
 				R<UserVO> userVOR = userClient.detailByOpenIdV1(openId);
 				UserVO scanUserId = userVOR.getData();
-				R<Integer> activity = activityClient.userAwardType(scanUserId.getId());
-				Integer num = activity.getData();
 
 				EventVo eventVo =  new EventVo();
 				eventVo.setFromUserName(openId);
 				PushMessage.pushMessage(eventVo, 3);
 				//更新发送次数
-				activityClient.updateSendCount(4, 1);
 			}
 		} catch (IOException e) {
 			logger.error("获取海报失败 :", e);

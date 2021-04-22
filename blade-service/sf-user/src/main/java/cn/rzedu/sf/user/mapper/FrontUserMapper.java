@@ -49,6 +49,8 @@ public interface FrontUserMapper extends BaseMapper<FrontUser> {
 	String selectRegionCityName(String cityCode);
 	String selectRegionDistrictName(String districtCode);
 
+
+
 	/**
 	 *
 	 *user详细信息

@@ -315,20 +315,6 @@ public class CharacterResourceController extends BladeController {
         return R.success("删除缓存成功，字体：#" + font);
     }
 
-    /**
-     * 根据 汉字和字体和软/硬 查询汉字全部资源
-     */
-    @GetMapping("/list/basic")
-    @ApiOperationSupport(order = 13)
-    @ApiOperation(value = "查询汉字全部资源", notes = "根据 汉字和字体和软/硬 查询汉字全部资源")
-    public R list(
-            @ApiParam(value = "源学科 71=软笔书法 72=硬笔书法", required = true) @PathVariable(value = "subject") Integer subject,
-            @ApiParam(value = "汉字id", required = true) @PathVariable(value = "characterId") Integer characterId,
-            @ApiParam(value = "字体") @RequestParam(value = "font", required = false, defaultValue = "") String font) {
-        String key = "resource-bag-basic-#" + font;
-        redisTemplate.delete(key);
-        return R.success("删除缓存成功，字体：#" + font);
-    }
 
     /**
      * 软笔观察、分析、笔法资源
