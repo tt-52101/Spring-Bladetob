@@ -283,8 +283,8 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		observation.add(new CharResFileVO("observe_dot", "image"));
 		observation.add(new CharResFileVO("observe_arrow", "image"));
 		observation.add(new CharResFileVO("observe_triangle", "image"));
-		observation.add(new CharResFileVO("observe_text", "text"));
-		observation.add(new CharResFileVO("observe_audio", "audio"));
+//		observation.add(new CharResFileVO("observe_text", "text"));
+//		observation.add(new CharResFileVO("observe_audio", "audio"));
 		observation.add(new CharResFileVO("observe_image", "image"));
 		addValueByTypeAndFont(observation, characterId, subject, 713, font);
 		//分析
@@ -297,7 +297,7 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		addValueByTypeAndFont(analysis, characterId, subject, 714, font);
 		//笔法
 		List<CharResFileVO> writing = new ArrayList<>();
-		writing.add(new CharResFileVO("writing_text", "text"));
+//		writing.add(new CharResFileVO("writing_text", "text"));
 		writing.add(new CharResFileVO("technique_line", "video"));
 		writing.add(new CharResFileVO("technique_gesture", "video"));
 		addValueByTypeAndFont(writing, characterId, subject, 715, font);
