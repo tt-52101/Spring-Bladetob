@@ -15,11 +15,24 @@
  */
 package org.springblade.resource.controller;
 
-import static org.springblade.resource.utils.VodUploadUtil.initVodClient;
-
-import java.time.ZoneId;
-import java.util.Date;
-
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.aliyun.vod.upload.resp.UploadStreamResponse;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.IAcsClient;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.exceptions.ServerException;
+import com.aliyuncs.profile.DefaultProfile;
+import com.aliyuncs.vod.model.v20170321.GetPlayInfoResponse;
+import com.aliyuncs.vod.model.v20170321.GetVideoInfoResponse;
+import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthRequest;
+import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthResponse;
+import com.google.gson.Gson;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springblade.core.oss.props.OssProperties;
@@ -32,32 +45,12 @@ import org.springblade.resource.utils.FileMd5Util;
 import org.springblade.resource.utils.VodUploadUtil;
 import org.springblade.resource.vo.VodResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.aliyun.vod.upload.resp.UploadImageResponse;
-import com.aliyun.vod.upload.resp.UploadStreamResponse;
-import com.aliyuncs.DefaultAcsClient;
-import com.aliyuncs.IAcsClient;
-import com.aliyuncs.exceptions.ClientException;
-import com.aliyuncs.exceptions.ServerException;
-import com.aliyuncs.profile.DefaultProfile;
-import com.aliyuncs.vod.model.v20170321.GetPlayInfoResponse;
-import com.aliyuncs.vod.model.v20170321.GetVideoInfoResponse;
-import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthRequest;
-import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthResponse;
-import com.google.gson.Gson;
+import java.time.ZoneId;
+import java.util.Date;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
-
-import javax.servlet.http.HttpServletRequest;
+import static org.springblade.resource.utils.VodUploadUtil.initVodClient;
 
 /**
  * 对象存储端点
@@ -205,6 +198,7 @@ public class ResourceController {
         }
         return R.data(response);
     }
+
 
     /**
      * 根据videoId返回视频数据
