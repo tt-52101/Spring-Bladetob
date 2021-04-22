@@ -38,13 +38,20 @@ public class FrontUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-  @TableId(value = "id", type = IdType.AUTO)
-  private Integer id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
     /**
      * 用户名,账号,注册码
      */
     @ApiModelProperty(value = "用户名,账号,注册码")
     private String username;
+
+    /**
+   * 学生终端
+   */
+    @TableId(value = "studentTerminal")
+    private Integer studentTerminal;
+
     /**
      * 密码
      */

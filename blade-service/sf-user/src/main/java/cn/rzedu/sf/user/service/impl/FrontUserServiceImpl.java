@@ -112,6 +112,26 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 			return false;
 	}
 
+	@Override
+	public boolean frontUserRegisterCode(String registerCode, int studentTerminal,int typeId, String provinceCode, String cityCode, String districtCode, String department, String remark) {
+		LocalDateTime localDateTime=LocalDateTime.now();
+		String registercode = baseMapper.selectUserName(registerCode);
+		String provinceName = baseMapper.selectRegionProvinceName(provinceCode);
+		String cityName = baseMapper.selectRegionCityName(cityCode); ;
+		String districtName = baseMapper.selectRegionDistrictName(districtCode);
+		String typeName = null;
+		if(typeId == 1){
+			typeName = "普及版";
+		}else if (typeId == 2){
+			typeName = "基础版";
+		}else if (typeId == 3){
+			typeName = "互动版";
+		}
+		if (registercode == null || registercode.equals(" ")){
+			return SqlHelper.retBool(baseMapper.frontUserRegisterCode(registerCode,studentTerminal,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark,localDateTime,localDateTime));
+		}else
+			return false;
+	}
 
 	@Override
 	public List<String> frontUserBatchRegister(int batchSize, String passWord, int typeId, String provinceCode, String cityCode, String districtCode, String department, String remark) throws InterruptedException {

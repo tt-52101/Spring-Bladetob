@@ -7,6 +7,7 @@
         <id column="id" property="id"/>
         <result column="username" property="username"/>
         <result column="password" property="password"/>
+        <result column="student_terminal" property="studentTerminal"/>
         <result column="type_id" property="typeId"/>
         <result column="type_name" property="typeName"/>
         <result column="province_code" property="provinceCode"/>
@@ -103,6 +104,13 @@
         insert into sf_front_user (username,password,type_id,type_name,province_code,province_name,city_code,city_name,district_code,district_name,department,remark,
                                    create_date,modify_date)
         values (#{username},#{password},#{typeId},#{typeName},#{provinceCode},#{provinceName},#{cityCode},#{cityName},#{districtCode},#{districtName},#{department},#{remark},
+                #{createDate},#{modifyDate})
+    </insert>
+
+    <insert id="frontUserRegisterCode">
+        insert into sf_front_user (username,student_terminal,type_id,type_name,province_code,province_name,city_code,city_name,district_code,district_name,department,remark,
+                                   create_date,modify_date)
+        values (#{registerCode},#{studentTerminal},#{typeId},#{typeName},#{provinceCode},#{provinceName},#{cityCode},#{cityName},#{districtCode},#{districtName},#{department},#{remark},
                 #{createDate},#{modifyDate})
     </insert>
 

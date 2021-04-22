@@ -73,6 +73,7 @@ public interface IFrontUserService extends IService<FrontUser> {
 	 * @return
 	 */
 	boolean frontUserRegister(String username, String password,int typeId, String provinceCode,  String cityCode, String districtCode, String department, String remark);
+	boolean frontUserRegisterCode(String registerCode, int studentTerminal,int typeId, String provinceCode,  String cityCode, String districtCode, String department, String remark);
 
 	/**
 	 * 批量生成用户

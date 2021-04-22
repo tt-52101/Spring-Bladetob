@@ -107,6 +107,9 @@ public interface FrontUserMapper extends BaseMapper<FrontUser> {
 	int frontUserRegister(String username, String password,int typeId,String typeName, String provinceCode, String provinceName, String cityCode, String cityName, String districtCode, String districtName,String department, String remark,
 						  LocalDateTime createDate,LocalDateTime modifyDate);
 
+	int frontUserRegisterCode(String registerCode, int studentTerminal,int typeId,String typeName, String provinceCode, String provinceName, String cityCode, String cityName, String districtCode, String districtName,String department, String remark,
+						  LocalDateTime createDate,LocalDateTime modifyDate);
+
 	/**
 	 * 查询用户是否存在
 	 * @param userName

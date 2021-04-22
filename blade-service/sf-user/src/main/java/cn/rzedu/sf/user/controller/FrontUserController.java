@@ -35,6 +35,7 @@ import cn.rzedu.sf.user.service.IFrontUserService;
 import org.springblade.core.boot.ctrl.BladeController;
 import javax.validation.Valid;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -117,9 +118,27 @@ public class FrontUserController extends BladeController {
 		String department = frontUserVO.getDepartment();
 		String remark = frontUserVO.getRemark();
 		return R.status(frontUserService.frontUserRegister(userName,passWord,typeId,provinceCode,cityCode,districtCode,department,remark));
-
-
 	}
+
+	/**
+	 * 添加注册码
+	 */
+	@PostMapping("/frontUserRegisterCode")
+	@ApiOperationSupport(order = 4)
+	@ApiOperation(value = "添加注册码 username = 注册码", notes = "传入参数")
+	public R frontUserRegisterCode(@Valid @RequestBody FrontUserVO frontUserVO) {
+		String registerCode = frontUserVO.getUsername();
+		Integer studentTerminal = frontUserVO.getStudentTerminal();
+		Integer typeId = frontUserVO.getTypeId();
+		String provinceCode = frontUserVO.getProvinceCode();
+		String cityCode = frontUserVO.getCityCode();
+		String districtCode = frontUserVO.getDistrictCode();
+		String department = frontUserVO.getDepartment();
+		String remark = frontUserVO.getRemark();
+		return R.status(frontUserService.frontUserRegisterCode(registerCode,studentTerminal,typeId,provinceCode,cityCode,districtCode,department,remark));
+	}
+
+
 
 	@PostMapping("/frontUserBatchRegister")
 	@ApiOperationSupport(order = 5)
@@ -143,10 +162,11 @@ public class FrontUserController extends BladeController {
 	 */
 	@GetMapping("/selectFrontUserDetail")
 	@ApiOperationSupport(order = 6)
-	@ApiOperation(value = "查看", notes = "传入userName")
+	@ApiOperation(value = "查看/查看功能权限", notes = "传入userName")
 	public  R<FrontUserVO> selectFrontUserDetail(@ApiParam(value = "userName") @RequestParam(value = "userName")String userName) {
 		return R.data(frontUserService.selectFrontUserDetail(userName));
 	}
+
 
 	/**
 	 * 编辑
