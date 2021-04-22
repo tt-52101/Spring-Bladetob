@@ -172,17 +172,7 @@ public class ResourceController {
     @SneakyThrows
     @PostMapping("/find-file-by-uuid")
     @ApiOperation(value = "根据videoId返回视频数据", notes = "根据videoId返回视频数据", position = 2)
-    public R<GetVideoInfoResponse> findFileByUuid(@ApiParam(value = "videoId", required = true) @RequestParam(value = "uuid") String uuid,
-                                                  @ApiParam(value = "userId") @RequestParam(value = "userId",required = false) Integer userId,
-                                                  @ApiParam(value = "username") @RequestParam(value = "username",required = false) String username,
-                                                  @ApiParam(value = "资源ID") @RequestParam(value = "resourceId",required = false) Integer resourceId,
-                                                  @ApiParam(value = "subject,71 = 软笔,72=硬笔") @RequestParam(value = "subject",required = false) Integer subject,
-                                                  @ApiParam(value = "mediaType") @RequestParam(value = "mediaType",required = false) Integer mediaType
-                                                  ) {
-        if (resourceId != null && subject!=null && mediaType != null){
-            entityFileService.saveBrowsingHistory(userId,username,resourceId,subject,mediaType);
-        }
-
+    public R<GetVideoInfoResponse> findFileByUuid(@ApiParam(value = "videoId", required = true) @RequestParam(value = "uuid") String uuid) {
         DefaultAcsClient client = initVodClient(ossProperties.getAccessKey(), ossProperties.getSecretKey());
         GetVideoInfoResponse response = new GetVideoInfoResponse();
         try {
