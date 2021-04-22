@@ -132,7 +132,10 @@ public class MediaResourceController extends BladeController {
 		HttpServletRequest request = requestAttributes.getRequest();
 		Integer userId =Integer.parseInt(request.getHeader("userId")) ;
 		String username = request.getHeader("username");
-		mediaResourceService.saveSearchHistory(title,userId,username,subject);
+		if (!title.isEmpty() && !title.equals(" ")){
+			mediaResourceService.saveSearchHistory(title,userId,username,subject);
+		}
+
 		IPage<MediaResourceVO> pages = mediaResourceService.selectMediaResourceQuery(Condition.getPage(query),subject,title);
 		return R.data(pages);
 	}

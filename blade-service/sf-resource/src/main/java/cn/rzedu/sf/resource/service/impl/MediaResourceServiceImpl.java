@@ -95,8 +95,8 @@ public class MediaResourceServiceImpl extends ServiceImpl<MediaResourceMapper, M
 	@Override
 	public boolean saveSearchHistory(String keyword, Integer userId, String userName, Integer subject) {
 		LocalDateTime localDateTime = LocalDateTime.now();
-		if (keyword != null && keyword != ""){
-			int r = baseMapper.saveSearchHistory(keyword,userId,userName,subject,localDateTime,localDateTime);
+		int r = baseMapper.saveSearchHistory(keyword,userId,userName,subject,localDateTime,localDateTime);
+		if (r>0){
 			return true;
 		}else
 			return false;
