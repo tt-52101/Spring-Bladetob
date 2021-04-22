@@ -283,8 +283,8 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		observation.add(new CharResFileVO("observe_dot", "image"));
 		observation.add(new CharResFileVO("observe_arrow", "image"));
 		observation.add(new CharResFileVO("observe_triangle", "image"));
-		observation.add(new CharResFileVO("observe_text", "text"));
-		observation.add(new CharResFileVO("observe_audio", "audio"));
+//		observation.add(new CharResFileVO("observe_text", "text"));
+//		observation.add(new CharResFileVO("observe_audio", "audio"));
 		observation.add(new CharResFileVO("observe_image", "image"));
 		addValueByTypeAndFont(observation, characterId, subject, 713, font);
 		//分析
