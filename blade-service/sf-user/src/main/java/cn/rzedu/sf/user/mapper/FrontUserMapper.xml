@@ -119,6 +119,9 @@
         <if test = "newUserName != null and newUserName != ' '">
              username = #{newUserName},
         </if>
+        <if test = "studentTerminal != null and studentTerminal != ' '">
+            student_terminal = #{studentTerminal},
+        </if>
         <if test = "passWord != null and passWord != ' '">
             password = #{passWord},
         </if>

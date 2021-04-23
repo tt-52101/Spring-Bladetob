@@ -21,6 +21,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.ApiParam;
+import io.swagger.models.auth.In;
 import jxl.write.*;
 import lombok.AllArgsConstructor;
 
@@ -178,12 +179,13 @@ public class FrontUserController extends BladeController {
 		String userName = frontUserVO.getUsername();
 		String newUserName = frontUserVO.getNewUserName();
 		String passWord = frontUserVO.getPassword();
+		Integer studentTerminal = frontUserVO.getStudentTerminal();
 		String provinceCode = frontUserVO.getProvinceCode();
 		String cityCode = frontUserVO.getCityCode();
 		String districtCode = frontUserVO.getDistrictCode();
 		String department = frontUserVO.getDepartment();
 		String remark = frontUserVO.getRemark();
-		return R.status(frontUserService.updateFrontUser(userName,newUserName,passWord,provinceCode,cityCode,districtCode,department,remark));
+		return R.status(frontUserService.updateFrontUser(userName,newUserName,passWord,studentTerminal,provinceCode,cityCode,districtCode,department,remark));
 	}
 
 	@PostMapping("/deleteFrontUser")
