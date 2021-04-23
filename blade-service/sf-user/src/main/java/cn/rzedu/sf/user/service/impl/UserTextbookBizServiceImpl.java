@@ -49,6 +49,10 @@ public class UserTextbookBizServiceImpl implements IUserTextbookBizService {
     public boolean setupLearningTextbook(Integer userId, Integer textbookId, Integer lessonId) {
         UserTextbook userTextbook = userTextbookService.findUnionByTextbookIdAndUserId(textbookId, userId);
         if (userTextbook != null) {
+            UserTextbook ut = new UserTextbook();
+            ut.setId(userTextbook.getId());
+            ut.setActiveLessonId(lessonId);
+            userTextbookService.updateById(ut);
             return true;
         }
         if (lessonId == null) {
