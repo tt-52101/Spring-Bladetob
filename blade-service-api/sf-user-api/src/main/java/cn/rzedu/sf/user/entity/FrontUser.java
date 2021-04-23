@@ -49,7 +49,7 @@ public class FrontUser implements Serializable {
     /**
    * 学生终端
    */
-    @TableId(value = "studentTerminal")
+    @ApiModelProperty(value = "studentTerminal")
     private Integer studentTerminal;
 
     /**
