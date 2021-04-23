@@ -209,7 +209,8 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 						if (vo.getObjectType().equals("text")) {
 							String content = crf.getContent();
 							vo.setObjectValue(content);
-							if(vo.getObjectId().equals("practice_images") && content != null && !"".equals(content)){
+							if(vo.getObjectId().equals("compare_image") &&
+									vo.getObjectId().equals("practice_images") && content != null && !"".equals(content)){
 								String[] split = content.split(",");
 								String link = "";
 								for (String uuid : split) {
