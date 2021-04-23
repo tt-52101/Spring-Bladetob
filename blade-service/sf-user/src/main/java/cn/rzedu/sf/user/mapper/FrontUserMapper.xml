@@ -172,7 +172,7 @@
             grade_id = #{gradeId},
         </if>
         <if test="gradeName != null and gradeName != ''">
-            grade_name = #{gradeName}
+            grade_name = #{gradeName},
         </if>
             is_deleted = 0
         where is_deleted = 0 and username = #{userName}
