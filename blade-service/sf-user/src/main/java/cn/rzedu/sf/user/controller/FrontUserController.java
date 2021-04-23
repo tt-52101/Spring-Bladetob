@@ -125,7 +125,7 @@ public class FrontUserController extends BladeController {
 	 */
 	@PostMapping("/frontUserRegisterCode")
 	@ApiOperationSupport(order = 4)
-	@ApiOperation(value = "添加注册码 username = 注册码", notes = "传入参数")
+	@ApiOperation(value = "添加注册码 ", notes = "username = 注册码")
 	public R frontUserRegisterCode(@Valid @RequestBody FrontUserVO frontUserVO) {
 		String registerCode = frontUserVO.getUsername();
 		Integer studentTerminal = frontUserVO.getStudentTerminal();
