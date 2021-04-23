@@ -206,6 +206,7 @@ public class UserTextbookBizServiceImpl implements IUserTextbookBizService {
         map.put("font", vo.getFont());
 
         int listOrder = 1;
+        int index = 0;
         R<List<TextbookLessonVO>> allLessons = textbookClient.allLessons(textbookId);
         List<TextbookLessonVO> lessonVOList = allLessons.getData();
         List lessonList = new ArrayList();
@@ -217,6 +218,7 @@ public class UserTextbookBizServiceImpl implements IUserTextbookBizService {
                 if (lessonVO.getId().equals(activeLessonId)) {
                     isActive = 1;
                     listOrder = lessonVO.getListOrder();
+                    index = lessonVOList.indexOf(lessonVO);
                 }
                 lessonMap.put("lessonId", lessonVO.getId());
                 lessonMap.put("lessonName", lessonVO.getName());
@@ -227,6 +229,7 @@ public class UserTextbookBizServiceImpl implements IUserTextbookBizService {
         }
         map.put("lessonList", lessonList);
         map.put("listOrder", listOrder);
+        map.put("index", index);
         return map;
     }
 
