@@ -132,7 +132,7 @@ public interface FrontUserMapper extends BaseMapper<FrontUser> {
 	 * @param remark
 	 * @return
 	 */
-	int updateFrontUser(String userName,String newUserName,String passWord,Integer studentTerminal, String provinceCode, String provinceName, String cityCode, String cityName, String districtCode, String districtName,String department, String remark);
+	int updateFrontUser(String userName,String passWord,Integer studentTerminal, String provinceCode, String provinceName, String cityCode, String cityName, String districtCode, String districtName,String department, String remark);
 	/**
 	 * 删除
 	 * @param userName

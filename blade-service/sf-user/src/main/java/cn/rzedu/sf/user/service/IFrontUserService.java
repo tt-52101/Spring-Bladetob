@@ -126,7 +126,7 @@ public interface IFrontUserService extends IService<FrontUser> {
 	 * @param remark
 	 * @return
 	 */
-	boolean updateFrontUser(String userName,String newUserName,String passWord,Integer studentTerminal, String provinceCode, String cityCode, String districtCode,String department, String remark);
+	boolean updateFrontUser(String userName,String passWord,Integer studentTerminal, String provinceCode, String cityCode, String districtCode,String department, String remark);
 
 	/**
 	 * 删除

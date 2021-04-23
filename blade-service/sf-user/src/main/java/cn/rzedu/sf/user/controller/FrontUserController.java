@@ -177,7 +177,6 @@ public class FrontUserController extends BladeController {
 	@ApiOperation(value = "编辑", notes = "传入参数")
 	public  R updateFrontUser(@Valid @RequestBody FrontUserVO frontUserVO) {
 		String userName = frontUserVO.getUsername();
-		String newUserName = frontUserVO.getNewUserName();
 		String passWord = frontUserVO.getPassword();
 		Integer studentTerminal = frontUserVO.getStudentTerminal();
 		String provinceCode = frontUserVO.getProvinceCode();
@@ -185,7 +184,7 @@ public class FrontUserController extends BladeController {
 		String districtCode = frontUserVO.getDistrictCode();
 		String department = frontUserVO.getDepartment();
 		String remark = frontUserVO.getRemark();
-		return R.status(frontUserService.updateFrontUser(userName,newUserName,passWord,studentTerminal,provinceCode,cityCode,districtCode,department,remark));
+		return R.status(frontUserService.updateFrontUser(userName,passWord,studentTerminal,provinceCode,cityCode,districtCode,department,remark));
 	}
 
 	@PostMapping("/deleteFrontUser")

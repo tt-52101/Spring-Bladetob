@@ -71,19 +71,19 @@
         <if test = "userName != null and userName != '' ">
             and username = #{userName}
         </if>
-        <if test = "provinceName != null and provinceName != ' '">
+        <if test = "provinceName != null and provinceName != ''">
             and province_name = #{provinceName}
         </if>
-        <if test = "cityName != null and cityName != ' '">
+        <if test = "cityName != null and cityName != ''">
             and city_name = #{cityName}
         </if>
-        <if test = "districtName != null and districtName != ' '">
+        <if test = "districtName != null and districtName != ''">
             and district_name = #{districtName}
         </if>
-        <if test = "department != null and department != ' '">
+        <if test = "department != null and department != ''">
             and department = #{department}
         </if>
-        <if test = "remark != null and remark != ' '">
+        <if test = "remark != null and remark != ''">
             and remark = #{remark}
         </if>
     </select>
@@ -116,37 +116,34 @@
 
     <update id="updateFrontUser">
         update sf_front_user set
-        <if test = "newUserName != null and newUserName != ' '">
-             username = #{newUserName},
-        </if>
-        <if test = "studentTerminal != null and studentTerminal != ' '">
-            student_terminal = #{studentTerminal},
-        </if>
-        <if test = "passWord != null and passWord != ' '">
+        <if test = "passWord != null and passWord != ''">
             password = #{passWord},
         </if>
-        <if test = "provinceCode != null and provinceCode != ' '">
+        <if test = "studentTerminal != null and studentTerminal != ''">
+            student_terminal = #{studentTerminal},
+        </if>
+        <if test = "provinceCode != null and provinceCode != ''">
             province_code = #{provinceCode},
         </if>
-        <if test = "provinceName != null and provinceName != ' '">
+        <if test = "provinceName != null and provinceName != ''">
              province_name = #{provinceName},
         </if>
         <if test = "cityCode != null and cityCode != ''">
             city_code = #{cityCode},
         </if>
-        <if test = "cityName != null and cityName != ' '">
+        <if test = "cityName != null and cityName != ''">
              city_name = #{cityName},
         </if>
-        <if test = "districtCode != null and districtCode != ' '">
+        <if test = "districtCode != null and districtCode != ''">
             district_code = #{districtCode},
         </if>
-        <if test = "districtName != null and districtName != ' '">
+        <if test = "districtName != null and districtName != ''">
              district_name = #{districtName},
         </if>
-        <if test = "department != null and department != ' '">
+        <if test = "department != null and department != ''">
              department = #{department},
         </if>
-        <if test = "remark != null and remark != ' '">
+        <if test = "remark != null and remark != ''">
             remark = #{remark},
         </if>
             is_deleted = 0
@@ -159,22 +156,22 @@
     
     <update id="updateFunctionAuth">
         update sf_front_user set
-        <if test="functionId != null and functionId != ' '">
+        <if test="functionId != null and functionId != ''">
             function_id = #{functionId},
         </if>
-        <if test="functionName != null and functionName != ' '">
+        <if test="functionName != null and functionName != ''">
             function_name = #{functionName},
         </if>
-        <if test="publisherId != null and publisherId != ' '">
+        <if test="publisherId != null and publisherId != ''">
             publisher_id = #{publisherId},
         </if>
-        <if test="publisherName != null and publisherName != ' '">
+        <if test="publisherName != null and publisherName != ''">
             publisher_name = #{publisherName},
         </if>
-        <if test="gradeId != null and gradeId != ' '">
+        <if test="gradeId != null and gradeId != ''">
             grade_id = #{gradeId},
         </if>
-        <if test="gradeName != null and gradeName != ' '">
+        <if test="gradeName != null and gradeName != ''">
             grade_name = #{gradeName}
         </if>
             is_deleted = 0

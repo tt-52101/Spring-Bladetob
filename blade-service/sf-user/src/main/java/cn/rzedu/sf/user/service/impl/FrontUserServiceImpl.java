@@ -181,17 +181,14 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 	}
 
 	@Override
-	public boolean updateFrontUser(String userName, String newUserName, String passWord,Integer studentTerminal, String provinceCode, String cityCode, String districtCode,String department, String remark)
+	public boolean updateFrontUser(String userName, String passWord,Integer studentTerminal, String provinceCode, String cityCode, String districtCode,String department, String remark)
 	{
 		String provinceName = baseMapper.selectRegionProvinceName(provinceCode);
-		String cityName = baseMapper.selectRegionCityName(cityCode); ;
+		String cityName = baseMapper.selectRegionCityName(cityCode);
 		String districtName = baseMapper.selectRegionDistrictName(districtCode);
 
-		String username = baseMapper.selectUserName(newUserName);
-		if (username == null || username.equals(" ")){
-			return SqlHelper.retBool(baseMapper.updateFrontUser(userName,newUserName,passWord,studentTerminal,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark));
-		}else
-			return false;
+		return SqlHelper.retBool(baseMapper.updateFrontUser(userName,passWord,studentTerminal,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark));
+
 	}
 
 	@Override

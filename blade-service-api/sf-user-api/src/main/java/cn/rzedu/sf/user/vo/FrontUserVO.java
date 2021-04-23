@@ -44,11 +44,6 @@ public class FrontUserVO extends FrontUser {
 	private String newPassword;
 
 	/**
-	 * 新用户名
-	 */
-	@ApiModelProperty(value = "新用户名")
-	private String newUserName;
-	/**
 	 * 生成帐号的数量
 	 */
 	@ApiModelProperty(value = "生成数量")
