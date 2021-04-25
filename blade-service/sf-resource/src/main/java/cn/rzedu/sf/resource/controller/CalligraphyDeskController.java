@@ -245,6 +245,7 @@ public class CalligraphyDeskController {
             String scene = "type=" + sort + "&id=" + objectId;
 
             map.put("scene", scene);
+            map.put("page", "pages/index/index");
             image = WeChatUtil.createQRCode(map);
         } else if(type == 2){ //课程
             if(subject == 71){
@@ -254,6 +255,7 @@ public class CalligraphyDeskController {
             }
             String scene = "type=" + sort + "&id=" + objectId;
             map.put("scene", scene);
+            map.put("page", "pages/index/index");
             image = WeChatUtil.createQRCode(map);
         } else if(type == 3){ //汉字
             if(font == null || "".equals(font)){
@@ -269,7 +271,7 @@ public class CalligraphyDeskController {
             String scene = "type=" + sort + "&id=" + objectId + "&fontType=" + fontType;
             System.out.println(scene);
             map.put("scene", scene);
-//            map.put("page", "pages/index/index");
+            map.put("page", "pages/index/index");
             image = WeChatUtil.createQRCode(map);
 //            ByteToFile(image);
         } else {
