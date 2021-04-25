@@ -14,6 +14,12 @@ import javax.validation.constraints.NotNull;
 @ApiModel(value = "文件数据业务封装类", description = "文件数据业务封装类")
 public class FileData {
 
+	public FileData(String objectId, Integer resourceType, String objectValue) {
+		this.objectId = objectId;
+		this.resourceType = resourceType;
+		this.objectValue = objectValue;
+	}
+
 	@NotNull(message = "objectId不能为空")
 	@ApiModelProperty(value = "对应模板中的对象", required = true)
 	private String objectId;

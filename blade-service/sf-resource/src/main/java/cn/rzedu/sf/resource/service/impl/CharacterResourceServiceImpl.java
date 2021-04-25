@@ -15,15 +15,19 @@
  */
 package cn.rzedu.sf.resource.service.impl;
 
+import cn.rzedu.sf.resource.bo.FileData;
 import cn.rzedu.sf.resource.entity.Character;
 import cn.rzedu.sf.resource.entity.CharacterResource;
 import cn.rzedu.sf.resource.entity.CharacterResourceFile;
+import cn.rzedu.sf.resource.mapper.CharacterResourceMapper;
 import cn.rzedu.sf.resource.service.ICharacterResourceFileService;
+import cn.rzedu.sf.resource.service.ICharacterResourceService;
 import cn.rzedu.sf.resource.service.ICharacterService;
 import cn.rzedu.sf.resource.vo.CharResFileVO;
 import cn.rzedu.sf.resource.vo.CharacterResourceVO;
-import cn.rzedu.sf.resource.mapper.CharacterResourceMapper;
-import cn.rzedu.sf.resource.service.ICharacterResourceService;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
@@ -33,7 +37,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springblade.resource.feign.EntityFileClient;
 import org.springblade.resource.vo.FileResult;
 import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -200,6 +203,15 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		}
 	}
 
+	private void addValueByTypeAndFontByJson(List<FileData> voList, Integer characterId, Integer subject,
+									   Integer resourceType, String font) {
+		CharacterResource cr = baseMapper.findUnion(characterId, subject, resourceType);
+		if (cr != null) {
+			List<CharacterResourceFile> list = characterResourceFileService.findByResourceAndFont(cr.getId(), font);
+			addValueFromCRFListByJson(voList, list);
+		}
+	}
+
 	@SneakyThrows
 	private void addValueFromCRFList(List<CharResFileVO> voList, List<CharacterResourceFile> list) {
 		if (list != null && !list.isEmpty()) {
@@ -233,6 +245,27 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 									vo.setImageUrl(link);
 								}
 							}
+							vo.setObjectValue(uuid);
+						}
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	@SneakyThrows
+	private void addValueFromCRFListByJson(List<FileData> voList, List<CharacterResourceFile> list) {
+		if (list != null && !list.isEmpty()) {
+			for (FileData vo : voList) {
+				for (CharacterResourceFile crf : list) {
+					if (vo.getObjectId().equals(crf.getObjectId())) {
+						String objectType = crf.getObjectType();
+						if(objectType.equals("text")){
+							String content = crf.getContent();
+							vo.setObjectValue(content);
+						} else {
+							String uuid = crf.getUuid();
 							vo.setObjectValue(uuid);
 						}
 						break;
@@ -328,6 +361,75 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		System.out.println(map);
 	}
 
+	private void addSoftResourcesByJson(Map<String, Object> map, Integer characterId, String font) {
+		Integer subject = 71;
+		List<FileData> list = new ArrayList<FileData>();
+		//欣赏
+		List<FileData> appreciation = new ArrayList<FileData>();
+		appreciation.add(new FileData("spell", 711, ""));
+		appreciation.add(new FileData("white_character", 711, ""));
+		appreciation.add(new FileData("tablet", 711, ""));
+		addValueByTypeAndFontByJson(appreciation, characterId, subject, 711, font);
+		list.addAll(appreciation);
+		//认读
+		List<FileData> recognition = new ArrayList<>();
+		recognition.add(new FileData("matts", 712, ""));
+		recognition.add(new FileData("spell", 712, ""));
+		recognition.add(new FileData("simple", 712, ""));
+		recognition.add(new FileData("radical", 712, ""));
+		recognition.add(new FileData("stroke_number", 712, ""));
+		recognition.add(new FileData("usage_audio", 712, ""));
+		recognition.add(new FileData("usage_text", 712, ""));
+		recognition.add(new FileData("evolve_image", 712, ""));
+		addValueByTypeAndFontByJson(recognition, characterId, subject, 712, font);
+		list.addAll(recognition);
+		//观察
+		List<FileData> observation = new ArrayList<>();
+		observation.add(new FileData("observe_dot", 713, ""));
+		observation.add(new FileData("observe_arrow", 713, ""));
+		observation.add(new FileData("observe_triangle", 713, ""));
+//		observation.add(new FileData("observe_text", "text"));
+//		observation.add(new FileData("observe_audio", "audio"));
+		observation.add(new FileData("observe_image", 713, ""));
+		addValueByTypeAndFontByJson(observation, characterId, subject, 713, font);
+		list.addAll(observation);
+		//分析
+		List<FileData> analysis = new ArrayList<>();
+		analysis.add(new FileData("analyse_image", 714, ""));
+		analysis.add(new FileData("stroke_text", 714, ""));
+		analysis.add(new FileData("stroke_audio", 714, ""));
+		analysis.add(new FileData("space_text", 714, ""));
+		analysis.add(new FileData("space_audio", 714, ""));
+		addValueByTypeAndFontByJson(analysis, characterId, subject, 714, font);
+		list.addAll(analysis);
+		//笔法
+		List<FileData> writing = new ArrayList<>();
+//		writing.add(new FileData("writing_text", "text"));
+		writing.add(new FileData("technique_line", 715, ""));
+		writing.add(new FileData("technique_gesture", 715, ""));
+		addValueByTypeAndFontByJson(writing, characterId, subject, 715, font);
+		list.addAll(writing);
+		//视频
+		List<FileData> learn = new ArrayList<>();
+		learn.add(new FileData("learn_text", 716, ""));
+		learn.add(new FileData("learn_video", 716, ""));
+		addValueByTypeAndFontByJson(learn, characterId, subject, 716, font);
+		list.addAll(learn);
+		//对比
+		List<FileData> compare = new ArrayList<>();
+		compare.add(new FileData("compare_text", 717, ""));
+		compare.add(new FileData("compare_image", 717, ""));
+		addValueByTypeAndFontByJson(compare, characterId, subject, 717, font);
+		list.addAll(compare);
+		//随堂练习
+		List<FileData> practice = new ArrayList<>();
+		practice.add(new FileData("practice_images", 718, ""));
+		addValueByTypeAndFontByJson(practice, characterId, subject, 718, font);
+		list.addAll(practice);
+
+		map.put("fileDatas", JSONArray.parseArray(JSON.toJSONString(list)));
+	}
+
 	private void addHardResources(Map<String, Object> map, Integer characterId, String font) {
 		Integer subject = 72;
 		//认读
@@ -365,6 +467,47 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		map.put("pen_3", pen);
 		map.put("learn_4", learn);
 		map.put("game_5", game);
+	}
+
+	private void addHardResourcesByJson(Map<String, Object> map, Integer characterId, String font) {
+		Integer subject = 72;
+		List<FileData> list = new ArrayList<FileData>();
+		//认读
+		List<FileData> recognition = new ArrayList<>();
+		recognition.add(new FileData("character", 721, ""));
+		recognition.add(new FileData("spell", 721, ""));
+		recognition.add(new FileData("simple", 721, ""));
+		recognition.add(new FileData("radical", 721, ""));
+		recognition.add(new FileData("stroke_number", 721, ""));
+		recognition.add(new FileData("paraphrase_video", 721, ""));
+		recognition.add(new FileData("paraphrase_text", 721, ""));
+		addValueByTypeAndFontByJson(recognition, characterId, subject, 721, font);
+		list.addAll(recognition);
+		//粉笔
+		List<FileData> chalk = new ArrayList<>();
+		chalk.add(new FileData("chalk_text", 722, ""));
+		chalk.add(new FileData("chalk_video", 722, ""));
+		addValueByTypeAndFontByJson(chalk, characterId, subject, 722, font);
+		list.addAll(chalk);
+		//钢笔
+		List<FileData> pen = new ArrayList<>();
+		pen.add(new FileData("pen_text", 723, ""));
+		pen.add(new FileData("pen_video", 723, ""));
+		addValueByTypeAndFontByJson(pen, characterId, subject, 723, font);
+		list.addAll(pen);
+		//识字
+		List<FileData> learn = new ArrayList<>();
+		learn.add(new FileData("learn_text", 724, ""));
+		learn.add(new FileData("learn_video", 724, ""));
+		addValueByTypeAndFontByJson(learn, characterId, subject, 724, font);
+		list.addAll(learn);
+		//找茬游戏
+		List<FileData> game = new ArrayList<>();
+		game.add(new FileData("game", 725, ""));
+		addValueByTypeAndFontByJson(game, characterId, subject, 725, font);
+		list.addAll(game);
+
+		map.put("fileDatas", JSONArray.parseArray(JSON.toJSONString(list)));
 	}
 
 	@Override
@@ -526,4 +669,25 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		}
 		return true;
 	}
+
+	@Override
+	public Map<String, Object> findResourcesByJson(Integer characterId, Integer subject, String font) {
+		Character character = characterService.getById(characterId);
+		if (character == null) {
+			return null;
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("characterId", characterId);
+//		map.put("name", character.getCharS());
+		map.put("font", font);
+		map.put("subject", subject);
+//		map.put("type", character.getType());
+		if (subject == 71) {
+			addSoftResourcesByJson(map, characterId, font);
+		} else if (subject == 72) {
+			addHardResources(map, characterId, font);
+		}
+		return map;
+	}
+
 }

@@ -356,4 +356,19 @@ public class CalligraphyDeskController {
         List<Map<String, Object>> list = textbookLessonService.findAllLessonByTextbook(textbookId);
         return R.data(list);
     }
+
+	/**
+	 * 软硬笔资源包 返回 json 格式
+	 * @param characterId
+	 * @return
+	 */
+	@GetMapping("/character/resource/json/{subject}/{characterId}")
+	public R resourceBagByJson(
+			@ApiParam(value = "源学科 71=软笔书法 72=硬笔书法", required = true) @PathVariable(value = "subject") Integer subject,
+			@ApiParam(value = "汉字id", required = true) @PathVariable(value = "characterId") Integer characterId,
+			@ApiParam(value = "字体") @RequestParam(value = "font", required = false, defaultValue = "") String font
+	) {
+		Map<String, Object> map = characterResourceService.findResourcesByJson(characterId, subject, font);
+		return R.data(map);
+	}
 }

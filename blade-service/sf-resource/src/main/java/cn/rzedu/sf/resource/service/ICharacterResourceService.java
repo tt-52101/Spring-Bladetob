@@ -113,6 +113,14 @@ public interface ICharacterResourceService extends IService<CharacterResource> {
 	 */
 	Map<String, Object> findResources(Integer characterId, Integer subject, String font);
 
+	/**
+	 * 获取资源包数据 返回json 格式数据
+	 * @param characterId
+	 * @param subject
+	 * @param font
+	 * @return
+	 */
+	Map<String, Object> findResourcesByJson(Integer characterId, Integer subject, String font);
 
 	/**
 	 * 创建软硬笔资源
