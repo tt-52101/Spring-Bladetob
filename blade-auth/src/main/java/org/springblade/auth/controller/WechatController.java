@@ -63,8 +63,13 @@ public class WechatController {
 
     @RequestMapping(value = "/getXcxEnableVideo", method = RequestMethod.GET)
     @ResponseBody
-    public Boolean getXcxEnableVideo() {
-        return WeChatUtil.XCX_ENABLE_VIDEO;
+    public Map getXcxEnableVideo() {
+
+
+        Map result = new HashMap();
+        result.put("xcxEnableVideo", WeChatUtil.XCX_ENABLE_VIDEO);
+        result.put("currentVersion", WeChatUtil.XCX_CURRENT_VERSION);
+        return result;
     }
 
     @RequestMapping(value = "/decodeUserInfo", method = RequestMethod.POST)
