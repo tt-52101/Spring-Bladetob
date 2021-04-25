@@ -328,7 +328,7 @@ public class CharacterResourceController extends BladeController {
             "<br/>technique_line:行笔路线视频; technique_gesture:提案笔势视频;")
     public R softResource(
             @ApiParam(value = "汉字id", required = true) @RequestParam(value = "characterId") Integer characterId,
-            @ApiParam(value = "字体") @RequestParam(value = "font") String font
+            @ApiParam(value = "字体", required = true) @RequestParam(value = "font") String font
     ) {
         String key = "soft-bag-#" + characterId + "#" + font;
         Object result = redisTemplate.opsForValue().get(key);
@@ -352,5 +352,40 @@ public class CharacterResourceController extends BladeController {
         String key = "soft-bag-#" + characterId + "#" + font;
         redisTemplate.delete(key);
         return R.success("删除缓存成功，characterId：" + characterId + "#" + font);
+    }
+
+    /**
+     * 单字视频资源
+     */
+    @GetMapping("/video")
+    @ApiOperationSupport(order = 16)
+    @ApiOperation(value = "单字视频资源", notes = "根据汉字、字体获取视频资源" +
+            "<br/>字体类型：1=楷书;2=颜勤;3=赵体;4=柳体;5=颜多;6=欧体;7=现代简楷;8=字体1;")
+    public R videoResource(
+            @ApiParam(value = "汉字id", required = true) @RequestParam(value = "characterId") Integer characterId,
+            @ApiParam(value = "字体类型", required = true) @RequestParam(value = "font") Integer fontType,
+            @ApiParam(value = "软硬笔类型 1=软笔 2=硬笔") @RequestParam(value = "subject", required = false) Integer subject
+    ) {
+        String font = "";
+        switch (fontType){
+            case 1: font = "楷书"; break;
+            case 2: font = "颜勤"; break;
+            case 3: font = "赵体"; break;
+            case 4: font = "柳体"; break;
+            case 5: font = "颜多"; break;
+            case 6: font = "欧体"; break;
+            case 7: font = "现代简楷"; break;
+            case 8: font = "字体1"; break;
+        }
+        if (subject != null) {
+            switch (subject) {
+                case 1: subject = 71; break;
+                case 2: subject = 72; break;
+            }
+        }
+        Map<String, Object> map = characterResourceService.findCharVideoResource(characterId, font, subject);
+        List<Map<String, Object>> list = new ArrayList();
+        list.add(map);
+        return R.data(list);
     }
 }

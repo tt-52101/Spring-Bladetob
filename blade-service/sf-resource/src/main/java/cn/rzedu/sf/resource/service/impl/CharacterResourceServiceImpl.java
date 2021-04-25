@@ -690,4 +690,8 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		return map;
 	}
 
+	@Override
+	public Map<String, Object> findCharVideoResource(Integer characterId, String font, Integer subject) {
+		return baseMapper.findCharVideoResource(characterId, font, subject);
+	}
 }

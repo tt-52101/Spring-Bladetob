@@ -160,4 +160,13 @@ public interface ICharacterResourceService extends IService<CharacterResource> {
 	 * @return
 	 */
 	boolean createSoftResourceFile(Integer characterId, Integer resourceType, String font, String objectCode, String value);
+
+	/**
+	 * 单字视频资源
+	 * @param characterId
+	 * @param font
+	 * @param subject
+	 * @return
+	 */
+	Map<String, Object> findCharVideoResource(Integer characterId, String font, Integer subject);
 }

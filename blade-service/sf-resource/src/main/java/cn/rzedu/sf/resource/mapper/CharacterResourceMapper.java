@@ -20,6 +20,7 @@ import cn.rzedu.sf.resource.vo.CharacterResourceVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -73,4 +74,14 @@ public interface CharacterResourceMapper extends BaseMapper<CharacterResource> {
 	 * @return
 	 */
 	CharacterResource findUnion(Integer characterId, Integer subject, Integer resourceType);
+
+
+	/**
+	 * 单字视频资源
+	 * @param characterId
+	 * @param font
+	 * @param subject
+	 * @return
+	 */
+	Map<String, Object> findCharVideoResource(Integer characterId, String font, Integer subject);
 }
