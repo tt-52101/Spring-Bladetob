@@ -594,8 +594,7 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 				|| "matts".equals(objectCode) || "evolve_image".equals(objectCode)
 				|| "observe_dot".equals(objectCode) || "observe_arrow".equals(objectCode)
 				|| "observe_triangle".equals(objectCode) || "observe_image".equals(objectCode)
-				|| "analyse_image".equals(objectCode) || "compare_image".equals(objectCode)
-				|| "practice_images".equals(objectCode)) {
+				|| "analyse_image".equals(objectCode)) {
 			objectType = "image";
 		} else if ("technique_line".equals(objectCode) || "technique_gesture".equals(objectCode)
 				|| "learn_video".equals(objectCode)) {
@@ -649,6 +648,7 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		if(crf != null){
 			crf.setContent(content);
 			crf.setUuid(uuid);
+			crf.setModifyDate(LocalDateTime.now());
 			characterResourceFileService.updateById(crf);
 		} else {
 			crf = new CharacterResourceFile();
