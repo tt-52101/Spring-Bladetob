@@ -58,8 +58,13 @@ public class WechatController {
                 return result.getData();
             }
         }
-
         return false;
+    }
+
+    @RequestMapping(value = "/getXcxEnableVideo", method = RequestMethod.GET)
+    @ResponseBody
+    public Boolean getXcxEnableVideo() {
+        return WeChatUtil.XCX_ENABLE_VIDEO;
     }
 
     @RequestMapping(value = "/decodeUserInfo", method = RequestMethod.POST)

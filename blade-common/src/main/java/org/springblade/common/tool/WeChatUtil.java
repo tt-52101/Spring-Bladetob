@@ -54,6 +54,8 @@ public class WeChatUtil {
 
 	public static String XCX_GRANT_TYPE = "";
 
+	public static Boolean XCX_ENABLE_VIDEO = true;
+
 	public static String JCODE_2_SESSION_URL = "";
 
 	//微信获取jsapi_ticket地址
@@ -92,6 +94,9 @@ public class WeChatUtil {
 
 	@Value("${wechat.config.xcxGrantType}")
 	public void setXCX_GRANT_TYPE(String xcxGrantType) { WeChatUtil.XCX_GRANT_TYPE = xcxGrantType;}
+
+	@Value("${wechat.config.xcxEnableVideo}")
+	public void setXCX_ENABLE_VIDEO(Boolean xcxEnableVideo) {WeChatUtil.XCX_ENABLE_VIDEO = xcxEnableVideo;}
 
 	@Value("${wechat.config.jcode2SessionUrl}")
 	public void setJcode2SessionUrl(String jcode2SessionUrl) { WeChatUtil.JCODE_2_SESSION_URL = jcode2SessionUrl;}
