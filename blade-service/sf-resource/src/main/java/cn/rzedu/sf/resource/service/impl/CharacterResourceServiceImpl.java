@@ -1,18 +1,3 @@
-/**
- * Copyright (c) 2018-2028, Chill Zhuang 庄骞 (smallchill@163.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package cn.rzedu.sf.resource.service.impl;
 
 import cn.rzedu.sf.resource.bo.FileData;
@@ -34,10 +19,12 @@ import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang.StringUtils;
+import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.EntityFileClient;
 import org.springblade.resource.vo.FileResult;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -147,6 +134,10 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		type3.add(new CharResFileVO("technique_line", "video"));
 		type3.add(new CharResFileVO("technique_gesture", "video"));
 
+		List<CharResFileVO> type4 = new ArrayList<>();
+		type4.add(new CharResFileVO("compare_text", "text"));
+		type4.add(new CharResFileVO("compare_image", "text"));
+
 		//视频
 		CharacterResource cr1 = baseMapper.findUnion(characterId, subject, 716);
 		if (cr1 != null) {
@@ -170,6 +161,12 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		addValueByTypeAndFont(type2, characterId, subject, 714, font);
 		//笔法
 		addValueByTypeAndFont(type3, characterId, subject, 715, font);
+		//对比
+		addValueByTypeAndFont(type4, characterId, subject, 717, font);
+
+		Map<String, Object> compareMap = transferCharResFileVO(type4);
+		compareMap.put("compare_text", transferCompareMap((String) compareMap.get("compare_text")));
+		compareMap.put("compare_image", transferCompareMap((String) compareMap.get("compare_image")));
 
 		Map<String, Object> map = new HashMap<>(6);
 		map.put("characterId", characterId);
@@ -179,7 +176,16 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		map.put("observation_1", transferCharResFileVO(type1));
 		map.put("analysis_2", transferCharResFileVO(type2));
 		map.put("writing_3", transferCharResFileVO(type3));
+		map.put("compare_4", compareMap);
 		return map;
+	}
+
+	private List<String> transferCompareMap(String value) {
+		List<String> list = new ArrayList<>();
+		if (StringUtils.isNotBlank(value)) {
+			list = Func.toStrList(value);
+		}
+		return list;
 	}
 
 	@Override
@@ -218,12 +224,23 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		//识字
 		addValueByTypeAndFont(type1, characterId, subject, 724, font);
 
+		Map<String, Object> recognitionMap = transferCharResFileVO(type0);
+		//特别处理
+		recognitionMap.put("paraphrase_audio", recognitionMap.get("paraphrase_video"));
+		recognitionMap.remove("paraphrase_video");
+		Map<String, Object> learnMap = transferCharResFileVO(type1);
+		try {
+			learnMap.put("learn_video", entityFileClient.findAudioByUuid((String) learnMap.get("learn_video")));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		Map<String, Object> map = new HashMap<>(6);
 		map.put("characterId", characterId);
 		map.put("name", name);
 		map.put("videoId", videoId);
-		map.put("recognition_0", transferCharResFileVO(type0));
-		map.put("learn_1", transferCharResFileVO(type1));
+		map.put("recognition_0", recognitionMap);
+		map.put("learn_1", learnMap);
 		return map;
 	}
 
@@ -234,6 +251,8 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		Map<String, Object> map = new HashMap<>();
 		for (CharResFileVO vo : list) {
 			if ("image".equals(vo.getObjectType()) && StringUtils.isNotBlank(vo.getImageUrl())) {
+				map.put(vo.getObjectId(), vo.getImageUrl());
+			} else if ("compare_image".equals(vo.getObjectId()) && StringUtils.isNotBlank(vo.getImageUrl())) {
 				map.put(vo.getObjectId(), vo.getImageUrl());
 			} else if ("audio".equals(vo.getObjectType()) && StringUtils.isNotBlank(vo.getAudioUrl())) {
 				map.put(vo.getObjectId(), vo.getAudioUrl());
