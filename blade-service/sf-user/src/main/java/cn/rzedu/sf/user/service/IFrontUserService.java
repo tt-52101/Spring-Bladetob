@@ -72,8 +72,10 @@ public interface IFrontUserService extends IService<FrontUser> {
 	 * @param department
 	 * @return
 	 */
-	boolean frontUserRegister(String username, String password,int typeId, String provinceCode,  String cityCode, String districtCode, String department, String remark);
-	boolean frontUserRegisterCode(String registerCode, int studentTerminal,int typeId, String provinceCode,  String cityCode, String districtCode, String department, String remark);
+	boolean frontUserRegister(String username, String password,int typeId, String provinceCode,  String cityCode, String districtCode,
+							  String functionId,String functionName,String publisherId,String publisherName,String gradeId,String gradeName,String department, String remark);
+	boolean frontUserRegisterCode(String registerCode, int studentTerminal,int typeId, String provinceCode,  String cityCode, String districtCode,
+								  String functionId,String functionName,String publisherId,String publisherName,String gradeId,String gradeName,String department, String remark);
 
 	/**
 	 * 批量生成用户
@@ -91,7 +93,8 @@ public interface IFrontUserService extends IService<FrontUser> {
 	 * @throws IOException
 	 * @throws WriteException
 	 */
-	List<String> frontUserBatchRegister(int batchSize, String password,int typeId, String provinceCode, String cityCode, String districtCode, String department, String remark) throws InterruptedException;
+	List<String> frontUserBatchRegister(int batchSize, String password,int typeId, String provinceCode, String cityCode, String districtCode,
+										String functionId,String functionName,String publisherId,String publisherName,String gradeId,String gradeName,String department, String remark) throws InterruptedException;
 
 	/**
 	 *
@@ -117,7 +120,6 @@ public interface IFrontUserService extends IService<FrontUser> {
 	/**
 	 * 编辑
 	 * @param userName
-	 * @param newUserName
 	 * @param passWord
 	 * @param provinceCode
 	 * @param cityCode

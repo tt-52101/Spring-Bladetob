@@ -118,7 +118,20 @@ public class FrontUserController extends BladeController {
 		String districtCode = frontUserVO.getDistrictCode();
 		String department = frontUserVO.getDepartment();
 		String remark = frontUserVO.getRemark();
-		return R.status(frontUserService.frontUserRegister(userName,passWord,typeId,provinceCode,cityCode,districtCode,department,remark));
+		String functionId = frontUserVO.getFunctionIds().toString();
+		String functionName = frontUserVO.getFunctionNames().toString();
+		List<PublisherVO> publisherVOS = frontUserService.selectPublisher();
+		List<Integer> publisherIds = new ArrayList<>();
+		List<String> publisherNames = new ArrayList<>();
+		for (PublisherVO publisherVO : publisherVOS){
+			publisherIds.add(publisherVO.getId());
+			publisherNames.add(publisherVO.getName());
+		}
+		String publisherId = publisherIds.toString();
+		String publisherName = publisherNames.toString();
+		String gradeId = frontUserVO.getGradeIds().toString();
+		String gradeName = frontUserVO.getGradeNames().toString();
+		return R.status(frontUserService.frontUserRegister(userName,passWord,typeId,provinceCode,cityCode,districtCode,functionId,functionName,publisherId,publisherName,gradeId,gradeName,department,remark));
 	}
 
 	/**
@@ -136,7 +149,20 @@ public class FrontUserController extends BladeController {
 		String districtCode = frontUserVO.getDistrictCode();
 		String department = frontUserVO.getDepartment();
 		String remark = frontUserVO.getRemark();
-		return R.status(frontUserService.frontUserRegisterCode(registerCode,studentTerminal,typeId,provinceCode,cityCode,districtCode,department,remark));
+		String functionId = frontUserVO.getFunctionIds().toString();
+		String functionName = frontUserVO.getFunctionNames().toString();
+		List<PublisherVO> publisherVOS = frontUserService.selectPublisher();
+		List<Integer> publisherIds = new ArrayList<>();
+		List<String> publisherNames = new ArrayList<>();
+		for (PublisherVO publisherVO : publisherVOS){
+			publisherIds.add(publisherVO.getId());
+			publisherNames.add(publisherVO.getName());
+		}
+		String publisherId = publisherIds.toString();
+		String publisherName = publisherNames.toString();
+		String gradeId = frontUserVO.getGradeIds().toString();
+		String gradeName = frontUserVO.getGradeNames().toString();
+		return R.status(frontUserService.frontUserRegisterCode(registerCode,studentTerminal,typeId,provinceCode,cityCode,districtCode,functionId,functionName,publisherId,publisherName,gradeId,gradeName,department,remark));
 	}
 
 
@@ -153,7 +179,20 @@ public class FrontUserController extends BladeController {
 		String districtCode = frontUserVO.getDistrictCode();
 		String department = frontUserVO.getDepartment();
 		String remark = frontUserVO.getRemark();
-		List<String> userNameList = frontUserService.frontUserBatchRegister(batchSize,passWord,typeId,provinceCode,cityCode,districtCode,department,remark);
+		String functionId = frontUserVO.getFunctionIds().toString();
+		String functionName = frontUserVO.getFunctionNames().toString();
+		List<PublisherVO> publisherVOS = frontUserService.selectPublisher();
+		List<Integer> publisherIds = new ArrayList<>();
+		List<String> publisherNames = new ArrayList<>();
+		for (PublisherVO publisherVO : publisherVOS){
+			publisherIds.add(publisherVO.getId());
+			publisherNames.add(publisherVO.getName());
+		}
+		String publisherId = publisherIds.toString();
+		String publisherName = publisherNames.toString();
+		String gradeId = frontUserVO.getGradeIds().toString();
+		String gradeName = frontUserVO.getGradeNames().toString();
+		List<String> userNameList = frontUserService.frontUserBatchRegister(batchSize,passWord,typeId,provinceCode,cityCode,districtCode,functionId,functionName,publisherId,publisherName,gradeId,gradeName,department,remark);
 		return R.data(userNameList);
 	}
 

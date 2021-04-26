@@ -101,17 +101,18 @@
     </update>
 
     <insert id="frontUserRegister">
-        insert into sf_front_user (username,password,type_id,type_name,province_code,province_name,city_code,city_name,district_code,district_name,department,remark,
-                                   create_date,modify_date)
-        values (#{username},#{password},#{typeId},#{typeName},#{provinceCode},#{provinceName},#{cityCode},#{cityName},#{districtCode},#{districtName},#{department},#{remark},
-                #{createDate},#{modifyDate})
+        insert into sf_front_user (username,password,type_id,type_name,province_code,province_name,city_code,city_name,district_code,district_name,
+                                   function_id,function_name,publisher_id,publisher_name,grade_id,grade_name,department,remark,create_date,modify_date)
+        values (#{username},#{password},#{typeId},#{typeName},#{provinceCode},#{provinceName},#{cityCode},#{cityName},#{districtCode},#{districtName},
+                #{functionId},#{functionName},#{publisherId},#{publisherName},#{gradeId},#{gradeName},#{department},#{remark},#{createDate},#{modifyDate})
     </insert>
 
     <insert id="frontUserRegisterCode">
-        insert into sf_front_user (username,student_terminal,type_id,type_name,province_code,province_name,city_code,city_name,district_code,district_name,department,remark,
-                                   create_date,modify_date)
-        values (#{registerCode},#{studentTerminal},#{typeId},#{typeName},#{provinceCode},#{provinceName},#{cityCode},#{cityName},#{districtCode},#{districtName},#{department},#{remark},
-                #{createDate},#{modifyDate})
+        insert into sf_front_user (username,student_terminal,type_id,type_name,province_code,province_name,city_code,city_name,district_code,district_name,
+                                   function_id,function_name,publisher_id,publisher_name,grade_id,grade_name,department,remark,create_date,modify_date)
+        values (#{registerCode},#{studentTerminal},#{typeId},#{typeName},#{provinceCode},#{provinceName},#{cityCode},#{cityName},#{districtCode},#{districtName},
+                #{functionId},#{functionName},#{publisherId},#{publisherName},#{gradeId},#{gradeName},#{department},#{remark},#{createDate},#{modifyDate})
+
     </insert>
 
     <update id="updateFrontUser">
@@ -153,7 +154,7 @@
     <update id="deleteFrontUser">
         update sf_front_user set is_deleted = 1 where is_deleted = 0 and username = #{userName}
     </update>
-    
+
     <update id="updateFunctionAuth">
         update sf_front_user set
         <if test="functionId != null and functionId != ''">

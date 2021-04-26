@@ -92,7 +92,8 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 	}
 
 	@Override
-	public boolean frontUserRegister(String username, String password,int typeId, String provinceCode, String cityCode, String districtCode, String department, String remark) {
+	public boolean frontUserRegister(String username, String password,int typeId, String provinceCode, String cityCode, String districtCode,
+									 String functionId,String functionName,String publisherId,String publisherName,String gradeId,String gradeName,String department, String remark) {
 		LocalDateTime localDateTime=LocalDateTime.now();
 		String userName = baseMapper.selectUserName(username);
 		String provinceName = baseMapper.selectRegionProvinceName(provinceCode);
@@ -107,13 +108,14 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 			typeName = "互动版";
 		}
 		if (userName == null || userName.equals(" ")){
-			return SqlHelper.retBool(baseMapper.frontUserRegister(username,password,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark,localDateTime,localDateTime));
+			return SqlHelper.retBool(baseMapper.frontUserRegister(username,password,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,functionId,functionName,publisherId,publisherName,gradeId,gradeName,department,remark,localDateTime,localDateTime));
 		}else
 			return false;
 	}
 
 	@Override
-	public boolean frontUserRegisterCode(String registerCode, int studentTerminal,int typeId, String provinceCode, String cityCode, String districtCode, String department, String remark) {
+	public boolean frontUserRegisterCode(String registerCode, int studentTerminal,int typeId, String provinceCode, String cityCode, String districtCode,
+										 String functionId,String functionName,String publisherId,String publisherName,String gradeId,String gradeName,String department, String remark) {
 		LocalDateTime localDateTime=LocalDateTime.now();
 		String registercode = baseMapper.selectUserName(registerCode);
 		String provinceName = baseMapper.selectRegionProvinceName(provinceCode);
@@ -128,13 +130,14 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 			typeName = "互动版";
 		}
 		if (registercode == null || registercode.equals(" ")){
-			return SqlHelper.retBool(baseMapper.frontUserRegisterCode(registerCode,studentTerminal,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark,localDateTime,localDateTime));
+			return SqlHelper.retBool(baseMapper.frontUserRegisterCode(registerCode,studentTerminal,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,functionId,functionName,publisherId,publisherName,gradeId,gradeName,department,remark,localDateTime,localDateTime));
 		}else
 			return false;
 	}
 
 	@Override
-	public List<String> frontUserBatchRegister(int batchSize, String passWord, int typeId, String provinceCode, String cityCode, String districtCode, String department, String remark) throws InterruptedException {
+	public List<String> frontUserBatchRegister(int batchSize, String passWord, int typeId, String provinceCode, String cityCode, String districtCode,
+											   String functionId,String functionName,String publisherId,String publisherName,String gradeId,String gradeName,String department, String remark) throws InterruptedException {
 		List<String> userNameList = new ArrayList<>();
 		String dfpassWord = "123456";
 		LocalDateTime localDateTime=LocalDateTime.now();
@@ -153,10 +156,10 @@ public class FrontUserServiceImpl extends ServiceImpl<FrontUserMapper, FrontUser
 			String username = this.userRandom();
 			if(baseMapper.selectUserName(username) == null || baseMapper.selectUserName(username).equals(" ")){
 				if(passWord == null || passWord.equals("")){
-					baseMapper.frontUserRegister(username,dfpassWord,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark,localDateTime,localDateTime);
+					baseMapper.frontUserRegister(username,dfpassWord,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,functionId,functionName,publisherId,publisherName,gradeId,gradeName,department,remark,localDateTime,localDateTime);
 					userNameList.add(username);
 				}else {
-					baseMapper.frontUserRegister(username,passWord,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,department,remark,localDateTime,localDateTime);
+					baseMapper.frontUserRegister(username,passWord,typeId,typeName,provinceCode,provinceName,cityCode,cityName,districtCode,districtName,functionId,functionName,publisherId,publisherName,gradeId,gradeName,department,remark,localDateTime,localDateTime);
 					userNameList.add(username);
 				}
 			}else{
