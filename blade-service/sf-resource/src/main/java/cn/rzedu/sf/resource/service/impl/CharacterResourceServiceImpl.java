@@ -272,7 +272,7 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 							String content = crf.getContent();
 							vo.setObjectValue(content);
 							if((vo.getObjectId().equals("compare_image") ||
-									vo.getObjectId().equals("practice_images")) && content != null && !"".equals(content)){
+									vo.getObjectId().equals("practice_images") || vo.getObjectId().equals("game")) && content != null && !"".equals(content)){
 								String[] split = content.split(",");
 								String link = "";
 								for (String uuid : split) {
@@ -735,7 +735,7 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		if (subject == 71) {
 			addSoftResourcesByJson(map, characterId, font);
 		} else if (subject == 72) {
-			addHardResources(map, characterId, font);
+			addHardResourcesByJson(map, characterId, font);
 		}
 		return map;
 	}
