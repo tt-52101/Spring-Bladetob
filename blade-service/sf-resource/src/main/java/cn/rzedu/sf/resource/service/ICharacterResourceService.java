@@ -97,12 +97,20 @@ public interface ICharacterResourceService extends IService<CharacterResource> {
 	CharacterResource findUnion(Integer characterId, Integer subject, Integer resourceType);
 
 	/**
-	 * 获取软笔相关资源：观察、分析、笔法
+	 * 获取软笔相关资源：观察、分析、笔法、认读
 	 * @param characterId
 	 * @param font
 	 * @return
 	 */
 	Map<String, Object> findSoftResource(Integer characterId, String font);
+
+	/**
+	 * 获取硬笔相关资源：认读、视频
+	 * @param characterId
+	 * @param font
+	 * @return
+	 */
+	Map<String, Object> findHardResource(Integer characterId, String font);
 
 	/**
 	 * 获取资源包数据
@@ -160,4 +168,13 @@ public interface ICharacterResourceService extends IService<CharacterResource> {
 	 * @return
 	 */
 	boolean createSoftResourceFile(Integer characterId, Integer resourceType, String font, String objectCode, String value);
+
+	/**
+	 * 单字视频资源
+	 * @param characterId
+	 * @param font
+	 * @param subject
+	 * @return
+	 */
+	Map<String, Object> findCharVideoResource(Integer characterId, String font, Integer subject);
 }

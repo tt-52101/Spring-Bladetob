@@ -48,4 +48,7 @@ public class CharResFileVO implements Serializable {
 
     @ApiModelProperty(value = "图片URL")
     private String imageUrl;
+
+    @ApiModelProperty(value = "音频URL")
+    private String audioUrl;
 }

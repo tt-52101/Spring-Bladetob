@@ -247,6 +247,7 @@ public class CharacterResourceController extends BladeController {
      * @param characterId
      * @return
      */
+    @ApiIgnore
     @GetMapping("/bag/{subject}/{characterId}")
     @ApiOperationSupport(order = 9)
 //    @Cacheable(cacheNames = "resource-bag", key = "T(String).valueOf(#characterId).concat('_').concat(#subject)")
@@ -269,6 +270,7 @@ public class CharacterResourceController extends BladeController {
     /**
      * 删除软硬笔资源包缓存
      */
+    @ApiIgnore
     @GetMapping("/remove-resource-cache/{subject}/{characterId}")
     @ApiOperationSupport(order = 10)
 //    @CacheEvict(cacheNames = "resource-bag", key = "T(String).valueOf(#characterId).concat('_').concat(#subject)")
@@ -286,6 +288,7 @@ public class CharacterResourceController extends BladeController {
     /**
      * 标准笔法和基本笔画
      */
+    @ApiIgnore
     @GetMapping("/bag/basic")
     @ApiOperationSupport(order = 11)
     @ApiOperation(value = "标准笔法和基本笔画", notes = "标准笔法和基本笔画")
@@ -305,6 +308,7 @@ public class CharacterResourceController extends BladeController {
     /**
      * 删除标准笔法和基本笔画缓存
      */
+    @ApiIgnore
     @GetMapping("/remove-resource-cache/basic")
     @ApiOperationSupport(order = 12)
     @ApiOperation(value = "删除标准笔法和基本笔画缓存", notes = "删除标准笔法和基本笔画缓存")
@@ -322,13 +326,16 @@ public class CharacterResourceController extends BladeController {
     @GetMapping("/softBag")
     @ApiOperationSupport(order = 14)
     @ApiOperation(value = "软笔观察、分析、笔法资源", notes = "软笔观察、分析、笔法资源" +
-            "<br/>observation_1:观察; analysis_2:分析; writing_3:笔法;" +
+            "<br/>recognition_0:认读; observation_1:观察; analysis_2:分析; writing_3:笔法; compare_4:对比;" +
             "<br/>spell:拼音; white_character:黑底白字图; tablet:源碑文; observe_dot:点-米字图; observe_arrow:箭头-米字图; observe_triangle:三角-米字图; " +
             "<br/>analyse_image:字体分析图; stroke_text:笔画特征文字; stroke_audio:笔画特征音频; space_text:空间特征文字; space_audio:空间特征音频; " +
-            "<br/>technique_line:行笔路线视频; technique_gesture:提案笔势视频;")
+            "<br/>technique_line:行笔路线视频; technique_gesture:提案笔势视频;" +
+            "<br/>spell:读音; simple:简体; radical:部首; stroke_number:笔画; usage_text:用法文字; usage_audio:用法音频; " +
+            "evolve_image:汉字演变图;" +
+            "<br/>compare_text:对比文本; compare_image:对比图片")
     public R softResource(
             @ApiParam(value = "汉字id", required = true) @RequestParam(value = "characterId") Integer characterId,
-            @ApiParam(value = "字体") @RequestParam(value = "font") String font
+            @ApiParam(value = "字体", required = true) @RequestParam(value = "font") String font
     ) {
         String key = "soft-bag-#" + characterId + "#" + font;
         Object result = redisTemplate.opsForValue().get(key);
@@ -346,11 +353,83 @@ public class CharacterResourceController extends BladeController {
     @GetMapping("/remove-softBag-cache")
     @ApiOperationSupport(order = 15)
     @ApiOperation(value = "删除软笔观察、分析、笔法资源缓存", notes = "删除软笔资源缓存")
-    public R removeResourceCache(
+    public R removeSoftResourceCache(
             @ApiParam(value = "汉字id", required = true) @RequestParam(value = "characterId") Integer characterId,
             @ApiParam(value = "字体") @RequestParam(value = "font") String font) {
         String key = "soft-bag-#" + characterId + "#" + font;
         redisTemplate.delete(key);
         return R.success("删除缓存成功，characterId：" + characterId + "#" + font);
+    }
+
+    /**
+     * 硬笔认读资源
+     */
+    @GetMapping("/hardBag")
+    @ApiOperationSupport(order = 16)
+    @ApiOperation(value = "硬笔认读资源", notes = "硬笔认读资源" +
+            "<br/>recognition_0:认读; learn_1:识字" +
+            "<br/>spell:读音; simple:简体; radical:部首; stroke_number:笔画; paraphrase_text:释义文字; paraphrase_video:释义音频; "+
+            "<br/>learn_video:识字视频; ")
+    public R hardResource(
+            @ApiParam(value = "汉字id", required = true) @RequestParam(value = "characterId") Integer characterId,
+            @ApiParam(value = "字体", required = true) @RequestParam(value = "font", defaultValue = "楷书") String font
+    ) {
+        String key = "hard-bag-#" + characterId + "#" + font;
+        Object result = redisTemplate.opsForValue().get(key);
+        if (result == null) {
+            Map<String, Object> map = characterResourceService.findHardResource(characterId, font);
+            redisTemplate.opsForValue().set(key, map, 2, TimeUnit.HOURS);
+            result = map;
+        }
+        return R.data(result);
+    }
+
+    /**
+     * 删除硬笔认读资源缓存
+     */
+    @GetMapping("/remove-hardBag-cache")
+    @ApiOperationSupport(order = 17)
+    @ApiOperation(value = "删除硬笔认读资源缓存", notes = "删除硬笔认读资源缓存")
+    public R removeHardResourceCache(
+            @ApiParam(value = "汉字id", required = true) @RequestParam(value = "characterId") Integer characterId,
+            @ApiParam(value = "字体") @RequestParam(value = "font", defaultValue = "楷书") String font) {
+        String key = "hard-bag-#" + characterId + "#" + font;
+        redisTemplate.delete(key);
+        return R.success("删除缓存成功，characterId：" + characterId + "#" + font);
+    }
+
+    /**
+     * 单字视频资源
+     */
+    @GetMapping("/video")
+    @ApiOperationSupport(order = 18)
+    @ApiOperation(value = "单字视频资源", notes = "根据汉字、字体获取视频资源" +
+            "<br/>字体类型：1=楷书;2=颜勤;3=赵体;4=柳体;5=颜多;6=欧体;7=现代简楷;8=字体1;")
+    public R videoResource(
+            @ApiParam(value = "汉字id", required = true) @RequestParam(value = "characterId") Integer characterId,
+            @ApiParam(value = "字体类型", required = true) @RequestParam(value = "font") Integer fontType,
+            @ApiParam(value = "软硬笔类型 1=软笔 2=硬笔") @RequestParam(value = "subject", required = false) Integer subject
+    ) {
+        String font = "";
+        switch (fontType){
+            case 1: font = "楷书"; break;
+            case 2: font = "颜勤"; break;
+            case 3: font = "赵体"; break;
+            case 4: font = "柳体"; break;
+            case 5: font = "颜多"; break;
+            case 6: font = "欧体"; break;
+            case 7: font = "现代简楷"; break;
+            case 8: font = "字体1"; break;
+        }
+        if (subject != null) {
+            switch (subject) {
+                case 1: subject = 71; break;
+                case 2: subject = 72; break;
+            }
+        }
+        Map<String, Object> map = characterResourceService.findCharVideoResource(characterId, font, subject);
+        List<Map<String, Object>> list = new ArrayList();
+        list.add(map);
+        return R.data(list);
     }
 }

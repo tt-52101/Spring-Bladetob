@@ -104,11 +104,13 @@ public interface FrontUserMapper extends BaseMapper<FrontUser> {
 	 * @param modifyDate
 	 * @return
 	 */
-	int frontUserRegister(String username, String password,int typeId,String typeName, String provinceCode, String provinceName, String cityCode, String cityName, String districtCode, String districtName,String department, String remark,
-						  LocalDateTime createDate,LocalDateTime modifyDate);
+	int frontUserRegister(String username, String password,int typeId,String typeName, String provinceCode, String provinceName, String cityCode, String cityName, String districtCode, String districtName,
+						  String functionId,String functionName,String publisherId,String publisherName,String gradeId,String gradeName,
+						  String department, String remark, LocalDateTime createDate,LocalDateTime modifyDate);
 
-	int frontUserRegisterCode(String registerCode, int studentTerminal,int typeId,String typeName, String provinceCode, String provinceName, String cityCode, String cityName, String districtCode, String districtName,String department, String remark,
-						  LocalDateTime createDate,LocalDateTime modifyDate);
+	int frontUserRegisterCode(String registerCode, int studentTerminal,int typeId,String typeName, String provinceCode, String provinceName, String cityCode, String cityName, String districtCode, String districtName,
+							  String functionId,String functionName,String publisherId,String publisherName,String gradeId,String gradeName,
+							  String department, String remark, LocalDateTime createDate,LocalDateTime modifyDate);
 
 	/**
 	 * 查询用户是否存在
@@ -120,7 +122,6 @@ public interface FrontUserMapper extends BaseMapper<FrontUser> {
 	/**
 	 * 编辑
 	 * @param userName
-	 * @param newUserName
 	 * @param passWord
 	 * @param provinceCode
 	 * @param provinceName

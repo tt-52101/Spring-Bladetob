@@ -1,18 +1,3 @@
-/**
- * Copyright (c) 2018-2028, Chill Zhuang 庄骞 (smallchill@163.com).
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package cn.rzedu.sf.resource.service.impl;
 
 import cn.rzedu.sf.resource.bo.FileData;
@@ -34,10 +19,12 @@ import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang.StringUtils;
+import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.EntityFileClient;
 import org.springblade.resource.vo.FileResult;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -119,6 +106,15 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		//设置默认值
 		String name = "";
 		String videoId = "";
+		List<CharResFileVO> type0 = new ArrayList<>();
+		type0.add(new CharResFileVO("spell", "text"));
+		type0.add(new CharResFileVO("simple", "text"));
+		type0.add(new CharResFileVO("radical", "text"));
+		type0.add(new CharResFileVO("stroke_number", "text"));
+		type0.add(new CharResFileVO("usage_text", "text"));
+		type0.add(new CharResFileVO("usage_audio", "audio"));
+		type0.add(new CharResFileVO("evolve_image", "image"));
+
 		List<CharResFileVO> type1 = new ArrayList<>();
 		type1.add(new CharResFileVO("spell", "text"));
 		type1.add(new CharResFileVO("white_character", "image"));
@@ -138,6 +134,10 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		type3.add(new CharResFileVO("technique_line", "video"));
 		type3.add(new CharResFileVO("technique_gesture", "video"));
 
+		List<CharResFileVO> type4 = new ArrayList<>();
+		type4.add(new CharResFileVO("compare_text", "text"));
+		type4.add(new CharResFileVO("compare_image", "text"));
+
 		//视频
 		CharacterResource cr1 = baseMapper.findUnion(characterId, subject, 716);
 		if (cr1 != null) {
@@ -151,6 +151,8 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 				}
 			}
 		}
+		//认读
+		addValueByTypeAndFont(type0, characterId, subject, 712, font);
 		//观察
 		addValueByTypeAndFont(type1, characterId, subject, 711, font);
 		//观察
@@ -159,14 +161,86 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		addValueByTypeAndFont(type2, characterId, subject, 714, font);
 		//笔法
 		addValueByTypeAndFont(type3, characterId, subject, 715, font);
+		//对比
+		addValueByTypeAndFont(type4, characterId, subject, 717, font);
+
+		Map<String, Object> compareMap = transferCharResFileVO(type4);
+		compareMap.put("compare_text", transferCompareMap((String) compareMap.get("compare_text")));
+		compareMap.put("compare_image", transferCompareMap((String) compareMap.get("compare_image")));
 
 		Map<String, Object> map = new HashMap<>(6);
 		map.put("characterId", characterId);
 		map.put("name", name);
 		map.put("videoId", videoId);
+		map.put("recognition_0", transferCharResFileVO(type0));
 		map.put("observation_1", transferCharResFileVO(type1));
 		map.put("analysis_2", transferCharResFileVO(type2));
 		map.put("writing_3", transferCharResFileVO(type3));
+		map.put("compare_4", compareMap);
+		return map;
+	}
+
+	private List<String> transferCompareMap(String value) {
+		List<String> list = new ArrayList<>();
+		if (StringUtils.isNotBlank(value)) {
+			list = Func.toStrList(value);
+		}
+		return list;
+	}
+
+	@Override
+	public Map<String, Object> findHardResource(Integer characterId, String font) {
+		Integer subject = 72;
+		//设置默认值
+		String name = "";
+		String videoId = "";
+		List<CharResFileVO> type0 = new ArrayList<>();
+		type0.add(new CharResFileVO("spell", "text"));
+		type0.add(new CharResFileVO("simple", "text"));
+		type0.add(new CharResFileVO("radical", "text"));
+		type0.add(new CharResFileVO("stroke_number", "text"));
+		type0.add(new CharResFileVO("paraphrase_text", "text"));
+		type0.add(new CharResFileVO("paraphrase_video", "audio"));
+
+		List<CharResFileVO> type1 = new ArrayList<>();
+		type1.add(new CharResFileVO("learn_video", "video"));
+
+		//视频
+		CharacterResource cr1 = baseMapper.findUnion(characterId, subject, 723);
+		if (cr1 != null) {
+			name = cr1.getCharS();
+			List<CharacterResourceFile> list1 = characterResourceFileService.findByResourceAndFont(cr1.getId(), font);
+			if (list1 != null && !list1.isEmpty()) {
+				for (CharacterResourceFile file : list1) {
+					if ("pen_video".equals(file.getObjectId())) {
+						videoId = file.getUuid();
+					}
+				}
+			}
+		}
+
+		//认读
+		addValueByTypeAndFont(type0, characterId, subject, 721, font);
+		//识字
+		addValueByTypeAndFont(type1, characterId, subject, 724, font);
+
+		Map<String, Object> recognitionMap = transferCharResFileVO(type0);
+		//特别处理
+		recognitionMap.put("paraphrase_audio", recognitionMap.get("paraphrase_video"));
+		recognitionMap.remove("paraphrase_video");
+		Map<String, Object> learnMap = transferCharResFileVO(type1);
+		try {
+			learnMap.put("learn_video", entityFileClient.findAudioByUuid((String) learnMap.get("learn_video")));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		Map<String, Object> map = new HashMap<>(6);
+		map.put("characterId", characterId);
+		map.put("name", name);
+		map.put("videoId", videoId);
+		map.put("recognition_0", recognitionMap);
+		map.put("learn_1", learnMap);
 		return map;
 	}
 
@@ -178,6 +252,10 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		for (CharResFileVO vo : list) {
 			if ("image".equals(vo.getObjectType()) && StringUtils.isNotBlank(vo.getImageUrl())) {
 				map.put(vo.getObjectId(), vo.getImageUrl());
+			} else if ("compare_image".equals(vo.getObjectId()) && StringUtils.isNotBlank(vo.getImageUrl())) {
+				map.put(vo.getObjectId(), vo.getImageUrl());
+			} else if ("audio".equals(vo.getObjectType()) && StringUtils.isNotBlank(vo.getAudioUrl())) {
+				map.put(vo.getObjectId(), vo.getAudioUrl());
 			} else {
 				map.put(vo.getObjectId(), vo.getObjectValue());
 			}
@@ -222,7 +300,7 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 							String content = crf.getContent();
 							vo.setObjectValue(content);
 							if((vo.getObjectId().equals("compare_image") ||
-									vo.getObjectId().equals("practice_images")) && content != null && !"".equals(content)){
+									vo.getObjectId().equals("practice_images") || vo.getObjectId().equals("game")) && content != null && !"".equals(content)){
 								String[] split = content.split(",");
 								String link = "";
 								for (String uuid : split) {
@@ -244,6 +322,9 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 									String link = fileResult.getLink();
 									vo.setImageUrl(link);
 								}
+							} else if (vo.getObjectType().equals("audio")) {
+								String audioUrl = entityFileClient.findAudioByUuid(uuid);
+								vo.setAudioUrl(audioUrl);
 							}
 							vo.setObjectValue(uuid);
 						}
@@ -685,9 +766,13 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		if (subject == 71) {
 			addSoftResourcesByJson(map, characterId, font);
 		} else if (subject == 72) {
-			addHardResources(map, characterId, font);
+			addHardResourcesByJson(map, characterId, font);
 		}
 		return map;
 	}
 
+	@Override
+	public Map<String, Object> findCharVideoResource(Integer characterId, String font, Integer subject) {
+		return baseMapper.findCharVideoResource(characterId, font, subject);
+	}
 }

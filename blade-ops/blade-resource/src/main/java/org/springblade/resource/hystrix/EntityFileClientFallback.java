@@ -38,4 +38,9 @@ public class EntityFileClientFallback implements EntityFileClient {
 	public FileResult findImageByUuid(String uuid) throws IOException {
 		return null;
 	}
+
+	@Override
+	public String findAudioByUuid(String uuid) throws IOException {
+		return null;
+	}
 }
