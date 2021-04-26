@@ -126,6 +126,7 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		type0.add(new CharResFileVO("stroke_number", "text"));
 		type0.add(new CharResFileVO("usage_text", "text"));
 		type0.add(new CharResFileVO("usage_audio", "audio"));
+		type0.add(new CharResFileVO("evolve_image", "image"));
 
 		List<CharResFileVO> type1 = new ArrayList<>();
 		type1.add(new CharResFileVO("spell", "text"));
@@ -195,6 +196,9 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		type0.add(new CharResFileVO("paraphrase_text", "text"));
 		type0.add(new CharResFileVO("paraphrase_video", "audio"));
 
+		List<CharResFileVO> type1 = new ArrayList<>();
+		type1.add(new CharResFileVO("learn_video", "video"));
+
 		//视频
 		CharacterResource cr1 = baseMapper.findUnion(characterId, subject, 723);
 		if (cr1 != null) {
@@ -211,12 +215,15 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 
 		//认读
 		addValueByTypeAndFont(type0, characterId, subject, 721, font);
+		//识字
+		addValueByTypeAndFont(type1, characterId, subject, 724, font);
 
 		Map<String, Object> map = new HashMap<>(6);
 		map.put("characterId", characterId);
 		map.put("name", name);
 		map.put("videoId", videoId);
 		map.put("recognition_0", transferCharResFileVO(type0));
+		map.put("learn_1", transferCharResFileVO(type1));
 		return map;
 	}
 
@@ -228,6 +235,8 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		for (CharResFileVO vo : list) {
 			if ("image".equals(vo.getObjectType()) && StringUtils.isNotBlank(vo.getImageUrl())) {
 				map.put(vo.getObjectId(), vo.getImageUrl());
+			} else if ("audio".equals(vo.getObjectType()) && StringUtils.isNotBlank(vo.getAudioUrl())) {
+				map.put(vo.getObjectId(), vo.getAudioUrl());
 			} else {
 				map.put(vo.getObjectId(), vo.getObjectValue());
 			}
@@ -294,6 +303,9 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 									String link = fileResult.getLink();
 									vo.setImageUrl(link);
 								}
+							} else if (vo.getObjectType().equals("audio")) {
+								String audioUrl = entityFileClient.findAudioByUuid(uuid);
+								vo.setAudioUrl(audioUrl);
 							}
 							vo.setObjectValue(uuid);
 						}

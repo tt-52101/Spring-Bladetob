@@ -1,6 +1,7 @@
 package org.springblade.resource.feign;
 
 import com.aliyun.vod.upload.resp.UploadStreamResponse;
+import com.aliyuncs.vod.model.v20170321.GetPlayInfoResponse;
 import lombok.AllArgsConstructor;
 import org.springblade.core.oss.AliossTemplate;
 import org.springblade.core.oss.model.BladeFile;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -118,5 +120,22 @@ public class EntityFileClientImpl implements EntityFileClient {
 		}
 
 		return fileResult;
+	}
+
+	@Override
+	public String findAudioByUuid(String uuid) throws IOException {
+		String playUrl = "";
+		try {
+			GetPlayInfoResponse response = VodUploadUtil.getPlayInfo(ossProperties.getAccessKey(), ossProperties.getSecretKey(), uuid);
+			if (response != null) {
+				List<GetPlayInfoResponse.PlayInfo> playInfos = response.getPlayInfoList();
+				if (playInfos != null && !playInfos.isEmpty()) {
+					playUrl = playInfos.get(0).getPlayURL();
+				}
+			}
+		} catch (Exception e) {
+			System.out.print("ErrorMessage = " + e.getLocalizedMessage());
+		}
+		return playUrl;
 	}
 }

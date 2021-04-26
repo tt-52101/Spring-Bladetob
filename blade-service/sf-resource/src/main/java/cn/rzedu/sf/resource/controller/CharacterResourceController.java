@@ -326,7 +326,8 @@ public class CharacterResourceController extends BladeController {
             "<br/>spell:拼音; white_character:黑底白字图; tablet:源碑文; observe_dot:点-米字图; observe_arrow:箭头-米字图; observe_triangle:三角-米字图; " +
             "<br/>analyse_image:字体分析图; stroke_text:笔画特征文字; stroke_audio:笔画特征音频; space_text:空间特征文字; space_audio:空间特征音频; " +
             "<br/>technique_line:行笔路线视频; technique_gesture:提案笔势视频;" +
-            "<br/>spell:读音; simple:简体; radical:部首; stroke_number:笔画; usage_text:用法文字; usage_audio:用法音频; ")
+            "<br/>spell:读音; simple:简体; radical:部首; stroke_number:笔画; usage_text:用法文字; usage_audio:用法音频; " +
+            "evolve_image:汉字演变图;")
     public R softResource(
             @ApiParam(value = "汉字id", required = true) @RequestParam(value = "characterId") Integer characterId,
             @ApiParam(value = "字体", required = true) @RequestParam(value = "font") String font

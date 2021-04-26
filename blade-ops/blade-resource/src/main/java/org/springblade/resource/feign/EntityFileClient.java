@@ -85,4 +85,12 @@ public interface EntityFileClient {
 	 */
 	@PostMapping(API_PREFIX + "/findImageByUuid")
 	FileResult findImageByUuid(@RequestParam("uuid") String uuid) throws IOException;
+
+	/**
+	 *  查找音频资源
+	 * @param uuid
+	 * @return
+	 */
+	@PostMapping(API_PREFIX + "/findAudioByUuid")
+	String findAudioByUuid(@RequestParam("uuid") String uuid) throws IOException;
 }
