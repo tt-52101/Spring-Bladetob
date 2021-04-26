@@ -119,6 +119,14 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		//设置默认值
 		String name = "";
 		String videoId = "";
+		List<CharResFileVO> type0 = new ArrayList<>();
+		type0.add(new CharResFileVO("spell", "text"));
+		type0.add(new CharResFileVO("simple", "text"));
+		type0.add(new CharResFileVO("radical", "text"));
+		type0.add(new CharResFileVO("stroke_number", "text"));
+		type0.add(new CharResFileVO("usage_text", "text"));
+		type0.add(new CharResFileVO("usage_audio", "audio"));
+
 		List<CharResFileVO> type1 = new ArrayList<>();
 		type1.add(new CharResFileVO("spell", "text"));
 		type1.add(new CharResFileVO("white_character", "image"));
@@ -151,6 +159,8 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 				}
 			}
 		}
+		//认读
+		addValueByTypeAndFont(type0, characterId, subject, 712, font);
 		//观察
 		addValueByTypeAndFont(type1, characterId, subject, 711, font);
 		//观察
@@ -164,9 +174,49 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		map.put("characterId", characterId);
 		map.put("name", name);
 		map.put("videoId", videoId);
+		map.put("recognition_0", transferCharResFileVO(type0));
 		map.put("observation_1", transferCharResFileVO(type1));
 		map.put("analysis_2", transferCharResFileVO(type2));
 		map.put("writing_3", transferCharResFileVO(type3));
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> findHardResource(Integer characterId, String font) {
+		Integer subject = 72;
+		//设置默认值
+		String name = "";
+		String videoId = "";
+		List<CharResFileVO> type0 = new ArrayList<>();
+		type0.add(new CharResFileVO("spell", "text"));
+		type0.add(new CharResFileVO("simple", "text"));
+		type0.add(new CharResFileVO("radical", "text"));
+		type0.add(new CharResFileVO("stroke_number", "text"));
+		type0.add(new CharResFileVO("paraphrase_text", "text"));
+		type0.add(new CharResFileVO("paraphrase_video", "audio"));
+
+		//视频
+		CharacterResource cr1 = baseMapper.findUnion(characterId, subject, 723);
+		if (cr1 != null) {
+			name = cr1.getCharS();
+			List<CharacterResourceFile> list1 = characterResourceFileService.findByResourceAndFont(cr1.getId(), font);
+			if (list1 != null && !list1.isEmpty()) {
+				for (CharacterResourceFile file : list1) {
+					if ("pen_video".equals(file.getObjectId())) {
+						videoId = file.getUuid();
+					}
+				}
+			}
+		}
+
+		//认读
+		addValueByTypeAndFont(type0, characterId, subject, 721, font);
+
+		Map<String, Object> map = new HashMap<>(6);
+		map.put("characterId", characterId);
+		map.put("name", name);
+		map.put("videoId", videoId);
+		map.put("recognition_0", transferCharResFileVO(type0));
 		return map;
 	}
 
