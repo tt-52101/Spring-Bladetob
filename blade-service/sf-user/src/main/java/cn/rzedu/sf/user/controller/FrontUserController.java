@@ -16,20 +16,21 @@
 package cn.rzedu.sf.user.controller;
 
 import cn.rzedu.sf.user.vo.PublisherVO;
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.ApiParam;
-import io.swagger.models.auth.In;
 import jxl.write.*;
+
+
 import lombok.AllArgsConstructor;
-
-
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import cn.rzedu.sf.user.vo.FrontUserVO;
 import cn.rzedu.sf.user.service.IFrontUserService;
@@ -37,7 +38,9 @@ import org.springblade.core.boot.ctrl.BladeController;
 import javax.validation.Valid;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *  控制器
@@ -51,7 +54,48 @@ import java.util.List;
 @Api(value = "", tags = "用户管理系统接口")
 public class FrontUserController extends BladeController {
 
+	@Autowired
 	private IFrontUserService frontUserService;
+
+	private String serverPath;
+
+	@Value("${serverPath}")
+	public void setServerPath(String serverPath) {
+		this.serverPath = serverPath;
+	}
+
+	private Map<String, String> hardPen = new HashMap<>();
+
+	private Map<String, String> softPen = new HashMap<>();
+
+	public FrontUserController() {
+		hardPen.put("/teaching/72", "同步教学");
+		hardPen.put(" /teachingPlan/72?mediaType=1", "授课教案");
+		hardPen.put("/teachingPlan/72?mediaType=2", "知识宝库");
+		hardPen.put("/teachingPlan/72?mediaType=3", "国学视频");
+		hardPen.put("/teachingPlan/72?mediaType=4", "创作文案");
+		hardPen.put("/teachingPlan/72?mediaType=5", "名师微课");
+		hardPen.put("/hardPenQuery/72", "硬笔查询");
+		hardPen.put("/strokes", "笔画教学");
+		hardPen.put("/radical", "偏旁教学");
+		hardPen.put("/structure", "结构教学");
+		hardPen.put("/calligraphyTest/72", "书法考试");
+
+		softPen.put("/teaching/71?stageCode=2", "基础教学");
+		softPen.put("/teaching/71?stageCode=3", "初中教学");
+		softPen.put("/teachingPlan/71?mediaType=3", "国学视频");
+		softPen.put("/teachingPlan/71?mediaType=4", "知识宝库");
+		softPen.put("/teachingPlan/71?mediaType=5", "名师微课");
+		softPen.put("/teachingPlan/71?mediaType=6", "碑帖临摹");
+		softPen.put("/teachingPlan/71?mediaType=7", "视频资源");
+		softPen.put("/teachingPlan/71?mediaType=8", "书法资源");
+		softPen.put("/teachingPlan/71?mediaType=9", "隶书教学");
+		softPen.put("/teachingPlan/71?mediaType=10", "篆书教学");
+		softPen.put("/teachingPlan/71?mediaType=11", "行书教学");
+		softPen.put("/teachingPlan/71?mediaType=12", "篆刻教学");
+		softPen.put("/fontsCreation/71", "集字创作");
+		softPen.put("/calligraphyTest/71", "书法考试");
+	}
 
 	/**
 	* 用户登录
@@ -166,6 +210,56 @@ public class FrontUserController extends BladeController {
 	@ApiOperation(value = "查看/查看功能权限", notes = "传入userName")
 	public  R<FrontUserVO> selectFrontUserDetail(@ApiParam(value = "userName") @RequestParam(value = "userName")String userName) {
 		return R.data(frontUserService.selectFrontUserDetail(userName));
+	}
+
+	@GetMapping("/getMenus")
+	@ApiOperationSupport(order = 6)
+	@ApiOperation(value = "获取注册码权限菜单", notes = "传入registerCode")
+	public R<Map<String, List<Map<String, String>>>> getMenus(@ApiParam(value = "registerCode") @RequestParam(value = "registerCode")String registerCode) {
+		FrontUserVO frontUserVO = frontUserService.selectFrontUserDetail(registerCode);
+		Map<String, List<Map<String, String>>> resutMap = new HashMap<>();
+		List<Map<String, String>> hardPenList = new ArrayList<>();
+		List<Map<String, String>> softPenList = new ArrayList<>();
+
+		if (frontUserVO != null) {
+			String functionIdsJSON = frontUserVO.getFunctionId();
+
+			functionIdsJSON = functionIdsJSON.replace("[", "").replace("]", "").replace(" ", "");
+
+			String[] functionIds = functionIdsJSON.split(",");
+
+			for (int i = 0; i < functionIds.length; i++) {
+				String functionId = functionIds[i].trim();
+				if(functionId != null) {
+					String menuName = hardPen.get(functionId);
+					if (menuName != null && !"".equals(menuName)) {
+						functionId = functionId.contains("?") ? (functionId + "&registerCode=" + registerCode) : (functionId + "?registerCode=" + registerCode);
+
+						functionId = serverPath + functionId;
+						Map<String, String> hardPenTemp = new HashMap<>();
+						hardPenTemp.put("menuUrl", functionId);
+						hardPenTemp.put("menuName", menuName);
+						hardPenList.add(hardPenTemp);
+					} else {
+						String softMenuName = softPen.get(functionId);
+						functionId = functionId.contains("?") ? (functionId + "&registerCode=" + registerCode) : (functionId + "?registerCode=" + registerCode);
+						functionId = serverPath + functionId;
+						if (softMenuName != null && !"".equals(softMenuName)) {
+							Map<String, String> softPenTemp = new HashMap<>();
+							softPenTemp.put("menuUrl", functionId);
+							softPenTemp.put("menuName", softMenuName);
+							softPenList.add(softPenTemp);
+						}
+					}
+				}
+			}
+
+		}
+
+		resutMap.put("hardPen", hardPenList);
+		resutMap.put("softPen", softPenList);
+		return R.data(resutMap);
+
 	}
 
 

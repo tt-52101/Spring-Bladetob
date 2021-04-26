@@ -52,10 +52,10 @@ public class FrontUserVO extends FrontUser {
 	@ApiModelProperty(value = "批量删除")
 	private List<String> userNameList;
 
-	@ApiModelProperty(value = "functionId")
+	@ApiModelProperty(value = "functionIds")
 	private List<String>  functionIds;
 
-	@ApiModelProperty(value = "functionName")
+	@ApiModelProperty(value = "functionNames")
 	private List<String> functionNames;
 
 	@ApiModelProperty(value = "publisherId")
