@@ -226,8 +226,10 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 
 		Map<String, Object> recognitionMap = transferCharResFileVO(type0);
 		//特别处理
-		recognitionMap.put("paraphrase_audio", recognitionMap.get("paraphrase_video"));
+		recognitionMap.put("usage_audio", recognitionMap.get("paraphrase_video"));
 		recognitionMap.remove("paraphrase_video");
+        recognitionMap.put("usage_text", recognitionMap.get("paraphrase_text"));
+        recognitionMap.remove("paraphrase_text");
 		Map<String, Object> learnMap = transferCharResFileVO(type1);
 		try {
 			learnMap.put("learn_video", entityFileClient.findAudioByUuid((String) learnMap.get("learn_video")));
