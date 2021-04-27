@@ -73,4 +73,9 @@ public class UserTextbookVO extends UserTextbook {
      */
     @ApiModelProperty(value = "字体")
     private String font;
+    /**
+     * 出版社
+     */
+    @ApiModelProperty(value = "出版社")
+    private String publisher;
 }
