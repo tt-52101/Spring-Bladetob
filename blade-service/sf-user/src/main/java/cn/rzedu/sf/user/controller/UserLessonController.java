@@ -124,8 +124,39 @@ public class UserLessonController extends BladeController {
             @ApiParam(value = "课程id", required = true) @RequestParam Integer lessonId
     ) {
         List<UserCharacterVO> list = userCharacterService.findAllCharsByLessonId(lessonId, userId);
+        list = changeLessonCharOrder(lessonId, list);
         List result = transferList(list);
         return R.data(result);
+    }
+
+    /**
+     * 改变课程 char顺序，和标题一致
+     */
+    private List<UserCharacterVO> changeLessonCharOrder(Integer lessonId, List<UserCharacterVO> list) {
+        if (list == null || list.isEmpty()) {
+            return list;
+        }
+        R<TextbookLesson> lessonR = textbookClient.lessonDetail(lessonId);
+        if (lessonR.getData() == null) {
+            return list;
+        }
+        String name = lessonR.getData().getName();
+        name = name.substring(name.indexOf("、") + 1);
+        String split = "";
+        if (name.contains("&nbsp;")) {
+            split = "&nbsp;&nbsp;";
+        }
+        List<String> nameList = Func.toStrList(split, name);
+        List<UserCharacterVO> result = new ArrayList<>();
+        for (String str : nameList) {
+            for (UserCharacterVO vo : list) {
+                if (str.equals(vo.getCharS())) {
+                    result.add(vo);
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     private List transferList(List<UserCharacterVO> list) {

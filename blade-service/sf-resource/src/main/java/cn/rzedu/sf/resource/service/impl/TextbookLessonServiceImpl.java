@@ -153,6 +153,7 @@ public class TextbookLessonServiceImpl extends ServiceImpl<TextbookLessonMapper,
 		if (list == null || list.isEmpty()) {
 			return null;
 		}
+		changeLessonCharOrder(list);
 		List<Map<String, Object>> result = new ArrayList<>();
 		Map<String, Object> map = null;
 		for (TextbookLessonVO vo : list) {
@@ -166,5 +167,42 @@ public class TextbookLessonServiceImpl extends ServiceImpl<TextbookLessonMapper,
 			result.add(map);
 		}
 		return result;
+	}
+
+	/**
+	 * 改变课程 chars和charIds顺序，和标题一致
+	 */
+	private void changeLessonCharOrder(List<TextbookLessonVO> list) {
+		for (TextbookLessonVO vo : list) {
+			String name = vo.getName();
+			String chars = vo.getChars();
+			String charIds = vo.getCharIds();
+
+			name = name.substring(name.indexOf("、") + 1);
+			String split = "";
+			if (name.contains("&nbsp;")) {
+				split = "&nbsp;&nbsp;";
+			}
+			String[] nameStr = Func.toStrArray(split, name);
+			String[] charsStr = Func.toStrArray("、", chars);
+			String[] charIdsStr = Func.toStrArray(charIds);
+			String newChars = "";
+			String newCharIds = "";
+			for (int i = 0; i < nameStr.length; i++) {
+				for (int j = 0; j < charsStr.length; j++) {
+					if (nameStr[i].equals(charsStr[j])) {
+						newChars += charsStr[j];
+						newCharIds += charIdsStr[j];
+						if (i != nameStr.length - 1){
+							newChars += "、";
+							newCharIds += ",";
+						}
+						break;
+					}
+				}
+			}
+			vo.setChars(newChars);
+			vo.setCharIds(newCharIds);
+		}
 	}
 }
