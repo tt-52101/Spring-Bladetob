@@ -58,14 +58,15 @@ public class HandwritingController extends BladeController {
 	@PostMapping("/generateHandwriting")
     @ApiOperationSupport(order = 1)
 	@ApiOperation(value = "生成集字")
-	public R<List<HandwritingWordVO>> generateHandwriting(@Valid @RequestBody HandwritingVO handwritingVO) throws IOException {
+	public R<List<HandwritingWordVO>> generateHandwriting(@Valid @RequestBody HandwritingVO handwritingVO,
+														  @RequestHeader("userId") int userId,
+														  @RequestHeader("userName") String userName
+														  ) throws IOException {
 		List<String> sentences = handwritingVO.getSentences();
 		String standards = handwritingVO.getStandards();
 		String banner = handwritingVO.getBanner();
 		String font = handwritingVO.getFont();
 		List<String> signs = handwritingVO.getSigns();
-		int userId = handwritingVO.getUserId();
-		String userName = handwritingVO.getUserName();
 
 		List<HandwritingWordVO> handwritingWordVOS = handwritingService.generateHandwriting(sentences,standards,banner,font,signs,userId,userName);
 		for (HandwritingWordVO handwritingWordVO : handwritingWordVOS){
