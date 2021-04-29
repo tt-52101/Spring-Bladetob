@@ -281,9 +281,9 @@ public class TextbookServiceImpl extends ServiceImpl<TextbookMapper, Textbook> i
     private List getPublishersBySubject(Integer subject) {
         List list = new ArrayList();
         Map<String, Object> map = new HashMap<>(2);
-        map.put("name", "全部");
-        map.put("textbookList", getTextbookByPublisher(subject, null));
-        list.add(map);
+//        map.put("name", "全部");
+//        map.put("textbookList", getTextbookByPublisher(subject, null));
+//        list.add(map);
 
         List<Publisher> publisherList = publisherService.findPublisherBySubject(subject);
         if (publisherList != null && !publisherList.isEmpty()) {
