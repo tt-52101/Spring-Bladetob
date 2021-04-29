@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.resource.mapper.HandwritingMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="handwritingResultMap" type="cn.rzedu.sf.resource.vo.HandwritingVO">
+        <id column="id" property="id"/>
+        <result column="sentence" property="sentence"/>
+        <result column="standards" property="standards"/>
+        <result column="banner" property="banner"/>
+        <result column="font" property="font"/>
+        <result column="sign" property="sign"/>
+        <result column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="handwritingWordResultMap" type="cn.rzedu.sf.resource.vo.HandwritingWordVO">
+        <id column="id" property="id"/>
+        <result column="word" property="word"/>
+        <result column="uuid" property="uuid"/>
+        <result column="font" property="font"/>
+        <result column="source_author" property="sourceAuthor"/>
+        <result column="source_inscriptions" property="sourceInscriptions"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <insert id="generateHandwriting">
+        insert into sf_handwriting(sentence,standards,banner,font,sign,user_id,user_name,create_date) values
+        (#{sentence},#{standards},#{banner},#{font},#{sign},#{userId},#{userName},#{createDate})
+    </insert>
+
+    <select id="selectHandwritingWord" resultMap="handwritingWordResultMap">
+        select * from sf_handwriting_word where is_deleted = 0 and word = #{word}
+        <if test="font != null and font !=''">
+                and font = #{font}
+        </if>
+        <if test="sourceAuthor != null and sourceAuthor !=''">
+            and source_author = #{sourceAuthor}
+        </if>
+        <if test="sourceInscriptions != null and sourceInscriptions !=''">
+            and source_inscriptions = #{sourceInscriptions}
+        </if>
+    </select>
+
+    <select id="selectSourceAuthor" resultType="java.lang.String">
+        select distinct source_author from sf_handwriting_word where is_deleted = 0
+    </select>
+
+    <select id="selectSourceInscriptions" resultMap="handwritingWordResultMap">
+        select * from sf_handwriting_word where is_deleted = 0  and word = #{word}
+        <if test="font != null and font !=''">
+            and font = #{font}
+        </if>
+        <if test="sourceAuthor != null and sourceAuthor !=''">
+            and source_author = #{sourceAuthor}
+        </if>
+    </select>
+
+
+</mapper>
