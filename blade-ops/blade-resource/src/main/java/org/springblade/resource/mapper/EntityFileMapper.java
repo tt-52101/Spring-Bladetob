@@ -57,5 +57,11 @@ public interface EntityFileMapper extends BaseMapper<EntityFile> {
 	 */
 	int saveBrowsingHistory(Integer userId, String userName, Integer resourceId, Integer subject, Integer mediaType, LocalDateTime createDate, LocalDateTime modifyDate);
 
+	/**
+	 * 更新点击量
+	 * @param id
+	 * @return
+	 */
+	int updateHits(Integer id);
 
 }

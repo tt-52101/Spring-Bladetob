@@ -70,9 +70,8 @@ public class MediaResource implements Serializable {
   /**
    * 文件类型  video，audio，image，text
    */
-  @ApiModelProperty(value = "文件后缀  MP4，ppt，pdf，mp3,word,image")
-  private String suffix;
-
+    @ApiModelProperty(value = "文件后缀  MP4，ppt，pdf，mp3,word,image")
+    private String suffix;
 
     /**
      * 文件对应的uuid
@@ -84,6 +83,13 @@ public class MediaResource implements Serializable {
      */
     @ApiModelProperty(value = "封面图对应的url")
     private String coverImgUrl;
+
+    /**
+     * 点击量
+     */
+    @ApiModelProperty(value = "点击量")
+    private Integer hits;
+
     /**
      * 创建时间
      */

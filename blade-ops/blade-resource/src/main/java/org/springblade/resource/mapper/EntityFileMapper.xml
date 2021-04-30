@@ -22,7 +22,9 @@
         values (#{userId},#{userName},#{resourceId},#{subject},#{mediaType},#{createDate},#{modifyDate})
     </insert>
 
-
+    <update id="updateHits">
+        update sf_media_resource set hits = hits + 1 where is_deleted = 0 and id = #{id}
+    </update>
 
     <select id="selectEntityFilePage" resultMap="entityFileResultMap">
         select * from sf_entity_file where is_deleted = 0

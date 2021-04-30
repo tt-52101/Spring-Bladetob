@@ -59,4 +59,13 @@ public class EntityFileServiceImpl extends ServiceImpl<EntityFileMapper, EntityF
 			return false;
 	}
 
+	@Override
+	public boolean updateHits(Integer id) {
+		int r = baseMapper.updateHits(id);
+		if (r > 0){
+			return true;
+		}else
+			return false;
+	}
+
 }

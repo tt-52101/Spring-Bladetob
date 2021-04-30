@@ -218,6 +218,7 @@ public class ResourceController {
         if (resourceId != null && subject!=null && mediaType != null){
             entityFileService.saveBrowsingHistory(userId,username,resourceId,subject,mediaType);
         }
+        entityFileService.updateHits(resourceId);
 
         GetVideoPlayAuthResponse response = new GetVideoPlayAuthResponse();
         try {

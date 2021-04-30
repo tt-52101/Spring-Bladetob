@@ -190,7 +190,7 @@ public class OssEndpoint {
 		if (resourceId != null && subject!=null && mediaType != null){
 			entityFileService.saveBrowsingHistory(userId,username,resourceId,subject,mediaType);
 		}
-
+		entityFileService.updateHits(resourceId);
 
 		FileResult fileResult = new FileResult();
 

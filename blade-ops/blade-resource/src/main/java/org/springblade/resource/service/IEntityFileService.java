@@ -62,4 +62,6 @@ public interface IEntityFileService extends IService<EntityFile> {
 	 */
 	boolean saveBrowsingHistory(Integer userId, String userName, Integer resourceId, Integer subject, Integer mediaType);
 
+	boolean updateHits(Integer id);
+
 }
