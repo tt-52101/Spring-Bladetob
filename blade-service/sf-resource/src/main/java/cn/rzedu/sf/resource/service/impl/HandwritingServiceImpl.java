@@ -74,12 +74,13 @@ public class HandwritingServiceImpl extends ServiceImpl<HandwritingMapper, Handw
 	}
 
 	@Override
-	public List<String> selectSourceAuthor() {
-		return baseMapper.selectSourceAuthor();
+	public List<String> selectSourceAuthor(String word) {
+		return baseMapper.selectSourceAuthor(word);
 	}
 
 	@Override
 	public List<HandwritingWordVO> selectSourceInscriptions(String word, String font, String sourceAuthor) {
+
 		return baseMapper.selectSourceInscriptions(word,font,sourceAuthor);
 	}
 

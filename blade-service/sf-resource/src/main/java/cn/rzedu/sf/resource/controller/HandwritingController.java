@@ -68,10 +68,15 @@ public class HandwritingController extends BladeController {
 
 		List<HandwritingWordVO> handwritingWordVOS = handwritingService.generateHandwriting(sentences,standards,banner,font,signs,userId,userName);
 		for (HandwritingWordVO handwritingWordVO : handwritingWordVOS){
-			String uuid = handwritingWordVO.getUuid();
-			FileResult fileResult = entityFileClient.findImageByUuid(uuid);
-			String link = fileResult.getLink();
-			handwritingWordVO.setUuid(link);
+			if (handwritingWordVO!=null){
+				String uuid = handwritingWordVO.getUuid();
+				FileResult fileResult = entityFileClient.findImageByUuid(uuid);
+				String link = fileResult.getLink();
+				handwritingWordVO.setUuid(link);
+			}else {
+				handwritingWordVO.setUuid(" ");
+			}
+
 		}
 		return R.data(handwritingWordVOS);
 	}
@@ -82,8 +87,8 @@ public class HandwritingController extends BladeController {
 	@GetMapping("/selectSourceAuthor")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "所属书法作者列表")
-	public R<List<String>> selectSourceAuthor() {
-		return R.data(handwritingService.selectSourceAuthor());
+	public R<List<String>> selectSourceAuthor(@ApiParam(value = "word") @RequestParam String word) {
+		return R.data(handwritingService.selectSourceAuthor(word));
 	}
 
 	/**
@@ -95,14 +100,18 @@ public class HandwritingController extends BladeController {
 	public R<List<HandwritingWordVO>> selectSourceInscriptions(
 			@ApiParam(value = "单字") @RequestParam String word,
 			@ApiParam(value = "字体") @RequestParam String font,
-			@ApiParam(value = "所属书法作者") @RequestParam String sourceAuthor
+			@ApiParam(value = "所属书法作者") @RequestParam(required = false) String sourceAuthor
 	) throws IOException {
 		List<HandwritingWordVO> handwritingWordVOS = handwritingService.selectSourceInscriptions(word,font,sourceAuthor);
 		for (HandwritingWordVO handwritingWordVO : handwritingWordVOS){
-			String uuid = handwritingWordVO.getUuid();
-			FileResult fileResult = entityFileClient.findImageByUuid(uuid);
-			String link = fileResult.getLink();
-			handwritingWordVO.setUuid(link);
+			if (handwritingWordVO!=null){
+				String uuid = handwritingWordVO.getUuid();
+				FileResult fileResult = entityFileClient.findImageByUuid(uuid);
+				String link = fileResult.getLink();
+				handwritingWordVO.setUuid(link);
+			}else {
+				handwritingWordVO.setUuid(" ");
+			}
 		}
 		return R.data(handwritingWordVOS);
 	}
@@ -121,11 +130,15 @@ public class HandwritingController extends BladeController {
 			@ApiParam(value = "所属碑帖分类") @RequestParam String sourceInscriptions
 	) throws IOException {
 		HandwritingWordVO handwritingWordVO = handwritingService.selectHandwritingWord(word,font,sourceAuthor,sourceInscriptions);
-		String uuid = handwritingWordVO.getUuid();
-		FileResult fileResult = entityFileClient.findImageByUuid(uuid);
-		String link = fileResult.getLink();
-		handwritingWordVO.setUuid(link);
-		return R.data(handwritingWordVO);
+		if (handwritingWordVO!=null){
+			String uuid = handwritingWordVO.getUuid();
+			FileResult fileResult = entityFileClient.findImageByUuid(uuid);
+			String link = fileResult.getLink();
+			handwritingWordVO.setUuid(link);
+			return R.data(handwritingWordVO);
+		}else
+			return R.success("没有资源");
+
 	}
 
 	@PostMapping("/save")

@@ -35,7 +35,7 @@ public interface HandwritingMapper extends BaseMapper<Handwriting> {
 
 	HandwritingWordVO selectHandwritingWord(String word,String font,String sourceAuthor,String sourceInscriptions);
 
-	List<String> selectSourceAuthor();
+	List<String> selectSourceAuthor(String word);
 
 	List<HandwritingWordVO> selectSourceInscriptions(String word,String font,String sourceAuthor);
 

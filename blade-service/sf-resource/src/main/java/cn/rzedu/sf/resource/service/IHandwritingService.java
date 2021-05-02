@@ -58,7 +58,7 @@ public interface IHandwritingService extends IService<Handwriting> {
 	/**
 	 * 所属书法作者列表
 	 */
-	List<String> selectSourceAuthor();
+	List<String> selectSourceAuthor(String word);
 
 	/**
 	 * 所属碑帖分类
