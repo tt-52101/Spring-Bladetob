@@ -50,12 +50,12 @@ public class HandwritingServiceImpl extends ServiceImpl<HandwritingMapper, Handw
 		baseMapper.generateHandwriting(sentence,standards,banner,font,sign,userId,userName,createDate);
 		for (String word : sentences){
 			HandwritingWordVO handwritingWordVO = baseMapper.selectHandwritingWord(word,font,sourceAuthor,sourceInscriptions);
-			handwritingWordVO.setWordType("正文");
+			handwritingWordVO.setWordType("sentence");
 			handwritingWordVOS.add(handwritingWordVO);
 		}
 		for (String word : signs){
 			HandwritingWordVO handwritingWordVO = baseMapper.selectHandwritingWord(word,font,sourceAuthor,sourceInscriptions);
-			handwritingWordVO.setWordType("落款");
+			handwritingWordVO.setWordType("sign");
 			handwritingWordVOS.add(handwritingWordVO);
 		}
 		return handwritingWordVOS;
