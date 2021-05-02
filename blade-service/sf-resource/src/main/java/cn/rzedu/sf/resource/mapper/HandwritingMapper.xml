@@ -60,6 +60,11 @@
             and source_author = #{sourceAuthor}
         </if>
     </select>
+    
+    <insert id="saveHandwritingWord">
+        insert into sf_handwriting_word(word,uuid,font,source_author,source_inscriptions,create_date) values
+        (#{word},#{uuid},#{font},#{sourceAuthor},#{sourceInscriptions},#{createDate})
+    </insert>
 
 
 </mapper>

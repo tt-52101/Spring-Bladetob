@@ -15,29 +15,28 @@
  */
 package cn.rzedu.sf.resource.mapper;
 
-import cn.rzedu.sf.resource.entity.Handwriting;
-import cn.rzedu.sf.resource.vo.HandwritingWordVO;
+import cn.rzedu.sf.resource.entity.MediaResource;
+import cn.rzedu.sf.resource.vo.MediaResourceVO;
+import cn.rzedu.sf.resource.vo.ProgramaManagementVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
  *  Mapper 接口
  *
  * @author Blade
- * @since 2021-04-26
+ * @since 2021-03-15
  */
-public interface HandwritingMapper extends BaseMapper<Handwriting> {
+public interface ResourceManagementMapper extends BaseMapper<MediaResource> {
 
-	int generateHandwriting(String sentence, String standards, String banner, String font, String sign, int userId, String userName, LocalDateTime createDate);
+    List<ProgramaManagementVO> selectPrograma(Integer subject,Integer mediaType);
 
-	HandwritingWordVO selectHandwritingWord(String word,String font,String sourceAuthor,String sourceInscriptions);
+    int updateSort(String sortName,Integer subject,Integer mediaType);
 
-	List<String> selectSourceAuthor();
+    int addSort(String sortName,Integer mediaType,Integer subject);
 
-	List<HandwritingWordVO> selectSourceInscriptions(String word,String font,String sourceAuthor);
+    List<MediaResourceVO> selectResourceList(IPage page,Integer subject,Integer mediaType, String title,String sortName);
 
-	int saveHandwritingWord(String word,String uuid,String font,String sourceAuthor,String sourceInscriptions, LocalDateTime createDate) ;
 }

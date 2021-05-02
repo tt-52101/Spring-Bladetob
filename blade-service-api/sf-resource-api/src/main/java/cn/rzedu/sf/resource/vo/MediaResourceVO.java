@@ -33,5 +33,7 @@ import lombok.EqualsAndHashCode;
 public class MediaResourceVO extends MediaResource {
 	private static final long serialVersionUID = 1L;
 
+	@ApiModelProperty(value = "栏目名称")
+	private String sortName;
 
 }

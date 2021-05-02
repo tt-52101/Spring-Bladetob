@@ -23,10 +23,8 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import javax.validation.Valid;
 
-import org.springblade.core.oss.props.OssProperties;
+
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.utils.StringPool;
-import org.springblade.resource.entity.EntityFile;
 import org.springblade.resource.feign.EntityFileClient;
 import org.springblade.resource.vo.FileResult;
 import org.springframework.web.bind.annotation.*;
@@ -95,9 +93,9 @@ public class HandwritingController extends BladeController {
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "所属碑帖分类")
 	public R<List<HandwritingWordVO>> selectSourceInscriptions(
-			@ApiParam @RequestParam String word,
-			@ApiParam @RequestParam String font,
-			@ApiParam @RequestParam String sourceAuthor
+			@ApiParam(value = "单字") @RequestParam String word,
+			@ApiParam(value = "字体") @RequestParam String font,
+			@ApiParam(value = "所属书法作者") @RequestParam String sourceAuthor
 	) throws IOException {
 		List<HandwritingWordVO> handwritingWordVOS = handwritingService.selectSourceInscriptions(word,font,sourceAuthor);
 		for (HandwritingWordVO handwritingWordVO : handwritingWordVOS){
@@ -117,10 +115,10 @@ public class HandwritingController extends BladeController {
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "单字获取")
 	public R<HandwritingWordVO> selectHandwritingWord(
-			@ApiParam @RequestParam String word,
-			@ApiParam @RequestParam String font,
-			@ApiParam @RequestParam String sourceAuthor,
-			@ApiParam @RequestParam String sourceInscriptions
+			@ApiParam(value = "单字") @RequestParam String word,
+			@ApiParam(value = "字体") @RequestParam String font,
+			@ApiParam(value = "所属书法作者") @RequestParam String sourceAuthor,
+			@ApiParam(value = "所属碑帖分类") @RequestParam String sourceInscriptions
 	) throws IOException {
 		HandwritingWordVO handwritingWordVO = handwritingService.selectHandwritingWord(word,font,sourceAuthor,sourceInscriptions);
 		String uuid = handwritingWordVO.getUuid();
@@ -128,6 +126,18 @@ public class HandwritingController extends BladeController {
 		String link = fileResult.getLink();
 		handwritingWordVO.setUuid(link);
 		return R.data(handwritingWordVO);
+	}
+
+	@PostMapping("/save")
+	@ApiOperationSupport(order = 1)
+	@ApiOperation(value = "save")
+	public R saveHandwritingWord(@Valid @RequestBody HandwritingWordVO handwritingWordVO)   {
+		String word = handwritingWordVO.getWord();
+		String uuid = handwritingWordVO.getUuid();
+		String font = handwritingWordVO.getFont();
+		String sourceAuthor = handwritingWordVO.getSourceAuthor();
+		String sourceInscriptions = handwritingWordVO.getSourceInscriptions();
+		return R.status(handwritingService.saveHandwritingWord(word,uuid,font,sourceAuthor,sourceInscriptions));
 	}
 
 }

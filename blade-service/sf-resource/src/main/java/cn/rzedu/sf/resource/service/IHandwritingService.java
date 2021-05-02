@@ -69,6 +69,8 @@ public interface IHandwritingService extends IService<Handwriting> {
 	 */
 	List<HandwritingWordVO> selectSourceInscriptions(String word,String font,String sourceAuthor);
 
+	boolean saveHandwritingWord(String word,String uuid,String font,String sourceAuthor,String sourceInscriptions);
+
 
 }
 
