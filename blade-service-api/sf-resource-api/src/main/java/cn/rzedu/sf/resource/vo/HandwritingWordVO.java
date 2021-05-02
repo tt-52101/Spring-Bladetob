@@ -16,6 +16,7 @@
 package cn.rzedu.sf.resource.vo;
 
 import cn.rzedu.sf.resource.entity.HandwritingWord;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
@@ -33,5 +34,8 @@ import java.util.List;
 @ApiModel(value = "HandwritingWordVO对象", description = "HandwritingWordVO对象")
 public class HandwritingWordVO extends HandwritingWord {
 	private static final long serialVersionUID = 1L;
+
+	@ApiModelProperty(value = "标识")
+	private String wordType;
 
 }

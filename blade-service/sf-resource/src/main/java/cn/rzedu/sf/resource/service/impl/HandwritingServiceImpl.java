@@ -49,10 +49,14 @@ public class HandwritingServiceImpl extends ServiceImpl<HandwritingMapper, Handw
 		String sourceInscriptions = "多宝塔碑";
 		baseMapper.generateHandwriting(sentence,standards,banner,font,sign,userId,userName,createDate);
 		for (String word : sentences){
-			handwritingWordVOS.add(baseMapper.selectHandwritingWord(word,font,sourceAuthor,sourceInscriptions));
+			HandwritingWordVO handwritingWordVO = baseMapper.selectHandwritingWord(word,font,sourceAuthor,sourceInscriptions);
+			handwritingWordVO.setWordType("正文");
+			handwritingWordVOS.add(handwritingWordVO);
 		}
 		for (String word : signs){
-			handwritingWordVOS.add(baseMapper.selectHandwritingWord(word,font,sourceAuthor,sourceInscriptions));
+			HandwritingWordVO handwritingWordVO = baseMapper.selectHandwritingWord(word,font,sourceAuthor,sourceInscriptions);
+			handwritingWordVO.setWordType("落款");
+			handwritingWordVOS.add(handwritingWordVO);
 		}
 		return handwritingWordVOS;
 	}
