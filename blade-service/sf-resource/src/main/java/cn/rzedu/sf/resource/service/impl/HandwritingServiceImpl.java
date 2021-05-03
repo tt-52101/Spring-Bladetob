@@ -94,7 +94,7 @@ public class HandwritingServiceImpl extends ServiceImpl<HandwritingMapper, Handw
 	}
 
 	@Override
-	public List<HandwritingWordVO> handwritingWordQuery(String word, String font, String sourceAuthor, String sourceInscriptions) {
-		return baseMapper.handwritingWordQuery(word,font,sourceAuthor,sourceInscriptions);
+	public IPage<HandwritingWordVO> handwritingWordQuery(IPage<HandwritingWordVO> page, String word, String font, String authorOrInscriptions) {
+		return page.setRecords(baseMapper.handwritingWordQuery(page,word,font,authorOrInscriptions));
 	}
 }

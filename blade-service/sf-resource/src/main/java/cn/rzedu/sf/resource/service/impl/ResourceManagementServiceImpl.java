@@ -43,13 +43,13 @@ public class ResourceManagementServiceImpl extends ServiceImpl<ResourceManagemen
 
 
 	@Override
-	public List<ProgramaManagementVO> selectProgramList(Integer subject, Integer mediaType) {
-		return baseMapper.selectPrograma(subject,mediaType);
+	public IPage<ProgramaManagementVO> selectProgramList(IPage<ProgramaManagementVO> page,Integer subject, Integer mediaType) {
+		return page.setRecords(baseMapper.selectPrograma(page,subject,mediaType));
 	}
 
 	@Override
-	public boolean updateSort(String sortName, Integer subject, Integer mediaType) {
-		return SqlHelper.retBool(baseMapper.updateSort(sortName,subject,mediaType));
+	public boolean updateSort(String sortName, Integer subject, Integer mediaType,Integer sortId) {
+		return SqlHelper.retBool(baseMapper.updateSort(sortName,subject,mediaType,sortId));
 	}
 
 	@Override
@@ -58,8 +58,21 @@ public class ResourceManagementServiceImpl extends ServiceImpl<ResourceManagemen
 	}
 
 	@Override
-	public IPage<MediaResourceVO> selectResourceList(IPage<MediaResourceVO> page, Integer subject, Integer mediaType,String title, String sortName) {
-		return  page.setRecords(baseMapper.selectResourceList(page,subject,mediaType,title,sortName));
+	public boolean removeSort(List<Integer> sortIds) {
+		int count = 0;
+		for (Integer sortId : sortIds){
+			baseMapper.removeSort(sortId);
+			count ++;
+		}
+		if (count>0){
+			return true;
+		}else
+			return false;
+	}
+
+	@Override
+	public IPage<MediaResourceVO> selectResourceList(IPage<MediaResourceVO> page, Integer subject, Integer mediaType,String title, Integer sortId) {
+		return  page.setRecords(baseMapper.selectResourceList(page,subject,mediaType,title,sortId));
 	}
 
 	@Override

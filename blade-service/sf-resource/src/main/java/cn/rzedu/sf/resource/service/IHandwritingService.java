@@ -70,9 +70,25 @@ public interface IHandwritingService extends IService<Handwriting> {
 	 */
 	List<HandwritingWordVO> selectSourceInscriptions(String word,String font,String sourceAuthor);
 
+	/**
+	 * 增加书法字
+	 * @param word
+	 * @param uuid
+	 * @param font
+	 * @param sourceAuthor
+	 * @param sourceInscriptions
+	 * @return
+	 */
 	boolean saveHandwritingWord(String word,String uuid,String font,String sourceAuthor,String sourceInscriptions);
 
-	List<HandwritingWordVO> handwritingWordQuery(String word,String font,String sourceAuthor,String sourceInscriptions);
+	/**
+	 * 书法字典查询
+	 * @param word
+	 * @param font
+	 * @param authorOrInscriptions
+	 * @return
+	 */
+	IPage<HandwritingWordVO> handwritingWordQuery(IPage<HandwritingWordVO> page, String word,String font,String authorOrInscriptions);
 
 }
 

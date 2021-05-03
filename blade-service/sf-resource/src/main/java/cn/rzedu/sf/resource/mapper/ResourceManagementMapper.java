@@ -32,13 +32,15 @@ import java.util.List;
  */
 public interface ResourceManagementMapper extends BaseMapper<MediaResource> {
 
-    List<ProgramaManagementVO> selectPrograma(Integer subject,Integer mediaType);
+    List<ProgramaManagementVO> selectPrograma(IPage page,Integer subject,Integer mediaType);
 
-    int updateSort(String sortName,Integer subject,Integer mediaType);
+    int updateSort(String sortName,Integer subject,Integer mediaType,Integer sortId);
+
+    int removeSort(Integer sortId);
 
     int addSort(String sortName,Integer mediaType,Integer subject);
 
-    List<MediaResourceVO> selectResourceList(IPage page,Integer subject,Integer mediaType, String title,String sortName);
+    List<MediaResourceVO> selectResourceList(IPage page,Integer subject,Integer mediaType, String title,Integer sortId);
 
     MediaResourceVO selectResourceDetail(Integer resourceId);
 

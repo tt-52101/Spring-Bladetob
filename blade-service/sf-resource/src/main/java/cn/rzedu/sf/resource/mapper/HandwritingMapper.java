@@ -42,5 +42,5 @@ public interface HandwritingMapper extends BaseMapper<Handwriting> {
 
 	int saveHandwritingWord(String word,String uuid,String font,String sourceAuthor,String sourceInscriptions, LocalDateTime createDate);
 
-	List<HandwritingWordVO> handwritingWordQuery(String word,String font,String sourceAuthor,String sourceInscriptions);
+	List<HandwritingWordVO> handwritingWordQuery(IPage page, String word,String font,String authorOrInscriptions);
 }

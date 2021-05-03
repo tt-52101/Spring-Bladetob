@@ -49,15 +49,9 @@
     </select>
 
     <select id="handwritingWordQuery" resultMap="handwritingWordResultMap">
-        select * from sf_handwriting_word where is_deleted = 0 and word = #{word}
-        <if test="font != null and font !=''">
-            and font = #{font}
-        </if>
-        <if test="sourceAuthor != null and sourceAuthor !=''">
-            and source_author = #{sourceAuthor}
-        </if>
-        <if test="sourceInscriptions != null and sourceInscriptions !=''">
-            and source_inscriptions = #{sourceInscriptions}
+        select * from sf_handwriting_word where is_deleted = 0 and word = #{word} and font = #{font}
+        <if test="authorOrInscriptions != null and authorOrInscriptions !=''">
+            and (source_author = #{authorOrInscriptions} or source_inscriptions = #{authorOrInscriptions})
         </if>
         ORDER BY create_date DESC
     </select>

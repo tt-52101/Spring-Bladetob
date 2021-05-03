@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.ws.rs.FormParam;
 import java.io.*;
 import java.util.List;
 
@@ -39,21 +40,23 @@ public class ResourceManagementController {
     @GetMapping("/selectProgramList/{subject}")
     @ApiOperationSupport(order = 1)
     @ApiOperation(value = "栏目列表")
-    public R<List<ProgramaManagementVO>> selectProgramList(
+    public R<IPage<ProgramaManagementVO>> selectProgramList(Query query,
             @ApiParam(value = "subject 72=硬笔，71=软笔",required = true)@PathVariable(value = "subject") Integer subject,
             @ApiParam(value = "mediaType",required = true)@RequestParam(value = "mediaType") Integer mediaType
             ) {
-        return R.data(resourceManagementService.selectProgramList(subject,mediaType));
+        IPage<ProgramaManagementVO> pages = resourceManagementService.selectProgramList(Condition.getPage(query),subject,mediaType);
+        return R.data(pages);
     }
 
     @PostMapping("/updateSort")
     @ApiOperationSupport(order = 2)
-    @ApiOperation(value = "编辑")
+    @ApiOperation(value = "栏目编辑")
     public R updateSort(@Valid @RequestBody ProgramaManagementVO programaManagementVO) {
         String sortName = programaManagementVO.getSortName();
         Integer subject = programaManagementVO.getSubject();
         Integer mediaType = programaManagementVO.getMediaType();
-        return R.status(resourceManagementService.updateSort(sortName,subject,mediaType));
+        Integer sortId = programaManagementVO.getSortId();
+        return R.status(resourceManagementService.updateSort(sortName,subject,mediaType,sortId));
     }
 
     @PostMapping("/addSort")
@@ -67,6 +70,18 @@ public class ResourceManagementController {
     }
 
     /**
+     * 批量删除
+     * @param resourceIds
+     * @return
+     */
+    @PostMapping("/removeSort")
+    @ApiOperationSupport(order = 3)
+    @ApiOperation(value = "栏目批量删除")
+    public R removeSort(@ApiParam @RequestBody List<Integer> resourceIds){
+        return R.status(resourceManagementService.removeSort(resourceIds));
+    }
+
+    /**
      * 栏目列表
      */
     @GetMapping("/selectResourceList/{subject}")
@@ -77,9 +92,9 @@ public class ResourceManagementController {
             @ApiParam(value = "subject 72=硬笔，71=软笔",required = true)@PathVariable(value = "subject") Integer subject,
             @ApiParam(value = "mediaType",required = true)@RequestParam(value = "mediaType") Integer mediaType,
             @ApiParam(value = "title")@RequestParam(value = "title",required = false) String title,
-            @ApiParam(value = "sortName")@RequestParam(value = "sortName",required = false) String sortName
+            @ApiParam(value = "sortId")@RequestParam(value = "sortId",required = false) Integer sortId
     ) {
-        IPage<MediaResourceVO> pages = resourceManagementService.selectResourceList(Condition.getPage(query),subject,mediaType,title,sortName);
+        IPage<MediaResourceVO> pages = resourceManagementService.selectResourceList(Condition.getPage(query),subject,mediaType,title,sortId);
         return R.data(pages);
     }
 
@@ -91,7 +106,7 @@ public class ResourceManagementController {
      */
     @GetMapping("/resourceDetail")
     @ApiOperationSupport(order = 1)
-    @ApiOperation(value = "查看")
+    @ApiOperation(value = "资源查看")
     public R<MediaResourceVO> selectResourceDetail(
             @ApiParam(value = "resourceId")@RequestParam(value = "resourceId") Integer resourceId
     ) {
@@ -100,34 +115,24 @@ public class ResourceManagementController {
 
     @PostMapping("/updateResource")
     @ApiOperationSupport(order = 3)
-    @ApiOperation(value = "编辑")
-    public R updateResource(@Valid @RequestBody MediaResourceVO mediaResourceVO,
-                            @RequestParam(required = false) MultipartFile multipartFile) throws IOException {
-        String title = mediaResourceVO.getTitle();
-        Integer sortId = mediaResourceVO.getSortId();
-        Integer resourceId = mediaResourceVO.getId();
+    @ApiOperation(value = "资源编辑")
+    public R updateResource(@FormParam("resourceId") Integer resourceId,
+                            @FormParam("file") File file,
+                            @FormParam("objectType")String objectType,
+                            @FormParam("title") String title,
+                            @FormParam("sortId") Integer sortId) throws IOException {
+        EntityFile entityFile = null;
         String uuid = null;
         String coverImgUrl = null;
-
-        if(!multipartFile.isEmpty()){
-            File file = null;
-            EntityFile entityFile = null;
-            String originalFilename = multipartFile.getOriginalFilename();
-            String[] filename = originalFilename.split(".");
-            file=File.createTempFile(filename[0], filename[1]);
-            multipartFile.transferTo(file);
-            if(filename[1].equals("audio") || filename[1].equals("video")){
-                entityFile = entityFileClient.upload(file);
-                uuid = entityFile.getUuid();
-                coverImgUrl = entityFile.getThumbnailUrl();
-            }else {
-                entityFile = entityFileClient.uploadImage(file);
-                uuid = entityFile.getUuid();
-            }
-
-            file.deleteOnExit();
+        file.getName();
+        if (objectType.equals("audio") || objectType.equals("video")){
+            entityFile = entityFileClient.upload(file);
+            uuid = entityFile.getUuid();
+            coverImgUrl = entityFile.getThumbnailUrl();
+        }else {
+            entityFile = entityFileClient.uploadImage(file);
+            uuid = entityFile.getUuid();
         }
-
         return R.status(resourceManagementService.updateResource(title,sortId,uuid,coverImgUrl,resourceId));
     }
 
@@ -138,48 +143,37 @@ public class ResourceManagementController {
      */
     @PostMapping("/remove")
     @ApiOperationSupport(order = 3)
-    @ApiOperation(value = "批量删除")
-    public R remove(@ApiParam @RequestParam List<Integer> resourceIds){
+    @ApiOperation(value = "资源批量删除")
+    public R remove(@ApiParam @RequestBody List<Integer> resourceIds){
         return R.status(resourceManagementService.deleteResource(resourceIds));
     }
 
     /**
      * 上传资源
-     * @param mediaResourceVO
-     * @param multipartFile
      * @return
      * @throws IOException
      */
     @PostMapping("/uploadResource")
     @ApiOperationSupport(order = 3)
     @ApiOperation(value = "上传资源")
-    public R uploadResource(@Valid @RequestBody MediaResourceVO mediaResourceVO,
-                            @RequestParam MultipartFile multipartFile) throws IOException {
-        String title = mediaResourceVO.getTitle();
-        Integer subject = mediaResourceVO.getSubject();
-        Integer sortId = mediaResourceVO.getSortId();
-        String objectType = mediaResourceVO.getObjectType();
-        String suffix = null;
+    public R uploadResource(@FormParam("file") File file,
+                            @FormParam("objectType")String objectType,
+                            @FormParam("suffix")String suffix,
+                            @FormParam("title") String title,
+                            @FormParam("sortId") Integer sortId,
+                            @FormParam("subject") Integer subject,
+                            @FormParam("mediaType") Integer mediaType) throws IOException {
         String uuid = null;
         String coverImgUrl = null;
-        Integer mediaType = mediaResourceVO.getMediaType();
-        File file = null;
         EntityFile entityFile = null;
-        String originalFilename = multipartFile.getOriginalFilename();
-        String[] filename = originalFilename.split(".");
-        suffix = filename[1];
-        file=File.createTempFile(filename[0], filename[1]);
-        multipartFile.transferTo(file);
         if(objectType.equals("audio") || objectType.equals("video")){
             entityFile = entityFileClient.upload(file);
-            objectType = filename[1];
             uuid = entityFile.getUuid();
             coverImgUrl = entityFile.getThumbnailUrl();
         }else {
             entityFile = entityFileClient.uploadImage(file);
             uuid = entityFile.getUuid();
         }
-
         return R.status(resourceManagementService.addResource(title,subject,sortId,objectType,suffix,uuid,coverImgUrl,mediaType));
     }
 

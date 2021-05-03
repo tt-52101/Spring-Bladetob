@@ -32,20 +32,27 @@
     </resultMap>
 
     <select id="selectPrograma" resultMap="programaManagementResultMap">
-        select a.sort_id,a.sort_name,a.subject,a.media_type,count(*) resourceCount from
-            (select a.sort_id,b.sort_name,a.subject,a.media_type,b.order_id
-             from sf_media_resource a
-             inner join sf_media_resource_sort b
-             on a.sort_id = b.sort_id
-             where  a.subject = #{subject} and a.media_type = #{mediaType}
-            ) a
-        group by a.sort_id,a.subject
+        select a.sort_id,a.sort_name,a.subject,a.sort_media_type media_type,IFNULL(b.resourceCount,0) resourceCount
+        from
+            (select sort_id,sort_name,subject,sort_media_type,order_id
+            from sf_media_resource_sort where is_deleted = 0) a
+            left join
+            (select sort_id,subject,media_type,count(*) resourceCount
+            from sf_media_resource
+            GROUP BY sort_id,subject) b
+            on a.sort_id = b.sort_id
+        where a.subject = #{subject} and a.sort_media_type = #{mediaType}
         ORDER BY a.order_id
     </select>
 
     <update id="updateSort">
         update sf_media_resource_sort set sort_name = #{sortName}
-        where subject = #{subject} and sort_media_type = #{mediaType}
+        where subject = #{subject} and sort_media_type = #{mediaType} and sort_id = #{sortId}
+    </update>
+
+    <update id="removeSort">
+        update sf_media_resource_sort set is_deleted = 1
+        where sort_id = #{sortId}
     </update>
 
     <insert id="addSort">
@@ -61,8 +68,8 @@
         <if test = "title != null and title != ''">
             and a.title LIKE CONCAT('%',#{title},'%')
         </if>
-        <if test = "sortName != null and sortName != ''">
-            and b.sort_name  = #{sortName}
+        <if test = "sortId != null and sortId != ''">
+            and a.sort_id  = #{sortId}
         </if>
     </select>
 

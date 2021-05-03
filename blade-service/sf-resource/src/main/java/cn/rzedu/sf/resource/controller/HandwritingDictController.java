@@ -20,6 +20,7 @@ import cn.rzedu.sf.resource.service.IMediaResourceService;
 import cn.rzedu.sf.resource.vo.HandwritingVO;
 import cn.rzedu.sf.resource.vo.HandwritingWordVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -62,12 +63,11 @@ public class HandwritingDictController extends BladeController {
 	@GetMapping("/handwritingWordQuery")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "书法查询")
-	public R<List<HandwritingWordVO>> handwritingWordQuery(
+	public R<IPage<HandwritingWordVO>> handwritingWordQuery(Query query,
 															@ApiParam(value = "subject 72 = 硬笔 71 = 软笔") @RequestParam Integer subject,
 															@ApiParam(value = "单字") @RequestParam String word,
 															@ApiParam(value = "字体") @RequestParam String font,
-															@ApiParam(value = "所属书法作者") @RequestParam(required = false) String sourceAuthor,
-															@ApiParam(value = "所属碑帖分类") @RequestParam(required = false) String sourceInscriptions
+															@ApiParam(value = "书法作者或碑名") @RequestParam(required = false) String authorOrInscriptions
 	) throws IOException {
 		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 		HttpServletRequest request = requestAttributes.getRequest();
@@ -76,7 +76,8 @@ public class HandwritingDictController extends BladeController {
 		if (!word.isEmpty() && !word.equals(" ")){
 			mediaResourceService.saveSearchHistory(word,userId,username,subject);
 		}
-		List<HandwritingWordVO> handwritingWordVOS = handwritingService.handwritingWordQuery(word,font,sourceAuthor,sourceInscriptions);
+		IPage<HandwritingWordVO> pages = handwritingService.handwritingWordQuery(Condition.getPage(query),word,font,authorOrInscriptions);
+		List<HandwritingWordVO> handwritingWordVOS = pages.getRecords();
 		for (HandwritingWordVO handwritingWordVO : handwritingWordVOS){
 			if (handwritingWordVO!=null){
 				String uuid = handwritingWordVO.getUuid();
@@ -85,7 +86,9 @@ public class HandwritingDictController extends BladeController {
 				handwritingWordVO.setUuid(link);
 			}
 		}
-		return R.data(handwritingWordVOS);
+		IPage<HandwritingWordVO> page = new Page<>();
+		page.setRecords(handwritingWordVOS);
+		return R.data(page);
 	}
 
 	/**

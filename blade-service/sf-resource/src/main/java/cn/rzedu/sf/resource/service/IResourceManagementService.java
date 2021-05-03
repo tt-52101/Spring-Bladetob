@@ -39,7 +39,7 @@ public interface IResourceManagementService extends IService<MediaResource> {
 	 * @param mediaType
 	 * @return
 	 */
-	List<ProgramaManagementVO> selectProgramList(Integer subject, Integer mediaType);
+	IPage<ProgramaManagementVO> selectProgramList(IPage<ProgramaManagementVO> page,Integer subject, Integer mediaType);
 
 	/**
 	 * 更新栏目
@@ -48,7 +48,7 @@ public interface IResourceManagementService extends IService<MediaResource> {
 	 * @param mediaType
 	 * @return
 	 */
-	boolean updateSort(String sortName,Integer subject,Integer mediaType);
+	boolean updateSort(String sortName,Integer subject,Integer mediaType,Integer sortId);
 
 	/**
 	 * 新增栏目
@@ -60,6 +60,13 @@ public interface IResourceManagementService extends IService<MediaResource> {
 	boolean addSort(String sortName,Integer mediaType,Integer subject);
 
 	/**
+	 * 批量删除栏目
+	 * @param sortIds
+	 * @return
+	 */
+	boolean removeSort(List<Integer> sortIds);
+
+	/**
 	 * 查询
 	 * @param page
 	 * @param subject
@@ -67,7 +74,7 @@ public interface IResourceManagementService extends IService<MediaResource> {
 	 * @param mediaType
 	 * @return
 	 */
-	IPage<MediaResourceVO> selectResourceList(IPage<MediaResourceVO> page,Integer subject, Integer mediaType,String title, String sortName);
+	IPage<MediaResourceVO> selectResourceList(IPage<MediaResourceVO> page,Integer subject, Integer mediaType,String title, Integer sortId);
 
 	/**
 	 * 查看
