@@ -19,6 +19,7 @@ import cn.rzedu.sf.resource.entity.Handwriting;
 import cn.rzedu.sf.resource.entity.HandwritingWord;
 import cn.rzedu.sf.resource.vo.HandwritingVO;
 import cn.rzedu.sf.resource.vo.HandwritingWordVO;
+import cn.rzedu.sf.resource.vo.MediaResourceVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
@@ -71,6 +72,7 @@ public interface IHandwritingService extends IService<Handwriting> {
 
 	boolean saveHandwritingWord(String word,String uuid,String font,String sourceAuthor,String sourceInscriptions);
 
+	List<HandwritingWordVO> handwritingWordQuery(String word,String font,String sourceAuthor,String sourceInscriptions);
 
 }
 

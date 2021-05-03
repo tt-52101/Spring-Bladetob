@@ -22,6 +22,7 @@ import cn.rzedu.sf.resource.vo.ProgramaManagementVO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -67,5 +68,44 @@ public interface IResourceManagementService extends IService<MediaResource> {
 	 * @return
 	 */
 	IPage<MediaResourceVO> selectResourceList(IPage<MediaResourceVO> page,Integer subject, Integer mediaType,String title, String sortName);
+
+	/**
+	 * 查看
+	 * @param resourceId
+	 * @return
+	 */
+	MediaResourceVO selectResourceDetail(Integer resourceId);
+
+	/**
+	 * 编辑
+	 * @param title
+	 * @param sortId
+	 * @param uuid
+	 * @param coverImgUrl
+	 * @param resourceId
+	 * @return
+	 */
+	boolean updateResource(String title,Integer sortId,String uuid, String coverImgUrl,Integer resourceId);
+
+	/**
+	 * 删除
+	 * @param resourceIds
+	 * @return
+	 */
+	boolean deleteResource(List<Integer> resourceIds);
+
+	/**
+	 * 上传资源
+	 * @param title
+	 * @param subject
+	 * @param sortId
+	 * @param objectType
+	 * @param suffix
+	 * @param uuid
+	 * @param coverImgUrl
+	 * @param mediaType
+	 * @return
+	 */
+	boolean addResource(String title, Integer subject, Integer sortId, String objectType, String suffix, String uuid, String coverImgUrl, Integer mediaType);
 
 }

@@ -61,4 +61,35 @@ public class ResourceManagementServiceImpl extends ServiceImpl<ResourceManagemen
 	public IPage<MediaResourceVO> selectResourceList(IPage<MediaResourceVO> page, Integer subject, Integer mediaType,String title, String sortName) {
 		return  page.setRecords(baseMapper.selectResourceList(page,subject,mediaType,title,sortName));
 	}
+
+	@Override
+	public MediaResourceVO selectResourceDetail(Integer resourceId) {
+		return baseMapper.selectResourceDetail(resourceId);
+	}
+
+	@Override
+	public boolean updateResource(String title,Integer sortId,String uuid, String coverImgUrl,Integer resourceId) {
+		return SqlHelper.retBool(baseMapper.updateResource(title,sortId,uuid,coverImgUrl,resourceId));
+	}
+
+	@Override
+	public boolean deleteResource(List<Integer> resourceIds) {
+		int count = 0;
+		for (Integer resourceId : resourceIds){
+			baseMapper.deleteResource(resourceId);
+			count ++;
+		}
+		if (count > 0){
+			return true;
+		}else
+			return false;
+	}
+
+	@Override
+	public boolean addResource(String title, Integer subject, Integer sortId, String objectType, String suffix, String uuid, String coverImgUrl,Integer mediaType) {
+		LocalDateTime createDate = LocalDateTime.now();
+		return SqlHelper.retBool(baseMapper.addResource(title,subject,sortId,objectType,suffix,uuid,coverImgUrl,createDate,mediaType));
+	}
+
+
 }

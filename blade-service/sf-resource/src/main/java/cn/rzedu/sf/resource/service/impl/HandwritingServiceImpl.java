@@ -20,6 +20,7 @@ import cn.rzedu.sf.resource.entity.Handwriting;
 import cn.rzedu.sf.resource.mapper.HandwritingMapper;
 import cn.rzedu.sf.resource.service.IHandwritingService;
 import cn.rzedu.sf.resource.vo.HandwritingWordVO;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import org.springframework.stereotype.Service;
@@ -90,5 +91,10 @@ public class HandwritingServiceImpl extends ServiceImpl<HandwritingMapper, Handw
 	public boolean saveHandwritingWord(String word, String uuid, String font, String sourceAuthor, String sourceInscriptions) {
 		LocalDateTime createDate = LocalDateTime.now();
 		return SqlHelper.retBool(baseMapper.saveHandwritingWord(word,uuid,font,sourceAuthor,sourceInscriptions,createDate));
+	}
+
+	@Override
+	public List<HandwritingWordVO> handwritingWordQuery(String word, String font, String sourceAuthor, String sourceInscriptions) {
+		return baseMapper.handwritingWordQuery(word,font,sourceAuthor,sourceInscriptions);
 	}
 }

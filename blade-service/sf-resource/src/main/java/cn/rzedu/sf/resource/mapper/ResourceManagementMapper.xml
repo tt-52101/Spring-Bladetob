@@ -66,4 +66,36 @@
         </if>
     </select>
 
+    <select id="selectResourceDetail" resultMap="mediaResourceResultMap">
+        select * from sf_media_resource where is_deleted = 0 and id = #{resourceId}
+    </select>
+    
+    <update id="updateResource">
+        update sf_media_resource set
+        <if test = "title != null and title != ''">
+            title = #{title},
+        </if>
+        <if test = "sortId != null and sortId != ''">
+            sort_id = #{sortId},
+        </if>
+        <if test = "uuid != null and uuid != ''">
+            uuid = #{uuid},
+        </if>
+        <if test = "coverImgUrl != null and coverImgUrl != ''">
+            cover_img_url = #{coverImgUrl},
+        </if>
+        is_deleted = 0
+        where  id = #{resourceId}
+
+    </update>
+
+    <update id="deleteResource">
+        update sf_media_resource set is_deleted = 1 where id = #{resourceId}
+    </update>
+
+    <insert id="addResource">
+        insert into sf_media_resource(title,subject,sort_id,object_type,suffix,uuid,cover_img_url,create_date,media_type) values
+        (#{title},#{subject},#{sortId},#{objectType},#{suffix},#{uuid},#{coverImgUrl},#{createDate},#{mediaType})
+    </insert>
+
 </mapper>

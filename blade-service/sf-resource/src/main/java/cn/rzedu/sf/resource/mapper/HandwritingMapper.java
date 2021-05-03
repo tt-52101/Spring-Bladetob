@@ -18,6 +18,7 @@ package cn.rzedu.sf.resource.mapper;
 import cn.rzedu.sf.resource.entity.Handwriting;
 import cn.rzedu.sf.resource.vo.HandwritingWordVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 
 import java.time.LocalDateTime;
@@ -39,5 +40,7 @@ public interface HandwritingMapper extends BaseMapper<Handwriting> {
 
 	List<HandwritingWordVO> selectSourceInscriptions(String word,String font,String sourceAuthor);
 
-	int saveHandwritingWord(String word,String uuid,String font,String sourceAuthor,String sourceInscriptions, LocalDateTime createDate) ;
+	int saveHandwritingWord(String word,String uuid,String font,String sourceAuthor,String sourceInscriptions, LocalDateTime createDate);
+
+	List<HandwritingWordVO> handwritingWordQuery(String word,String font,String sourceAuthor,String sourceInscriptions);
 }

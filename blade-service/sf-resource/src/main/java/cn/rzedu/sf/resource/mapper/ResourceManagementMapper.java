@@ -21,6 +21,7 @@ import cn.rzedu.sf.resource.vo.ProgramaManagementVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -39,4 +40,11 @@ public interface ResourceManagementMapper extends BaseMapper<MediaResource> {
 
     List<MediaResourceVO> selectResourceList(IPage page,Integer subject,Integer mediaType, String title,String sortName);
 
+    MediaResourceVO selectResourceDetail(Integer resourceId);
+
+    int updateResource(String title,Integer sortId,String uuid, String coverImgUrl,Integer resourceId);
+
+    int deleteResource(Integer resourceId);
+
+    int addResource(String title, Integer subject, Integer sortId, String objectType, String suffix, String uuid, String coverImgUrl, LocalDateTime createDate,Integer mediaType);
 }

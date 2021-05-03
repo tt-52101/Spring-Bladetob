@@ -170,51 +170,6 @@ public class MediaResourceController extends BladeController {
 
 
 
-//
-//	/**
-//	 * 保存浏览记录
-//	 */
-//	@PostMapping("/saveBrowsingHistory")
-//	@ApiOperationSupport(order = 3)
-//	@ApiOperation(value = "保存浏览记录")
-//	public R saveBrowsingHistory(@Valid @RequestBody BrowsingHistoryVO browsingHistoryVO) {
-//		Integer userId = browsingHistoryVO.getUserId();
-//		String userName = browsingHistoryVO.getUserName();
-//		Integer resourceId = browsingHistoryVO.getResourceId();
-//		Integer subject = browsingHistoryVO.getSubject();
-//		Integer mediaType = browsingHistoryVO.getMediaType();
-//		return R.status(mediaResourceService.saveBrowsingHistory(userId,userName,resourceId,subject,mediaType));
-//	}
 
-//	/**
-//	 * 查询资源ID
-//	 */
-//	@GetMapping("/selectResourceId")
-//	@ApiOperationSupport(order = 3)
-//	@ApiOperation(value = "查询资源ID")
-//	public R<List<Integer>> selectResourceId(@ApiParam(value = "subject 71=软笔 72=硬笔",required = true)@RequestParam(value = "subject") Integer subject,
-//											 @ApiParam(value = "mediaType",required = true)@RequestParam(value = "mediaType") Integer mediaType
-//	) {
-//		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-//		HttpServletRequest request = requestAttributes.getRequest();
-//		String userName = request.getHeader("username");
-//		return R.data(mediaResourceService.selectResourceId(userName,subject,mediaType));
-//	}
-
-
-	/**
-	 * 硬笔查询
-	 * @param query
-	 * @param name
-	 * @return
-	 */
-//	@GetMapping("/HardPenQueryList")
-//	@ApiOperationSupport(order = 3)
-//	@ApiOperation(value = "硬笔查询", notes = "根据搜索name返回资源列表")
-//	public R<IPage<HardPenQueryVO>> hardPenQueryList(Query query,
-//		@ApiParam(value = "name")@RequestParam(value = "name",required = false) String name) {
-//		IPage<HardPenQueryVO> pages = hardPenQueryService.selectHardPenQuery(Condition.getPage(query),name);
-//		return R.data(pages);
-//	}
 	
 }
