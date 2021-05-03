@@ -56,7 +56,7 @@ public class HandwritingServiceImpl extends ServiceImpl<HandwritingMapper, Handw
 		for (String word : signs){
 			HandwritingWordVO handwritingWordVO = baseMapper.selectHandwritingWord(word,font,null,null);
 			if (handwritingWordVO!=null){
-				handwritingWordVO.setWordType("sentence");
+				handwritingWordVO.setWordType("sign");
 				handwritingWordVOS.add(handwritingWordVO);
 			}
 		}
