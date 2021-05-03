@@ -73,10 +73,7 @@ public class HandwritingController extends BladeController {
 				FileResult fileResult = entityFileClient.findImageByUuid(uuid);
 				String link = fileResult.getLink();
 				handwritingWordVO.setUuid(link);
-			}else {
-				handwritingWordVO.setUuid(" ");
 			}
-
 		}
 		return R.data(handwritingWordVOS);
 	}
@@ -109,8 +106,6 @@ public class HandwritingController extends BladeController {
 				FileResult fileResult = entityFileClient.findImageByUuid(uuid);
 				String link = fileResult.getLink();
 				handwritingWordVO.setUuid(link);
-			}else {
-				handwritingWordVO.setUuid(" ");
 			}
 		}
 		return R.data(handwritingWordVOS);

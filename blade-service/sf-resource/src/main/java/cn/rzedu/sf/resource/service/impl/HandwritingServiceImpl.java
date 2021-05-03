@@ -45,18 +45,20 @@ public class HandwritingServiceImpl extends ServiceImpl<HandwritingMapper, Handw
 		LocalDateTime createDate = LocalDateTime.now();
 		String sentence = sentences.toString();
 		String sign = signs.toString();
-		String sourceAuthor = "颜真卿";
-		String sourceInscriptions = "多宝塔碑";
 		baseMapper.generateHandwriting(sentence,standards,banner,font,sign,userId,userName,createDate);
 		for (String word : sentences){
-			HandwritingWordVO handwritingWordVO = baseMapper.selectHandwritingWord(word,font,sourceAuthor,sourceInscriptions);
-			handwritingWordVO.setWordType("sentence");
-			handwritingWordVOS.add(handwritingWordVO);
+			HandwritingWordVO handwritingWordVO = baseMapper.selectHandwritingWord(word,font,null,null);
+			if (handwritingWordVO!=null){
+				handwritingWordVO.setWordType("sentence");
+				handwritingWordVOS.add(handwritingWordVO);
+			}
 		}
 		for (String word : signs){
-			HandwritingWordVO handwritingWordVO = baseMapper.selectHandwritingWord(word,font,sourceAuthor,sourceInscriptions);
-			handwritingWordVO.setWordType("sign");
-			handwritingWordVOS.add(handwritingWordVO);
+			HandwritingWordVO handwritingWordVO = baseMapper.selectHandwritingWord(word,font,null,null);
+			if (handwritingWordVO!=null){
+				handwritingWordVO.setWordType("sentence");
+				handwritingWordVOS.add(handwritingWordVO);
+			}
 		}
 		return handwritingWordVOS;
 	}

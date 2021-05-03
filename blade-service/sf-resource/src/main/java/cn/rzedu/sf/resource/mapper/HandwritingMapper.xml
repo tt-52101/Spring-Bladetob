@@ -45,6 +45,7 @@
         <if test="sourceInscriptions != null and sourceInscriptions !=''">
             and source_inscriptions = #{sourceInscriptions}
         </if>
+        ORDER BY create_date DESC LIMIT 1
     </select>
 
     <select id="selectSourceAuthor" resultType="java.lang.String">
