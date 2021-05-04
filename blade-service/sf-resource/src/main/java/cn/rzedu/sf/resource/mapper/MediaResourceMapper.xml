@@ -85,7 +85,8 @@
     </select>
 
     <select id="selectMediaResourceSortList" resultMap="mediaResourceSortResultMap">
-        select sort_id,sort_name,subject,sort_media_type from sf_media_resource_sort where sort_media_type = #{mediaType} and subject = #{subject} order by order_id
+        select sort_id,sort_name,subject,sort_media_type from sf_media_resource_sort
+        where is_deleted = 0 and sort_media_type = #{mediaType} and subject = #{subject} order by order_id
     </select>
 
     <select id="selectMediaResourceList" resultMap="mediaResourceResultMap">
