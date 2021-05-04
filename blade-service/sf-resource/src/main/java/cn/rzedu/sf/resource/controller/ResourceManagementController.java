@@ -116,11 +116,24 @@ public class ResourceManagementController {
     @PostMapping("/updateResource")
     @ApiOperationSupport(order = 3)
     @ApiOperation(value = "资源编辑")
-    public R updateResource(@FormParam("resourceId") Integer resourceId,
-                            @FormParam("file") File file,
-                            @FormParam("objectType")String objectType,
-                            @FormParam("title") String title,
-                            @FormParam("sortId") Integer sortId) throws IOException {
+    public R updateResource(@RequestParam(value = "file",required = false) MultipartFile multipartFile,
+                            @RequestParam("resourceId") Integer resourceId,
+                            @RequestParam("objectType")String objectType,
+                            @RequestParam(value = "title",required = false) String title,
+                            @RequestParam(value = "sortId",required = false) Integer sortId) throws IOException {
+
+        String fileName = multipartFile.getOriginalFilename();
+        File file = new File(fileName);
+        OutputStream out = null;
+        out = new FileOutputStream(file);
+        byte[] ss = multipartFile.getBytes();
+        for(int i = 0; i < ss.length; i++){
+            out.write(ss[i]);
+        }
+        if (out != null){
+            out.close();
+        }
+
         EntityFile entityFile = null;
         String uuid = null;
         String coverImgUrl = null;
@@ -133,6 +146,8 @@ public class ResourceManagementController {
             entityFile = entityFileClient.uploadImage(file);
             uuid = entityFile.getUuid();
         }
+        File f = new File(file.toURI());
+        f.delete();
         return R.status(resourceManagementService.updateResource(title,sortId,uuid,coverImgUrl,resourceId));
     }
 
@@ -150,22 +165,35 @@ public class ResourceManagementController {
 
     /**
      * 上传资源
+     * @param multipartFile
      * @return
      * @throws IOException
      */
     @PostMapping("/uploadResource")
     @ApiOperationSupport(order = 3)
     @ApiOperation(value = "上传资源")
-    public R uploadResource(@FormParam("file") File file,
-                            @FormParam("objectType")String objectType,
-                            @FormParam("suffix")String suffix,
-                            @FormParam("title") String title,
-                            @FormParam("sortId") Integer sortId,
-                            @FormParam("subject") Integer subject,
-                            @FormParam("mediaType") Integer mediaType) throws IOException {
+    public R uploadResource(@RequestParam("file") MultipartFile multipartFile,
+                            String objectType,
+                            String suffix,
+                            String title,
+                            Integer sortId,
+                            Integer subject,
+                            Integer mediaType) throws IOException {
         String uuid = null;
         String coverImgUrl = null;
         EntityFile entityFile = null;
+        String fileName = multipartFile.getOriginalFilename();
+        File file = new File(fileName);
+        OutputStream out = null;
+        out = new FileOutputStream(file);
+        byte[] ss = multipartFile.getBytes();
+        for(int i = 0; i < ss.length; i++){
+                out.write(ss[i]);
+            }
+        if (out != null){
+                out.close();
+        }
+
         if(objectType.equals("audio") || objectType.equals("video")){
             entityFile = entityFileClient.upload(file);
             uuid = entityFile.getUuid();
@@ -174,6 +202,8 @@ public class ResourceManagementController {
             entityFile = entityFileClient.uploadImage(file);
             uuid = entityFile.getUuid();
         }
+        File f = new File(file.toURI());
+        f.delete();
         return R.status(resourceManagementService.addResource(title,subject,sortId,objectType,suffix,uuid,coverImgUrl,mediaType));
     }
 

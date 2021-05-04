@@ -88,6 +88,8 @@ public class HandwritingDictController extends BladeController {
 		}
 		IPage<HandwritingWordVO> page = new Page<>();
 		page.setRecords(handwritingWordVOS);
+		page.setPages(pages.getPages());
+		page.setTotal(pages.getTotal());
 		return R.data(page);
 	}
 
