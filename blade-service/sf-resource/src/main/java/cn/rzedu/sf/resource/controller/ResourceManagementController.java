@@ -125,7 +125,7 @@ public class ResourceManagementController {
         EntityFile entityFile = null;
         String uuid = null;
         String coverImgUrl = null;
-        if (!multipartFile.isEmpty() || multipartFile.getSize()>0){
+        if (multipartFile!=null){
             String fileName = multipartFile.getOriginalFilename();
             File file = new File(fileName);
             OutputStream out = null;
