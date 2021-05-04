@@ -116,7 +116,7 @@ public class ResourceManagementController {
     @PostMapping("/updateResource")
     @ApiOperationSupport(order = 3)
     @ApiOperation(value = "资源编辑")
-    public R updateResource(@RequestParam(value = "file",required = false) MultipartFile multipartFile,
+    public R updateResource(@RequestParam(value = "multipartFile",required = false) MultipartFile multipartFile,
                             @RequestParam("resourceId") Integer resourceId,
                             @RequestParam("objectType")String objectType,
                             @RequestParam(value = "title",required = false) String title,
@@ -172,7 +172,7 @@ public class ResourceManagementController {
     @PostMapping("/uploadResource")
     @ApiOperationSupport(order = 3)
     @ApiOperation(value = "上传资源")
-    public R uploadResource(@RequestParam("file") MultipartFile multipartFile,
+    public R uploadResource(@RequestParam("multipartFile") MultipartFile multipartFile,
                             String objectType,
                             String suffix,
                             String title,
