@@ -92,7 +92,7 @@ public interface IResourceManagementService extends IService<MediaResource> {
 	 * @param resourceId
 	 * @return
 	 */
-	boolean updateResource(String title,Integer sortId,String uuid, String coverImgUrl,Integer resourceId);
+	boolean updateResource(String title,Integer sortId,String uuid, String coverImgUrl,String objectType,String suffix,Integer resourceId);
 
 	/**
 	 * 删除

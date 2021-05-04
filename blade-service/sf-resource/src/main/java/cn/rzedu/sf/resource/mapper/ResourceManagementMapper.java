@@ -44,7 +44,7 @@ public interface ResourceManagementMapper extends BaseMapper<MediaResource> {
 
     MediaResourceVO selectResourceDetail(Integer resourceId);
 
-    int updateResource(String title,Integer sortId,String uuid, String coverImgUrl,Integer resourceId);
+    int updateResource(String title,Integer sortId,String uuid, String coverImgUrl,String objectType,String suffix, Integer resourceId);
 
     int deleteResource(Integer resourceId);
 

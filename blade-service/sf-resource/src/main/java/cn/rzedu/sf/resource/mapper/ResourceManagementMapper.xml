@@ -91,6 +91,12 @@
         <if test = "coverImgUrl != null and coverImgUrl != ''">
             cover_img_url = #{coverImgUrl},
         </if>
+        <if test = "objectType != null and objectType != ''">
+            object_type = #{objectType},
+        </if>
+        <if test = "suffix != null and suffix != ''">
+            suffix = #{suffix},
+        </if>
         is_deleted = 0
         where  id = #{resourceId}
 

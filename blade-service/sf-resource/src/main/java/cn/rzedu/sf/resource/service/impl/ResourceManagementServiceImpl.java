@@ -81,8 +81,8 @@ public class ResourceManagementServiceImpl extends ServiceImpl<ResourceManagemen
 	}
 
 	@Override
-	public boolean updateResource(String title,Integer sortId,String uuid, String coverImgUrl,Integer resourceId) {
-		return SqlHelper.retBool(baseMapper.updateResource(title,sortId,uuid,coverImgUrl,resourceId));
+	public boolean updateResource(String title,Integer sortId,String uuid, String coverImgUrl,String objectType,String suffix,Integer resourceId) {
+		return SqlHelper.retBool(baseMapper.updateResource(title,sortId,uuid,coverImgUrl,objectType,suffix,resourceId));
 	}
 
 	@Override

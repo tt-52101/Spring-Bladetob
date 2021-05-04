@@ -118,37 +118,37 @@ public class ResourceManagementController {
     @ApiOperation(value = "资源编辑")
     public R updateResource(@RequestParam(value = "multipartFile",required = false) MultipartFile multipartFile,
                             @RequestParam("resourceId") Integer resourceId,
-                            @RequestParam("objectType")String objectType,
+                            @RequestParam(value = "objectType",required = false)String objectType,
+                            @RequestParam(value = "suffix",required = false)String suffix,
                             @RequestParam(value = "title",required = false) String title,
                             @RequestParam(value = "sortId",required = false) Integer sortId) throws IOException {
-
-        String fileName = multipartFile.getOriginalFilename();
-        File file = new File(fileName);
-        OutputStream out = null;
-        out = new FileOutputStream(file);
-        byte[] ss = multipartFile.getBytes();
-        for(int i = 0; i < ss.length; i++){
-            out.write(ss[i]);
-        }
-        if (out != null){
-            out.close();
-        }
-
         EntityFile entityFile = null;
         String uuid = null;
         String coverImgUrl = null;
-        file.getName();
-        if (objectType.equals("audio") || objectType.equals("video")){
-            entityFile = entityFileClient.upload(file);
-            uuid = entityFile.getUuid();
-            coverImgUrl = entityFile.getThumbnailUrl();
-        }else {
-            entityFile = entityFileClient.uploadImage(file);
-            uuid = entityFile.getUuid();
+        if (!multipartFile.isEmpty() || multipartFile.getSize()>0){
+            String fileName = multipartFile.getOriginalFilename();
+            File file = new File(fileName);
+            OutputStream out = null;
+            out = new FileOutputStream(file);
+            byte[] ss = multipartFile.getBytes();
+            for(int i = 0; i < ss.length; i++){
+                out.write(ss[i]);
+            }
+            if (out != null){
+                out.close();
+            }
+            if (objectType.equals("audio") || objectType.equals("video")){
+                entityFile = entityFileClient.upload(file);
+                uuid = entityFile.getUuid();
+                coverImgUrl = entityFile.getThumbnailUrl();
+            }else {
+                entityFile = entityFileClient.uploadImage(file);
+                uuid = entityFile.getUuid();
+            }
+            File f = new File(file.toURI());
+            f.delete();
         }
-        File f = new File(file.toURI());
-        f.delete();
-        return R.status(resourceManagementService.updateResource(title,sortId,uuid,coverImgUrl,resourceId));
+        return R.status(resourceManagementService.updateResource(title,sortId,uuid,coverImgUrl,objectType,suffix,resourceId));
     }
 
     /**
