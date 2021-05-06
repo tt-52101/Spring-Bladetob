@@ -149,7 +149,7 @@ public interface ICharacterResourceService extends IService<CharacterResource> {
 	 * 创建硬笔资源
 	 * @return
 	 */
-	boolean createHardResourceFile(String charS, Integer resourceType, String objectCode, String value);
+	boolean createHardResourceFile(String charS, Integer resourceType, String font, String objectCode, String value);
 
 	/**
 	 * 创建软笔资源

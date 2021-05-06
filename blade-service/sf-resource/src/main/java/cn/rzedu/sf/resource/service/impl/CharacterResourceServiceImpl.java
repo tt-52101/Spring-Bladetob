@@ -617,7 +617,7 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 	}
 
 	@Override
-	public boolean createHardResourceFile(String charS, Integer resourceType, String objectCode, String value) {
+	public boolean createHardResourceFile(String charS, Integer resourceType, String font, String objectCode, String value) {
 		String objectType = null;
 		if ("character".equals(objectCode)) {
 			objectType = "image";
@@ -628,7 +628,7 @@ public class CharacterResourceServiceImpl extends ServiceImpl<CharacterResourceM
 		} else {
 			objectType = "text";
 		}
-		return createResourceFile(charS, 72, resourceType, null, objectCode, objectType, value);
+		return createResourceFile(charS, 72, resourceType, font, objectCode, objectType, value);
 	}
 
 	@Override
