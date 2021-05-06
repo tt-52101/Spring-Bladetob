@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.user.mapper.TeamMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="teamResultMap" type="cn.rzedu.sf.user.entity.Team">
+        <id column="id" property="id"/>
+        <result column="school_id" property="schoolId"/>
+        <result column="grade_code" property="gradeCode"/>
+        <result column="team_type" property="teamType"/>
+        <result column="name" property="name"/>
+        <result column="pre_count" property="preCount"/>
+        <result column="member_count" property="memberCount"/>
+        <result column="textbook_id" property="textbookId"/>
+        <result column="lesson_id" property="lessonId"/>
+        <result column="password" property="password"/>
+        <result column="class_master_id" property="classMasterId"/>
+        <result column="class_master" property="classMaster"/>
+        <result column="teacher_count" property="teacherCount"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="teamVOResultMap" type="cn.rzedu.sf.user.vo.TeamVO" extends="teamResultMap">
+        <result column="school_name" property="schoolName"/>
+        <result column="group_type" property="groupType"/>
+        <result column="team_type_name" property="teamTypeName"/>
+        <result column="textbook_name" property="textbookName"/>
+        <result column="lesson_name" property="lessonName"/>
+        <result column="lesson_number" property="lessonNumber"/>
+    </resultMap>
+
+    <select id="selectTeamPage" resultMap="teamResultMap">
+        select * from sf_team where is_deleted = 0
+    </select>
+
+    <select id="findTeamVOWithTextbook" resultMap="teamVOResultMap">
+        SELECT
+        t1.*,
+        t2.`name` AS school_name,
+        t2.group_type,
+        t3.`name` AS team_type_name,
+        t4.`name` AS textbook_name,
+        t5.`name` AS lesson_name,
+        t5.list_order AS lesson_number
+        FROM sf_team t1
+        LEFT JOIN sf_school t2 ON t1.school_id = t2.id
+        LEFT JOIN sf_team_type t3 ON t1.team_type = t3.id
+        LEFT JOIN sf_textbook t4 ON t1.textbook_id = t4.id
+        LEFT JOIN sf_textbook_lesson t5 ON t1.studying_lesson_id = t5.id
+        WHERE t1.is_deleted = 0
+        <if test="schoolId != null">
+            AND t1.school_id = #{schoolId}
+        </if>
+        <if test="groupType != null">
+            AND t2.group_type = #{groupType}
+        </if>
+        <if test="schoolId != null">
+            AND t1.team_type = #{teamType}
+        </if>
+    </select>
+
+</mapper>

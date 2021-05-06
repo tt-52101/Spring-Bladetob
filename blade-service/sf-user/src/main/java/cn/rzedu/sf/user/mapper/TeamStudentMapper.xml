@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.user.mapper.TeamStudentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="teamStudentResultMap" type="cn.rzedu.sf.user.entity.TeamStudent">
+        <id column="id" property="id"/>
+        <result column="school_id" property="schoolId"/>
+        <result column="team_id" property="teamId"/>
+        <result column="student_id" property="studentId"/>
+        <result column="user_id" property="userId"/>
+        <result column="name" property="name"/>
+        <result column="number" property="number"/>
+        <result column="in_state" property="inState"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <select id="selectTeamStudentPage" resultMap="teamStudentResultMap">
+        select * from sf_team_student where is_deleted = 0
+    </select>
+
+</mapper>

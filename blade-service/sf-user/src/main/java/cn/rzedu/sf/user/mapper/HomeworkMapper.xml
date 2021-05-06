@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.user.mapper.HomeworkMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="homeworkResultMap" type="cn.rzedu.sf.user.entity.Homework">
+        <id column="id" property="id"/>
+        <result column="school_id" property="schoolId"/>
+        <result column="team_id" property="teamId"/>
+        <result column="teacher_id" property="teacherId"/>
+        <result column="name" property="name"/>
+        <result column="content" property="content"/>
+        <result column="photos" property="photos"/>
+        <result column="audios" property="audios"/>
+        <result column="lesson_id" property="lessonId"/>
+        <result column="char_ids" property="charIds"/>
+        <result column="chars" property="chars"/>
+        <result column="deadline" property="deadline"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <select id="selectHomeworkPage" resultMap="homeworkResultMap">
+        select * from sf_homework where is_deleted = 0
+    </select>
+
+</mapper>

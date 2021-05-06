@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.user.mapper.TeacherMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="teacherResultMap" type="cn.rzedu.sf.user.entity.Teacher">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="school_id" property="schoolId"/>
+        <result column="name" property="name"/>
+        <result column="mobile" property="mobile"/>
+        <result column="icon" property="icon"/>
+        <result column="code" property="code"/>
+        <result column="union_id" property="unionId"/>
+        <result column="status" property="status"/>
+        <result column="enroll_status" property="enrollStatus"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="teacherVOResultMap" type="cn.rzedu.sf.user.vo.TeacherVO" extends="teacherResultMap">
+        <result column="school_name" property="schoolName"/>
+    </resultMap>
+
+    <select id="selectTeacherPage" resultMap="teacherResultMap">
+        select * from sf_teacher where is_deleted = 0
+    </select>
+
+    <select id="findBySchoolId" resultMap="teacherVOResultMap">
+        SELECT t1.*, t2.`name` AS school_name
+        FROM sf_teacher t1
+        LEFT JOIN sf_school t2 ON t1.school_id = t2.id
+        WHERE t1.is_deleted = 0
+        <if test="schoolId != null">
+            AND t1.school_id = #{schoolId}
+        </if>
+    </select>
+
+</mapper>

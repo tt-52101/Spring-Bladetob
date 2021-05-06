@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.rzedu.sf.user.mapper.HomeworkUserCommentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="homeworkUserCommentResultMap" type="cn.rzedu.sf.user.entity.HomeworkUserComment">
+        <id column="id" property="id"/>
+        <result column="homework_id" property="homeworkId"/>
+        <result column="user_id" property="userId"/>
+        <result column="type" property="type"/>
+        <result column="content" property="content"/>
+        <result column="photos" property="photos"/>
+        <result column="audios" property="audios"/>
+        <result column="create_date" property="createDate"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+    <select id="selectHomeworkUserCommentPage" resultMap="homeworkUserCommentResultMap">
+        select * from sf_homework_user_comment where is_deleted = 0
+    </select>
+
+</mapper>
