@@ -17,6 +17,8 @@ import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.resource.entity.EntityFile;
 import org.springblade.resource.feign.EntityFileClient;
+import org.springblade.resource.vo.FileResult;
+import org.springblade.resource.vo.VodResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -182,28 +184,18 @@ public class ResourceManagementController {
         String uuid = null;
         String coverImgUrl = null;
         EntityFile entityFile = null;
-        String fileName = multipartFile.getOriginalFilename();
-        File file = new File(fileName);
-        OutputStream out = null;
-        out = new FileOutputStream(file);
-        byte[] ss = multipartFile.getBytes();
-        for(int i = 0; i < ss.length; i++){
-                out.write(ss[i]);
-            }
-        if (out != null){
-                out.close();
-        }
+        VodResult vodResult = null;
+        FileResult fileResult = null;
 
         if(objectType.equals("audio") || objectType.equals("video")){
-            entityFile = entityFileClient.upload(file);
-            uuid = entityFile.getUuid();
-            coverImgUrl = entityFile.getThumbnailUrl();
+            vodResult = entityFileClient.uploadVodMultipartFile(multipartFile);
+            uuid = vodResult.getUuid();
+
         }else {
-            entityFile = entityFileClient.uploadImage(file);
-            uuid = entityFile.getUuid();
+            fileResult = entityFileClient.uploadOssMultipartFile(multipartFile);
+            uuid = fileResult.getUuid();
+            coverImgUrl = fileResult.getThumbnailUrl();
         }
-        File f = new File(file.toURI());
-        f.delete();
         return R.status(resourceManagementService.addResource(title,subject,sortId,objectType,suffix,uuid,coverImgUrl,mediaType));
     }
 
