@@ -5,7 +5,6 @@ import cn.rzedu.sf.user.service.*;
 import cn.rzedu.sf.user.vo.GcItemVO;
 import cn.rzedu.sf.user.vo.TeacherVO;
 import cn.rzedu.sf.user.vo.TeamVO;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,8 +12,6 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang.StringUtils;
 import org.springblade.core.boot.ctrl.BladeController;
-import org.springblade.core.mp.support.Condition;
-import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springframework.web.bind.annotation.*;
@@ -36,8 +33,6 @@ public class BasicDataController extends BladeController {
 
     private IGcItemService gcItemService;
 
-    private IRegionService regionService;
-
     private ISchoolService schoolService;
 
     private ITeamTypeService teamTypeService;
@@ -57,53 +52,6 @@ public class BasicDataController extends BladeController {
     private IHomeworkUserRecordService homeworkUserRecordService;
 
     private IHomeworkUserCommentService homeworkUserCommentService;
-
-
-    /**
-     * 区域-分页
-     */
-    @GetMapping("/region/page")
-    @ApiOperationSupport(order = 1)
-    @ApiOperation(value = "区域-分页", notes = "传入region")
-    public R<IPage<Region>> regionPage(Region region, Query query) {
-        IPage<Region> pages = regionService.selectRegionPage(Condition.getPage(query), region);
-        return R.data(pages);
-    }
-
-    /**
-     * 区域-列表
-     */
-    @GetMapping("/region/list")
-    @ApiOperationSupport(order = 2)
-    @ApiOperation(value = "区域-列表", notes = "根据父级id和层级查询，默认查询level=1，parent=0的省")
-    public R<List<Region>> regionList(
-            @ApiParam(value = "父级code", required = true) @RequestParam(value = "parent", defaultValue = "0") Integer parent,
-            @ApiParam(value = "级别：1=省；2=市；3=区县") @RequestParam(value = "level", required = false) Integer level) {
-        List<Region> list = regionService.findRegionList(parent, level);
-        return R.data(list);
-    }
-
-    /**
-     * 区域-新增或修改
-     */
-    @PostMapping("/region/submit")
-    @ApiOperationSupport(order = 3)
-    @ApiOperation(value = "区域-新增或修改", notes = "必填项：code，name。选填项：parent，不填默认0，即变动数据为市级地区")
-    public R regionSubmit(@Valid @RequestBody Region region) {
-        return R.status(regionService.saveOrUpdateRegion(region));
-    }
-
-    /**
-     * 区域-删除
-     */
-    @PostMapping("/region/remove")
-    @ApiOperationSupport(order = 4)
-    @ApiOperation(value = "区域-删除", notes = "传入ids")
-    public R regionRemove(
-            @ApiParam(value = "区域代码", required = true) @RequestParam String code,
-            @ApiParam(value = "是否删除子区域", required = true) @RequestParam(defaultValue = "0") Integer delChildren) {
-        return R.status(regionService.removeRegion(code, delChildren));
-    }
 
 
     /**
