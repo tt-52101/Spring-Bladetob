@@ -84,8 +84,9 @@ public class HandwritingController extends BladeController {
 	@GetMapping("/selectSourceAuthor")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "所属书法作者列表")
-	public R<List<String>> selectSourceAuthor(@ApiParam(value = "word") @RequestParam String word) {
-		return R.data(handwritingService.selectSourceAuthor(word));
+	public R<List<String>> selectSourceAuthor(@ApiParam(value = "word") @RequestParam String word,
+											  @ApiParam(value = "font") @RequestParam String font) {
+		return R.data(handwritingService.selectSourceAuthor(word,font));
 	}
 
 	/**
