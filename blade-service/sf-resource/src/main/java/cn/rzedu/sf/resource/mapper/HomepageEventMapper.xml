@@ -8,6 +8,7 @@
         <result column="type" property="type"/>
         <result column="title" property="title"/>
         <result column="link" property="link"/>
+        <result column="link_type" property="linkType"/>
         <result column="picture" property="picture"/>
         <result column="list_order" property="listOrder"/>
         <result column="enabled" property="enabled"/>

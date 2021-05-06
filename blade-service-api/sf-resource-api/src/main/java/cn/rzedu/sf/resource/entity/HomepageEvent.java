@@ -44,6 +44,11 @@ public class HomepageEvent implements Serializable {
     @ApiModelProperty(value = "链接")
     private String link;
     /**
+     * 链接类型  1=外部网页  2=内部页面
+     */
+    @ApiModelProperty(value = "链接类型  1=外部网页  2=内部页面")
+    private String linkType;
+    /**
      * 图片uuid
      */
     @ApiModelProperty(value = "图片uuid")

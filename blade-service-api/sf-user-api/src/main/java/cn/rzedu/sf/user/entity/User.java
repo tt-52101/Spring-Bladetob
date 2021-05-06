@@ -106,21 +106,37 @@ public class User implements Serializable {
     @ApiModelProperty(value = "关注状态  1=关注 0=取关")
     private Integer focusStatus;
     /**
-     * 用户维度  1=新用户  2=老用户  3=其他用户
-     */
-    @ApiModelProperty(value = "用户维度  1=新用户  2=老用户  3=其他用户")
-    private Integer dimension;
-    /**
      * 是否机器人（虚拟用户）
      */
     @ApiModelProperty(value = "是否机器人（虚拟用户）")
     private Integer isRobot;
+    /**
+     * 是否获取了微信用户信息
+     */
+    @ApiModelProperty(value = "是否获取了微信用户信息")
+    private Boolean isGetInfo;
 
     /**
-     * 是否机器人（虚拟用户）
+     * 学生身份数量
      */
-    @ApiModelProperty(value = "是否获取了微信用户信息）")
-    private Boolean isGetInfo;
+    @ApiModelProperty(value = "学生身份数量")
+    private Integer IDStudentCount;
+    /**
+     * 老师身份数量
+     */
+    @ApiModelProperty(value = "老师身份数量")
+    private Integer IDTeacherCount;
+    /**
+     * 当前身份类型  1=教师 2=学生
+     */
+    @ApiModelProperty(value = "当前身份类型  1=教师 2=学生")
+    private Integer currentIdentityType;
+    /**
+     * 当前身份id
+     */
+    @ApiModelProperty(value = "当前身份id")
+    private Integer currentIdentity;
+
     /**
      * 创建时间
      */
