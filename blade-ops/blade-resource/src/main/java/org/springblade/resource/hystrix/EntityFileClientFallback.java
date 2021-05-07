@@ -37,6 +37,10 @@ public class EntityFileClientFallback implements EntityFileClient {
 		return null;
 	}
 
+	@Override
+	public VodResult uploadVodMultipartFile(MultipartFile file) throws IOException {
+		return null;
+	}
 
 	@Override
 	public FileResult uploadOssMultipartFile(MultipartFile file) throws IOException {

@@ -125,15 +125,19 @@ public class ResourceManagementController {
                             @RequestParam(value = "suffix",required = false)String suffix,
                             @RequestParam(value = "title",required = false) String title,
                             @RequestParam(value = "sortId",required = false) Integer sortId) throws IOException {
-
         String uuid = null;
         String coverImgUrl = null;
-        FileResult fileResult = entityFileClient.uploadOssMultipartFile(multipartFile);
-        uuid = fileResult.getUuid();
-        if (objectType.equals("audio") || objectType.equals("video")){
-            GetVideoInfoResponse response = entityFileClient.findVideoByUuid(uuid);
-            coverImgUrl = response.getVideo().getCoverURL();
-        }
+        VodResult vodResult = null;
+        FileResult fileResult = null;
+            if(objectType.equals("audio") || objectType.equals("video")){
+                vodResult = entityFileClient.uploadVodMultipartFile(multipartFile);
+                uuid = vodResult.getUuid();
+                GetVideoInfoResponse response = entityFileClient.findVideoByUuid(uuid);
+                coverImgUrl = response.getVideo().getCoverURL();
+            }else {
+                fileResult = entityFileClient.uploadOssMultipartFile(multipartFile);
+                uuid = fileResult.getUuid();
+            }
 
         return R.status(resourceManagementService.updateResource(title,sortId,uuid,coverImgUrl,objectType,suffix,resourceId));
     }
@@ -168,13 +172,19 @@ public class ResourceManagementController {
                             Integer mediaType) throws IOException {
         String uuid = null;
         String coverImgUrl = null;
-        FileResult  fileResult = entityFileClient.uploadOssMultipartFile(multipartFile);
-        uuid = fileResult.getUuid();
-        if(objectType.equals("audio") || objectType.equals("video")) {
+        EntityFile entityFile = null;
+        VodResult vodResult = null;
+        FileResult fileResult = null;
+
+        if(objectType.equals("audio") || objectType.equals("video")){
+            vodResult = entityFileClient.uploadVodMultipartFile(multipartFile);
+            uuid = vodResult.getUuid();
             GetVideoInfoResponse response = entityFileClient.findVideoByUuid(uuid);
             coverImgUrl = response.getVideo().getCoverURL();
+        }else {
+            fileResult = entityFileClient.uploadOssMultipartFile(multipartFile);
+            uuid = fileResult.getUuid();
         }
-
         return R.status(resourceManagementService.addResource(title,subject,sortId,objectType,suffix,uuid,coverImgUrl,mediaType));
     }
 
