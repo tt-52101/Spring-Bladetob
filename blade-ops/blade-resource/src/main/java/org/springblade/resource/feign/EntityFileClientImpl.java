@@ -14,8 +14,10 @@ import org.springblade.resource.service.IEntityFileService;
 import org.springblade.resource.utils.FileMd5Util;
 import org.springblade.resource.utils.VodUploadUtil;
 import org.springblade.resource.vo.FileResult;
+import org.springblade.resource.vo.VodResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -104,6 +106,74 @@ public class EntityFileClientImpl implements EntityFileClient {
         }
         return entityFile;
     }
+
+	@Override
+	public VodResult uploadVodMultipartFile(MultipartFile file) throws IOException {
+		VodResult vodResult = new VodResult();
+
+		String md5 = FileMd5Util.getFileMd5(file.getInputStream(), 5);
+		EntityFile entityFile = entityFileService.findFileByMD5(md5);
+
+		if (entityFile == null) {
+			entityFile = new EntityFile();
+			UploadStreamResponse response = VodUploadUtil.uploadStream(ossProperties.getAccessKey(), ossProperties.getSecretKey(), file.getOriginalFilename(), file.getOriginalFilename(), file.getInputStream());
+			GetPlayInfoResponse getPlayInfoResponse = new GetPlayInfoResponse();
+			vodResult.setRequestId(response.getRequestId());
+			if (response.isSuccess()) {
+				entityFile.setFileName(file.getOriginalFilename());
+				entityFile.setRealFileName(file.getOriginalFilename());
+				entityFile.setMd5Code(md5);
+				entityFile.setSuffix(FileUtil.getFileExtension(file.getOriginalFilename()));
+				entityFile.setSize((double) file.getSize());
+				entityFile.setUuid(response.getVideoId());
+				entityFile.setModifyDate(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+				entityFile.setCreateDate(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+				entityFileService.save(entityFile);
+
+				vodResult.setUuid(response.getVideoId());
+			} else {
+				vodResult.setErrorCode(response.getCode());
+				vodResult.setErrorMessage(response.getMessage());
+			}
+		} else { //已存在，根据文件id查询url
+			vodResult.setUuid(entityFile.getUuid());
+		}
+
+		return vodResult;
+	}
+
+	@Override
+	public FileResult uploadOssMultipartFile(MultipartFile file) throws IOException {
+		FileResult fileResult = new FileResult();
+
+		String md5 = FileMd5Util.getFileMd5(file.getInputStream(), 5);
+		EntityFile entityFile = entityFileService.findFileByMD5(md5);
+		if(entityFile == null){
+			BladeFile bladeFile = aliossTemplate.putFile(file.getOriginalFilename(), file.getInputStream());
+
+			entityFile = new EntityFile();
+			entityFile.setFileName(bladeFile.getUuid());
+			entityFile.setRealFileName(file.getOriginalFilename());
+//			entityFile.setFtpCode("");
+			entityFile.setMd5Code(md5);
+			entityFile.setSuffix(FileUtil.getFileExtension(file.getOriginalFilename()));
+//			entityFile.setThumbnailUrl("");
+			entityFile.setSize((double)file.getSize());
+			entityFile.setUrl(bladeFile.getName());
+			entityFile.setUuid(bladeFile.getUuid());
+			entityFile.setModifyDate(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+			entityFile.setCreateDate(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+			entityFileService.save(entityFile);
+		}
+
+		fileResult.setUuid(entityFile.getUuid());
+		fileResult.setOriginalName(entityFile.getRealFileName());
+		fileResult.setLink(ossProperties.getHttpPrefix().concat(StringPool.SLASH).concat(entityFile.getUrl()));
+		fileResult.setThumbnailUrl(entityFile.getThumbnailUrl());
+		fileResult.setName(entityFile.getUrl());
+
+		return fileResult;
+	}
 
 	@Override
 	public FileResult findImageByUuid(String uuid) throws IOException {

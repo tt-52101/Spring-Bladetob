@@ -57,7 +57,9 @@
     </select>
 
     <select id="selectSourceAuthor" resultType="java.lang.String">
-        select distinct source_author from sf_handwriting_word where is_deleted = 0  and word = #{word}
+        select distinct source_author from sf_handwriting_word where is_deleted = 0
+        and word = #{word} and font = #{font}
+
     </select>
 
     <select id="selectSourceInscriptions" resultMap="handwritingWordResultMap">

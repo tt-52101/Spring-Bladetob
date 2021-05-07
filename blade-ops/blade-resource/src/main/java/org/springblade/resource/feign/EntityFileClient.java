@@ -19,10 +19,12 @@ package org.springblade.resource.feign;
 import org.springblade.resource.entity.EntityFile;
 import org.springblade.resource.hystrix.EntityFileClientFallback;
 import org.springblade.resource.vo.FileResult;
+import org.springblade.resource.vo.VodResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,6 +79,23 @@ public interface EntityFileClient {
      */
     @PostMapping(API_PREFIX + "/uploadImage")
 	EntityFile uploadImage(@RequestBody File file) throws IOException;
+
+	/**
+	 *  上传multipartFile视频资源
+	 * @param file
+	 * @return
+	 */
+	@PostMapping(API_PREFIX + "/uploadVodMultipartFile")
+	VodResult uploadVodMultipartFile(@RequestBody MultipartFile file) throws IOException;
+
+	/**
+	 *  上传multipartFile图片资源
+	 * @param file
+	 * @return
+	 */
+	@PostMapping(API_PREFIX + "/uploadOssMultipartFile")
+	FileResult uploadOssMultipartFile(@RequestBody MultipartFile file) throws IOException;
+
 
 	/**
 	 *  查找图片资源
