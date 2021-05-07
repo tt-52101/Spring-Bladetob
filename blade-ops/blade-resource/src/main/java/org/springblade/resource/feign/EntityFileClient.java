@@ -21,9 +21,11 @@ import org.springblade.resource.hystrix.EntityFileClientFallback;
 import org.springblade.resource.vo.FileResult;
 import org.springblade.resource.vo.VodResult;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -40,6 +42,7 @@ import java.io.IOException;
 		,
 	//定义hystrix配置类
 	fallback = EntityFileClientFallback.class
+	, configuration = FeignMultipartSupportConfig.class
 )
 public interface EntityFileClient {
 
@@ -93,8 +96,8 @@ public interface EntityFileClient {
 	 * @param file
 	 * @return
 	 */
-	@PostMapping(API_PREFIX + "/uploadOssMultipartFile")
-	FileResult uploadOssMultipartFile(@RequestBody MultipartFile file) throws IOException;
+	@PostMapping(value = API_PREFIX + "/uploadOssMultipartFile", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE},consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	FileResult uploadOssMultipartFile(@RequestPart MultipartFile file) throws IOException;
 
 
 	/**
