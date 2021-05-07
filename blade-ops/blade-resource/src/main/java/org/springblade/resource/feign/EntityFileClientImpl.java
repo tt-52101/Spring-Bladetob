@@ -112,40 +112,6 @@ public class EntityFileClientImpl implements EntityFileClient {
         return entityFile;
     }
 
-	@Override
-	public VodResult uploadVodMultipartFile(MultipartFile file) throws IOException {
-		VodResult vodResult = new VodResult();
-
-		String md5 = FileMd5Util.getFileMd5(file.getInputStream(), 5);
-		EntityFile entityFile = entityFileService.findFileByMD5(md5);
-
-		if (entityFile == null) {
-			entityFile = new EntityFile();
-			UploadStreamResponse response = VodUploadUtil.uploadStream(ossProperties.getAccessKey(), ossProperties.getSecretKey(), file.getOriginalFilename(), file.getOriginalFilename(), file.getInputStream());
-			GetPlayInfoResponse getPlayInfoResponse = new GetPlayInfoResponse();
-			vodResult.setRequestId(response.getRequestId());
-			if (response.isSuccess()) {
-				entityFile.setFileName(file.getOriginalFilename());
-				entityFile.setRealFileName(file.getOriginalFilename());
-				entityFile.setMd5Code(md5);
-				entityFile.setSuffix(FileUtil.getFileExtension(file.getOriginalFilename()));
-				entityFile.setSize((double) file.getSize());
-				entityFile.setUuid(response.getVideoId());
-				entityFile.setModifyDate(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-				entityFile.setCreateDate(new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-				entityFileService.save(entityFile);
-
-				vodResult.setUuid(response.getVideoId());
-			} else {
-				vodResult.setErrorCode(response.getCode());
-				vodResult.setErrorMessage(response.getMessage());
-			}
-		} else { //已存在，根据文件id查询url
-			vodResult.setUuid(entityFile.getUuid());
-		}
-
-		return vodResult;
-	}
 
 	@Override
 	public FileResult uploadOssMultipartFile(MultipartFile file) throws IOException {

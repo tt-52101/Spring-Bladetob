@@ -84,16 +84,9 @@ public interface EntityFileClient {
     @PostMapping(API_PREFIX + "/uploadImage")
 	EntityFile uploadImage(@RequestBody File file) throws IOException;
 
-	/**
-	 *  上传multipartFile视频资源
-	 * @param file
-	 * @return
-	 */
-	@PostMapping(value = API_PREFIX + "/uploadVodMultipartFile",produces = {MediaType.APPLICATION_JSON_UTF8_VALUE},consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	VodResult uploadVodMultipartFile(@RequestBody MultipartFile file) throws IOException;
 
 	/**
-	 *  上传multipartFile图片资源
+	 *  上传multipartFile资源
 	 * @param file
 	 * @return
 	 */
