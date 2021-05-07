@@ -1,7 +1,10 @@
 package org.springblade.resource.feign;
 
+import com.alibaba.fastjson.JSON;
 import com.aliyun.vod.upload.resp.UploadStreamResponse;
+import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.vod.model.v20170321.GetPlayInfoResponse;
+import com.aliyuncs.vod.model.v20170321.GetVideoInfoResponse;
 import lombok.AllArgsConstructor;
 import org.springblade.core.oss.AliossTemplate;
 import org.springblade.core.oss.model.BladeFile;
@@ -26,6 +29,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+
+import static org.springblade.resource.utils.VodUploadUtil.initVodClient;
 
 @RestController
 @AllArgsConstructor
@@ -190,6 +195,22 @@ public class EntityFileClientImpl implements EntityFileClient {
 		}
 
 		return fileResult;
+	}
+
+	@Override
+	public GetVideoInfoResponse findVideoByUuid(String uuid) throws IOException {
+		DefaultAcsClient client = initVodClient(ossProperties.getAccessKey(), ossProperties.getSecretKey());
+		GetVideoInfoResponse response = new GetVideoInfoResponse();
+		try {
+			response = VodUploadUtil.getVideoInfo(client, uuid);
+			System.out.print(JSON.toJSONString(response));
+			System.out.print("Title = " + response.getVideo().getTitle() + "\n");
+			System.out.print("Description = " + response.getVideo().getDescription() + "\n");
+		} catch (Exception e) {
+			System.out.print("ErrorMessage = " + e.getLocalizedMessage());
+		}
+
+		return response;
 	}
 
 	@Override

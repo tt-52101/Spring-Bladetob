@@ -1,5 +1,6 @@
 package org.springblade.resource.hystrix;
 
+import com.aliyuncs.vod.model.v20170321.GetVideoInfoResponse;
 import org.springblade.resource.entity.EntityFile;
 import org.springblade.resource.feign.EntityFileClient;
 import org.springblade.resource.vo.FileResult;
@@ -48,6 +49,11 @@ public class EntityFileClientFallback implements EntityFileClient {
 
 	@Override
 	public FileResult findImageByUuid(String uuid) throws IOException {
+		return null;
+	}
+
+	@Override
+	public GetVideoInfoResponse findVideoByUuid(String uuid) throws IOException {
 		return null;
 	}
 

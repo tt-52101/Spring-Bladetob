@@ -5,6 +5,7 @@ package cn.rzedu.sf.resource.controller;
 import cn.rzedu.sf.resource.service.IResourceManagementService;
 import cn.rzedu.sf.resource.vo.MediaResourceVO;
 import cn.rzedu.sf.resource.vo.ProgramaManagementVO;
+import com.aliyuncs.vod.model.v20170321.GetVideoInfoResponse;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
@@ -124,32 +125,22 @@ public class ResourceManagementController {
                             @RequestParam(value = "suffix",required = false)String suffix,
                             @RequestParam(value = "title",required = false) String title,
                             @RequestParam(value = "sortId",required = false) Integer sortId) throws IOException {
-        EntityFile entityFile = null;
+
         String uuid = null;
         String coverImgUrl = null;
-        if (multipartFile!=null){
-            String fileName = multipartFile.getOriginalFilename();
-            File file = new File(fileName);
-            OutputStream out = null;
-            out = new FileOutputStream(file);
-            byte[] ss = multipartFile.getBytes();
-            for(int i = 0; i < ss.length; i++){
-                out.write(ss[i]);
-            }
-            if (out != null){
-                out.close();
-            }
-            if (objectType.equals("audio") || objectType.equals("video")){
-                entityFile = entityFileClient.upload(file);
-                uuid = entityFile.getUuid();
-                coverImgUrl = entityFile.getThumbnailUrl();
-            }else {
-                entityFile = entityFileClient.uploadImage(file);
-                uuid = entityFile.getUuid();
-            }
-            File f = new File(file.toURI());
-            f.delete();
+        VodResult vodResult = null;
+        FileResult fileResult = null;
+
+        if(objectType.equals("audio") || objectType.equals("video")){
+            vodResult = entityFileClient.uploadVodMultipartFile(multipartFile);
+            uuid = vodResult.getUuid();
+            GetVideoInfoResponse response = entityFileClient.findVideoByUuid(uuid);
+            coverImgUrl = response.getVideo().getCoverURL();
+        }else {
+            fileResult = entityFileClient.uploadOssMultipartFile(multipartFile);
+            uuid = fileResult.getUuid();
         }
+
         return R.status(resourceManagementService.updateResource(title,sortId,uuid,coverImgUrl,objectType,suffix,resourceId));
     }
 
@@ -183,18 +174,17 @@ public class ResourceManagementController {
                             Integer mediaType) throws IOException {
         String uuid = null;
         String coverImgUrl = null;
-        EntityFile entityFile = null;
         VodResult vodResult = null;
         FileResult fileResult = null;
 
         if(objectType.equals("audio") || objectType.equals("video")){
             vodResult = entityFileClient.uploadVodMultipartFile(multipartFile);
             uuid = vodResult.getUuid();
-
+            GetVideoInfoResponse response = entityFileClient.findVideoByUuid(uuid);
+            coverImgUrl = response.getVideo().getCoverURL();
         }else {
             fileResult = entityFileClient.uploadOssMultipartFile(multipartFile);
             uuid = fileResult.getUuid();
-            coverImgUrl = fileResult.getThumbnailUrl();
         }
         return R.status(resourceManagementService.addResource(title,subject,sortId,objectType,suffix,uuid,coverImgUrl,mediaType));
     }

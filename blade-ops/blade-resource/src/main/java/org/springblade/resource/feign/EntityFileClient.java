@@ -16,6 +16,7 @@
  */
 package org.springblade.resource.feign;
 
+import com.aliyuncs.vod.model.v20170321.GetVideoInfoResponse;
 import org.springblade.resource.entity.EntityFile;
 import org.springblade.resource.hystrix.EntityFileClientFallback;
 import org.springblade.resource.vo.FileResult;
@@ -88,7 +89,7 @@ public interface EntityFileClient {
 	 * @param file
 	 * @return
 	 */
-	@PostMapping(API_PREFIX + "/uploadVodMultipartFile")
+	@PostMapping(value = API_PREFIX + "/uploadVodMultipartFile",produces = {MediaType.APPLICATION_JSON_UTF8_VALUE},consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	VodResult uploadVodMultipartFile(@RequestBody MultipartFile file) throws IOException;
 
 	/**
@@ -107,6 +108,14 @@ public interface EntityFileClient {
 	 */
 	@PostMapping(API_PREFIX + "/findImageByUuid")
 	FileResult findImageByUuid(@RequestParam("uuid") String uuid) throws IOException;
+
+	/**
+	 *  查找视频资源
+	 * @param uuid
+	 * @return
+	 */
+	@PostMapping(API_PREFIX + "/findVideoByUuid")
+	GetVideoInfoResponse findVideoByUuid(@RequestParam("uuid") String uuid) throws IOException;
 
 	/**
 	 *  查找音频资源
