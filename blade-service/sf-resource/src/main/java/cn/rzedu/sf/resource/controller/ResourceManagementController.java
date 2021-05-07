@@ -134,6 +134,10 @@ public class ResourceManagementController {
                 uuid = vodResult.getUuid();
                 GetVideoInfoResponse response = entityFileClient.findVideoByUuid(uuid);
                 coverImgUrl = response.getVideo().getCoverURL();
+            }else if(objectType.equals("image")){
+                fileResult = entityFileClient.uploadOssMultipartFile(multipartFile);
+                coverImgUrl = fileResult.getLink();
+                uuid = fileResult.getUuid();
             }else {
                 fileResult = entityFileClient.uploadOssMultipartFile(multipartFile);
                 uuid = fileResult.getUuid();
@@ -181,6 +185,10 @@ public class ResourceManagementController {
             uuid = vodResult.getUuid();
             GetVideoInfoResponse response = entityFileClient.findVideoByUuid(uuid);
             coverImgUrl = response.getVideo().getCoverURL();
+        }else if(objectType.equals("image")){
+            fileResult = entityFileClient.uploadOssMultipartFile(multipartFile);
+            coverImgUrl = fileResult.getLink();
+            uuid = fileResult.getUuid();
         }else {
             fileResult = entityFileClient.uploadOssMultipartFile(multipartFile);
             uuid = fileResult.getUuid();
