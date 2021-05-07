@@ -130,12 +130,12 @@ public class User implements Serializable {
      * 当前身份类型  1=教师 2=学生
      */
     @ApiModelProperty(value = "当前身份类型  1=教师 2=学生")
-    private Integer currentIdentityType;
+    private Integer currentIDType;
     /**
      * 当前身份id
      */
     @ApiModelProperty(value = "当前身份id")
-    private Integer currentIdentity;
+    private Integer currentID;
 
     /**
      * 创建时间

@@ -23,8 +23,8 @@
         <result column="is_get_info" property="isGetInfo"/>
         <result column="ID_student_count" property="IDStudentCount"/>
         <result column="ID_teacher_count" property="IDTeacherCount"/>
-        <result column="current_identity_type" property="currentIdentityType"/>
-        <result column="current_identity" property="currentIdentity"/>
+        <result column="current_ID_type" property="currentIDType"/>
+        <result column="current_ID" property="currentID"/>
         <result column="create_date" property="createDate"/>
         <result column="modify_date" property="modifyDate"/>
         <result column="is_deleted" property="isDeleted"/>
