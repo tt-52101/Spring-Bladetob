@@ -129,6 +129,8 @@ public class ResourceManagementController {
         String coverImgUrl = null;
         VodResult vodResult = null;
         FileResult fileResult = null;
+        if(multipartFile!=null){
+
             if(objectType.equals("audio") || objectType.equals("video")){
                 vodResult = entityFileClient.uploadVodMultipartFile(multipartFile);
                 uuid = vodResult.getUuid();
@@ -142,6 +144,7 @@ public class ResourceManagementController {
                 fileResult = entityFileClient.uploadOssMultipartFile(multipartFile);
                 uuid = fileResult.getUuid();
             }
+        }
 
         return R.status(resourceManagementService.updateResource(title,sortId,uuid,coverImgUrl,objectType,suffix,resourceId));
     }
