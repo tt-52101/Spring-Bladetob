@@ -52,7 +52,7 @@ public class UserLessonController extends BladeController {
     /**
      *  默认激活的关卡数
      */
-    @Value("${lesson.activateSection}")
+//    @Value("${lesson.activateSection}")
     private int ACTIVATE_LESSON_NUMBER;
 
     private static final int SUCCESS_CODE = 200;

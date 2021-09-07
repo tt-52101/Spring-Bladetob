@@ -1,11 +1,97 @@
 #服务器端口
 server:
-  port: 9103
+  port: 9102
 
 #数据源配置
 spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: 123456
+    database: 0
+    ssl: false
   datasource:
-    url: ${blade.datasource.dev.url}
-    username: ${blade.datasource.dev.username}
-    password: ${blade.datasource.dev.password}
+    url: jdbc:mysql://124.16.4.21:53306/blade-tob?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
+    username: szxy_test
+    password: Liweilun1208.
+
+blade:
+  datasource:
+    test:
+      url: jdbc:mysql://192.168.0.104:3306/blade-tob?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
+      username: szxy_test
+      password: Liweilun1208.
+  xss:
+    skip-url:
+      - /blade-auth/subscribe
+  secure:
+    skip-url:
+      #     - /test/**
+      #     - /demo/**
+      - /test/**
+      - /sf-user/**
+      - /sf-resource/**
+      - /blade-resource/**
+      - /blade-auth/**
+      - /blade-auth/getUserInfoByWxOAuth
+      - /blade-auth/subscribe
+      - /blade-producer/**
+
+wechat:
+  config:
+    appId: wxb201e9213895bd14
+    appSecret: fccc233c891295e6912c1cb2b18dd465
+    accessTokenUrl: https://api.weixin.qq.com/sns/oauth2/access_token
+    userInfoUrl: https://api.weixin.qq.com/sns/userinfo
+    #任务完成提醒
+    helpTemplate1: 9-lz0WTF577wXbegadx5Udb3JSPJP9y20nr6XfusLV4
+    #成员加入提醒
+    helpTemplate2: uhQywsLKnpZatDzUqV3RB3HC-fCfTHElUNpSYAMsD4s
+    kFmediaId: WnMSTMNHV_m7Mn_jAszhN_WCNu3DM6OHDAP1MTQThVEZLRGnSKEGCmQMEmS77aa9
+    #拼团成员加入提醒
+    grouponJoinTemplate: GvqntvNC53pDYDT_lJQasiOeiTybD-ITFn3HuWLs5Hg
+    #拼团成功通知
+    grouponSuccessTemplate: 7tao3SerMDOTY1_7CYewIOtnGyIpZAOU5PcXGmwkojk
+    #参团人数不足提醒
+    grouponMemberLackTemplate: nqGKLcQoGtJOZtK_fdFWsLPtqAryHOdrxX9gmFJBxWs
+    #少年说报名公众号appId#
+    snsAppId: wx3f587932167aa341
+    #少年说报名公众号appSecret#
+    snsAppSecret: 3ec77a7038868e4b0926e5e635dbca2f
+    zSmediaId: WituYAzn9JaVNd5tc5oeRS-tq1GQt8NuyHrhSTs5ZJ0
+    LSmediaId: WituYAzn9JaVNd5tc5oeRe6ecNuwx4yHVpuFKHuwGSs
+    teacherTemplateId: WituYAzn9JaVNd5tc5oeRSFlaqIKP_gqMB7_uAUosXE
+    JPLSmediaId1: WituYAzn9JaVNd5tc5oeRVEhKmin8abtzshW0Iah3pw
+    JPLSmediaId2: WituYAzn9JaVNd5tc5oeRbWQ25NHIb_blzzRI9L3Zdo
+    JPLSmediaId3: WituYAzn9JaVNd5tc5oeRd8dENvRwAVcvaIL675WDx8
+    xcxAppId: wx80596c3150a1ac53
+    xcxAppSecret: 9de9b9ea443753bf7e3e719d7e44bd94
+    xcxGrantType: authorization_code
+    jcode2SessionUrl: https://api.weixin.qq.com/sns/jscode2session
+
+
+lesson:
+  activateSection: 7
+
+
+activity:
+  startTime: 2020-9-17 00:00:00
+  endTime: 2020-9-27 00:00:00
+  delayTime: 9000000
+
+
+serverPath: http://saberfront.rz-edu.cn
+
+oss:
+  enable: true
+  name: alioss
+  tenant-mode: true
+  endpoint: oss-cn-shenzhen.aliyuncs.com
+  access-key: LTAIV7VpvFzcnGvT
+  secret-key: auxYY7Uj3nw2lYd1sdPwACNOcWgrau
+  bucket-name: shufa3
+  http-prefix: https://cdnsf2.rz-edu.cn
+  space-name: upload
+
+
 

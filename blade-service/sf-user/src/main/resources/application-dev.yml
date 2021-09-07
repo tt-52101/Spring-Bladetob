@@ -1,11 +1,18 @@
 #服务器端口
 server:
-  port: 9102
+  port: 9103
 
 #数据源配置
 spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: 123456
+    database: 0
+    ssl: false
   datasource:
-    url: ${blade.datasource.dev.url}
-    username: ${blade.datasource.dev.username}
-    password: ${blade.datasource.dev.password}
+    url: jdbc:mysql://124.16.4.21:53306/blade-tob?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
+    username: szxy_test
+    password: Liweilun1208.
+
 
